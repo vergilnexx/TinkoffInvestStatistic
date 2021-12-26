@@ -40,7 +40,6 @@ namespace Clients.TinkoffInvest
             var context = connection.Context;
 
             var portfolio = await context.PortfolioAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
-            var portfolioCurrencies = await context.PortfolioCurrenciesAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
             var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>>();
             var result = mapper.Map(portfolio);
 
