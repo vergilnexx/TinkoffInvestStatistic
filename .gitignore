@@ -337,3 +337,6 @@ PublishArtifacts/
 /**/Angular.Host/web.config
 /**/TenderPlatform.RegulationsExecution.Api/web.config
 *.sln.startup.json
+
+# ApplicationLogic
+Secrets.cs

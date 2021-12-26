@@ -18,5 +18,8 @@
     <Compile Update="Views\AccountsPage.xaml.cs">
       <DependentUpon>AccountsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PortfolioPage.xaml.cs">
+      <DependentUpon>PortfolioPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

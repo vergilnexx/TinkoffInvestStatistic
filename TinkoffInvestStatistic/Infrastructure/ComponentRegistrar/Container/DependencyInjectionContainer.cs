@@ -2,6 +2,7 @@
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using Services;
+using System.Collections.Generic;
 using TinkoffInvest.Mappers;
 using Xamarin.Forms;
 
@@ -21,6 +22,7 @@ namespace Infrastructure.Container
         private static void ConfigureServices()
         {
             DependencyService.Register<IAccountService, AccountService>();
+            DependencyService.Register<IPositionService, PositionService>();
         }
 
         private static void ConfigureClients()
@@ -32,6 +34,8 @@ namespace Infrastructure.Container
         {
             DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Account, Contracts.Account>,
                 TinkoffAccountToAccountMapper>();
+            DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>,
+                TinkoffPositionToPositionMapper>();
         }
     }
 }

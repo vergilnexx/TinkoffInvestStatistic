@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tinkoff.Trading.OpenApi.Network;
+using TinkoffInvest;
 using TinkoffInvest.Mappers;
 using Xamarin.Forms;
 
@@ -15,24 +16,33 @@ namespace Clients.TinkoffInvest
     public class TinkoffInvestClient : IBankBrokerApiClient
     {
         /// <summary>
-        /// Токен песочницы.
-        /// </summary>
-        const string TINKOFF_INVEST_SANDBOX_TOKEN = "";
-
-        /// <summary>
         /// Токен.
         /// </summary>
-        const string TINKOFF_INVEST_TOKEN = "";
+        private static readonly string Token = Secrets.TINKOFF_INVEST_TOKEN;
 
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Contracts.Account>> GetAccountsAsync()
         {
-            using var connection = ConnectionFactory.GetConnection(TINKOFF_INVEST_TOKEN);
+            using var connection = ConnectionFactory.GetConnection(Token);
             var context = connection.Context;
 
             var accounts = await context.AccountsAsync().ConfigureAwait(continueOnCapturedContext: false);
             var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.Account, Contracts.Account>>();
             var result = accounts.Select(a => mapper.Map(a)).ToArray();
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyCollection<Position>> GetPositionsAsync(string accountId)
+        {
+            using var connection = ConnectionFactory.GetConnection(Token);
+            var context = connection.Context;
+
+            var portfolio = await context.PortfolioAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
+            var portfolioCurrencies = await context.PortfolioCurrenciesAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
+            var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>>();
+            var result = mapper.Map(portfolio);
 
             return result;
         }

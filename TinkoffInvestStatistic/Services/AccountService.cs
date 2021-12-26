@@ -10,7 +10,7 @@ namespace Services
     /// <inheritdoc/>
     public class AccountService : IAccountService
     {
-    /// <inheritdoc/>
+        /// <inheritdoc/>
         public Task<IReadOnlyCollection<Account>> GetAccountsAsync()
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using TinkoffInvestStatistic.ViewModels;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -11,7 +9,7 @@ namespace TinkoffInvestStatistic
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
+            Routing.RegisterRoute(nameof(PortfolioPage), typeof(PortfolioPage));
             Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
         }
 

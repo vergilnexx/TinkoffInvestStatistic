@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TinkoffInvestStatistic.Views.PortfolioPage"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"  
+             xmlns:model="clr-namespace:TinkoffInvestStatistic.Models"  
+             Title="{Binding Title}">
+
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+    -->
+    <RefreshView x:DataType="local:PortfolioViewModel" Command="{Binding LoadPositionsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="PositionsListView"
+                ItemsSource="{Binding Positions}"
+                SelectionMode="None"
+                IsGrouped="true">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="model:GroupedPositionsModel">
+                    <Label Text="{Binding Name}"
+                       BackgroundColor="LightGray"
+                       FontSize="Large"
+                       FontAttributes="Bold" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10,0,0,0" x:DataType="model:PositionModel">
+                        <Label Grid.Row="1"
+                            Text="{Binding Name}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="13" 
+                            FontAttributes="Bold" />
+                        <Label 
+                            Grid.Row="2"
+                            Text="{Binding Ticker}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="10" />
+                        <Label Grid.Row="3"
+                            Text="{Binding Balance}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="10" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

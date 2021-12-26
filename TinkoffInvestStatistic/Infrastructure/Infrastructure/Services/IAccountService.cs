@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Infrastructure.Services
 {
     /// <summary>
-    /// Сервис статистики.
+    /// Сервис счетов.
     /// </summary>
     public interface IAccountService
     {

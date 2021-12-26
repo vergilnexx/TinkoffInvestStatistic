@@ -20,7 +20,7 @@ namespace TinkoffInvestStatistic
 
         private static void ConfigureViewModels()
         {
-            DependencyService.Register<ItemDetailViewModel>();
+            DependencyService.Register<PortfolioViewModel>();
             DependencyService.Register<AccountsViewModel>();
             DependencyService.Register<LoginViewModel>();
             DependencyService.Register<NewItemViewModel>();

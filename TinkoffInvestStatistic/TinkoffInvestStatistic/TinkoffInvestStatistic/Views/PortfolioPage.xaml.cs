@@ -1,16 +1,16 @@
-﻿using TinkoffInvestStatistic.ViewModels;
+﻿using System.ComponentModel;
+using TinkoffInvestStatistic.ViewModels;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Views
 {
-    public partial class AccountsPage : ContentPage
+    public partial class PortfolioPage : ContentPage
     {
-        AccountsViewModel _viewModel = DependencyService.Resolve<AccountsViewModel>();
+        PortfolioViewModel _viewModel = DependencyService.Resolve<PortfolioViewModel>();
 
-        public AccountsPage()
+        public PortfolioPage()
         {
             InitializeComponent();
-
             BindingContext = _viewModel;
         }
 

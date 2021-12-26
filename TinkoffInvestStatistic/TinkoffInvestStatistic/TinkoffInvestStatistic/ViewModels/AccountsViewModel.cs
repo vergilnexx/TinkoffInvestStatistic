@@ -16,7 +16,6 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public ObservableCollection<AccountModel> Accounts { get; }
         public Command LoadAccountsCommand { get; }
-        public Command AddItemCommand { get; }
         public Command<AccountModel> ItemTapped { get; }
 
         public AccountsViewModel()
@@ -25,9 +24,7 @@ namespace TinkoffInvestStatistic.ViewModels
             Accounts = new ObservableCollection<AccountModel>();
             LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
 
-            ItemTapped = new Command<AccountModel>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem);
+            ItemTapped = new Command<AccountModel>(OnAccountSelected);
         }
 
         async Task ExecuteLoadAccountsCommand()
@@ -71,24 +68,20 @@ namespace TinkoffInvestStatistic.ViewModels
             set
             {
                 SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
+                OnAccountSelected(value);
             }
         }
 
-        private async void OnAddItem(object obj)
-        {
-            await Shell.Current.GoToAsync(nameof(NewItemPage));
-        }
-
-        async void OnItemSelected(AccountModel item)
+        async void OnAccountSelected(AccountModel item)
         {
             if (item == null)
             {
                 return;
             }
 
-            // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.AccountId}");
+            await Shell.Current.GoToAsync($"{nameof(PortfolioPage)}" +
+                $"?{nameof(PortfolioViewModel.AccountId)}={item.AccountId}" +
+                $"&{nameof(PortfolioViewModel.AccountTitle)}={item.AccountId/*item.AccountType.GetDescription()*/}");
         }
     }
 }
