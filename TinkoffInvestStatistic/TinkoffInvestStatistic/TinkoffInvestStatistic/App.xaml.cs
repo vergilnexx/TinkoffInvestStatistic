@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Container;
-using TinkoffInvestStatistic.Services;
+using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels;
 using Xamarin.Forms;
 
@@ -11,11 +11,18 @@ namespace TinkoffInvestStatistic
         {
             InitializeComponent();
 
+            ConfigureUtility();
             ConfigureViewModels();
 
             DependencyInjectionContainer.Configure();
 
             MainPage = new AppShell();
+        }
+
+        private static void ConfigureUtility()
+        {
+            DependencyService.RegisterSingleton(new ChartUtility());
+            DependencyService.RegisterSingleton(new ChartColors());
         }
 
         private static void ConfigureViewModels()

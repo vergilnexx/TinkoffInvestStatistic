@@ -1,10 +1,13 @@
 ﻿using Infrastructure.Helpers;
 using Infrastructure.Services;
+using Microcharts;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -15,6 +18,7 @@ namespace TinkoffInvestStatistic.ViewModels
         private AccountModel _selectedItem;
 
         public ObservableCollection<AccountModel> Accounts { get; }
+        public Chart StatisticChart { get; private set; }
         public Command LoadAccountsCommand { get; }
         public Command<AccountModel> ItemTapped { get; }
 
@@ -23,11 +27,10 @@ namespace TinkoffInvestStatistic.ViewModels
             Title = "Счета";
             Accounts = new ObservableCollection<AccountModel>();
             LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
-
             ItemTapped = new Command<AccountModel>(OnAccountSelected);
         }
 
-        async Task ExecuteLoadAccountsCommand()
+        private async Task ExecuteLoadAccountsCommand()
         {
             IsBusy = true;
 
@@ -45,6 +48,8 @@ namespace TinkoffInvestStatistic.ViewModels
 
                     Accounts.Add(model);
                 }
+
+                await LoadStatisticChartAsync();
             }
             catch (Exception ex)
             {
@@ -54,6 +59,12 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        public async Task LoadStatisticChartAsync()
+        {
+            StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
+            OnPropertyChanged(nameof(StatisticChart));
         }
 
         public void OnAppearing()

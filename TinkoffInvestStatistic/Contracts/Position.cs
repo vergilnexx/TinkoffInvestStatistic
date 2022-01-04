@@ -1,7 +1,5 @@
 ﻿using Contracts.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Contracts
 {
@@ -13,17 +11,17 @@ namespace Contracts
         /// <summary>
         /// Наименование.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// Financial Instrument Global Identifier.
         /// </summary>
-        public string Figi { get; set; }
+        public string Figi { get; set; } = String.Empty;
 
         /// <summary>
         /// Тикер.
         /// </summary>
-        public string Ticker { get; set; }
+        public string Ticker { get; set; } = String.Empty;
 
         /// <summary>
         /// Тип.
@@ -31,24 +29,28 @@ namespace Contracts
         public PositionType Type { get; set; }
 
         /// <summary>
-        /// Баланс.
+        /// Количество позиций.
         /// </summary>
-        public decimal Balance { get; set; }
+        public decimal PositionCount { get; set; }
 
         /// <summary>
         /// Заблокировано.
         /// </summary>
         public decimal Blocked { get; set; }
 
-        public CurrencyMoney ExpectedYield { get; set; }
+        /// <summary>
+        /// Текущее изменение цены.
+        /// </summary>
+        public CurrencyMoney? ExpectedYield { get; set; }
 
         /// <summary>
-        /// Количество лотов.
+        /// Цена покупки.
         /// </summary>
-        public int Lots { get; set; }
+        public CurrencyMoney? AveragePositionPrice { get; set; }
 
-        public CurrencyMoney AveragePositionPrice { get; set; }
-
-        public CurrencyMoney AveragePositionPriceNoNkd { get; set; }
+        /// <summary>
+        /// Цеа покупки без налогов.
+        /// </summary>
+        public CurrencyMoney? AveragePositionPriceNoNkd { get; set; }
     }
 }

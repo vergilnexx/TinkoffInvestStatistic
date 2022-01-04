@@ -1,4 +1,6 @@
-﻿namespace TinkoffInvestStatistic.Models
+﻿using Contracts.Enums;
+
+namespace TinkoffInvestStatistic.Models
 {
     /// <summary>
     /// 
@@ -23,7 +25,7 @@
         /// <summary>
         /// Баланс.
         /// </summary>
-        public decimal Balance { get; set; }
+        public decimal PositionCount { get; set; }
 
         /// <summary>
         /// Заблокировано.
@@ -31,8 +33,13 @@
         public decimal Blocked { get; set; }
 
         /// <summary>
-        /// Количество лотов.
+        /// Валюта.
         /// </summary>
-        public int Lots { get; set; }
+        public Currency Currency { get; set; }
+
+        /// <summary>
+        /// Сумма в валюте.
+        /// </summary>
+        public decimal SumInCurrency { get; set; }
     }
 }

@@ -11,21 +11,21 @@
       x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
-    <RefreshView x:DataType="local:PortfolioViewModel" Command="{Binding LoadPositionsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+    <RefreshView x:DataType="local:PortfolioViewModel" Command="{Binding LoadGroupedPositionsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <Grid RowDefinitions="Auto, *">
-            <forms:ChartView x:Name="Chart" HeightRequest="250">
+            <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="250">
             </forms:ChartView>
             <CollectionView x:Name="PositionsListView" 
-                    Grid.Row="1"
-                    ItemsSource="{Binding Positions}"
-                    SelectionMode="None"
-                    IsGrouped="true">
+                            Grid.Row="1"
+                            ItemsSource="{Binding GroupedPositions}"
+                            SelectionMode="None"
+                            IsGrouped="true">
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate x:DataType="model:GroupedPositionsModel">
                         <Label Text="{Binding Name}"
-                           BackgroundColor="LightGray"
-                           FontSize="Large"
-                           FontAttributes="Bold" />
+                            BackgroundColor="LightGray"
+                            FontSize="Large"
+                            FontAttributes="Bold" />
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
                 <CollectionView.ItemTemplate>
@@ -44,7 +44,7 @@
                                 Style="{DynamicResource ListItemDetailTextStyle}"
                                 FontSize="10" />
                             <Label Grid.Row="3"
-                                Text="{Binding Balance}" 
+                                Text="{Binding SumInCurrency}" 
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
                                 FontSize="10" />

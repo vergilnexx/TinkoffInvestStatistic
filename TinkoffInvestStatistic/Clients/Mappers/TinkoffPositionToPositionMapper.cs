@@ -25,11 +25,10 @@ namespace TinkoffInvest.Mappers
 
             result.Figi = position.Figi;
             result.Name = position.Name;
-            result.Balance = position.Balance;
-            result.Blocked = position.Blocked;
-            result.Lots = position.Lots;
-            result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
             result.Ticker = position.Ticker;
+            result.PositionCount = position.Balance;
+            result.Blocked = position.Blocked;
+            result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
             result.AveragePositionPriceNoNkd = MapMoney(position.AveragePositionPriceNoNkd);
             result.ExpectedYield = MapMoney(position.ExpectedYield);
             result.Type = MapType(position.InstrumentType);
@@ -37,7 +36,7 @@ namespace TinkoffInvest.Mappers
             return result;
         }
 
-        private Contracts.CurrencyMoney MapMoney(MoneyAmount money)
+        private Contracts.CurrencyMoney? MapMoney(MoneyAmount money)
         {
             if(money == null)
             {

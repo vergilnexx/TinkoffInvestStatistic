@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contracts.Enums;
+using Infrastructure.Helpers;
 using System.Collections.Generic;
 
 namespace TinkoffInvestStatistic.Models
@@ -14,11 +15,17 @@ namespace TinkoffInvestStatistic.Models
         public string Name { get; private set; }
 
         /// <summary>
+        /// Тип группы.
+        /// </summary>
+        public PositionType Type { get; private set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
-        public GroupedPositionsModel(string name, List<PositionModel> animals) : base(animals)
+        public GroupedPositionsModel(PositionType type, List<PositionModel> animals) : base(animals)
         {
-            Name = name;
+            Type = type;
+            Name = type.GetDescription();
         }
     }
 }
