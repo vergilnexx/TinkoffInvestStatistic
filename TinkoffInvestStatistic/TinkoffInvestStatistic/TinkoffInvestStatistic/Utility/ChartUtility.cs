@@ -1,4 +1,5 @@
-﻿using Infrastructure.Helpers;
+﻿using Contracts.Enums;
+using Infrastructure.Helpers;
 using Microcharts;
 using SkiaSharp;
 using System;
@@ -67,9 +68,9 @@ namespace TinkoffInvestStatistic.Utility
         private Task<ChartEntry[]> GetFundEntriesAsync(PortfolioViewModel vm)
         {
             var result = vm.GroupedPositions
-                            .Where(g => g.Type == Contracts.Enums.PositionType.Etf)
+                            .Where(g => g.Type == (PositionType)vm.PositionType)
                             .FirstOrDefault()
-                            .Select(p => EntryUtility.GetEntry((float)p.SumInCurrency, GetColor(), p.Name, p.SumInCurrency.ToString("C")))
+                            .Select(p => EntryUtility.GetEntry((float)p.SumInCurrency, GetColor(), p.Name, $"{p.SumInCurrency} {p.Currency.GetDescription()}"))
                             .ToArray();
             return Task.FromResult(result);
         }

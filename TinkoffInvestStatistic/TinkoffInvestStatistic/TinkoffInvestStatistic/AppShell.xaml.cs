@@ -9,8 +9,8 @@ namespace TinkoffInvestStatistic
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(PositionTypesPage), typeof(PositionTypesPage));
             Routing.RegisterRoute(nameof(PortfolioPage), typeof(PortfolioPage));
-            Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)

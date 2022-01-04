@@ -3,7 +3,6 @@ using Infrastructure.Services;
 using Microcharts;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
@@ -90,9 +89,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 return;
             }
 
-            await Shell.Current.GoToAsync($"{nameof(PortfolioPage)}" +
-                $"?{nameof(PortfolioViewModel.AccountId)}={item.AccountId}" +
-                $"&{nameof(PortfolioViewModel.AccountTitle)}={item.AccountId/*item.AccountType.GetDescription()*/}");
+            await Shell.Current.GoToAsync($"{nameof(PositionTypesPage)}" +
+                $"?{nameof(PositionTypeViewModel.AccountId)}={item.AccountId}", true);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Infrastructure.Helpers;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -41,5 +42,10 @@ namespace TinkoffInvestStatistic.Models
         /// Сумма в валюте.
         /// </summary>
         public decimal SumInCurrency { get; set; }
+
+        /// <summary>
+        /// Текст суммы в валюте.
+        /// </summary>
+        public string SumInCurrencyText => $"{SumInCurrency} {Currency.GetDescription()}";
     }
 }

@@ -1,13 +1,15 @@
 ﻿using TinkoffInvestStatistic.ViewModels;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace TinkoffInvestStatistic.Views
 {
-    public partial class AccountsPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class PositionTypesPage : ContentPage
     {
-        AccountsViewModel _viewModel = new AccountsViewModel();
+        PositionTypeViewModel _viewModel = new PositionTypeViewModel();
 
-        public AccountsPage()
+        public PositionTypesPage()
         {
             InitializeComponent();
 

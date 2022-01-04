@@ -1,4 +1,5 @@
-﻿using Infrastructure.Helpers;
+﻿using Contracts.Enums;
+using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
 using System;
@@ -14,10 +15,11 @@ using Xamarin.Forms;
 namespace TinkoffInvestStatistic.ViewModels
 {
     [QueryProperty(nameof(AccountId), nameof(AccountId))]
-    [QueryProperty(nameof(AccountTitle), nameof(AccountTitle))]
+    [QueryProperty(nameof(PositionType), nameof(PositionType))]
     public class PortfolioViewModel : BaseViewModel
     {
         private string _accountId;
+        private PositionType _positionType;
 
         public ObservableCollection<GroupedPositionsModel> GroupedPositions { get; }
         public Chart StatisticChart { get; private set; }
@@ -29,6 +31,9 @@ namespace TinkoffInvestStatistic.ViewModels
             LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync());
         }
 
+        /// <summary>
+        /// Номер счета.
+        /// </summary>
         public string AccountId
         {
             get
@@ -41,15 +46,19 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
-        public string AccountTitle
+        /// <summary>
+        /// Тип инструментов.
+        /// </summary>
+        public int PositionType
         {
             get
             {
-                return Title;
+                return (int)_positionType;
             }
             set
             {
-                Title = value;
+                _positionType = (PositionType)value;
+                Title = _positionType.GetDescription();
             }
         }
 
@@ -89,7 +98,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 GroupedPositions.Clear();
                 var service = DependencyService.Get<IPositionService>();
                 var grouped = await service.GetGroupedPositionsAsync(AccountId);
-                foreach (var group in grouped)
+                foreach (var group in grouped.Where(g => g.Key == _positionType))
                 {
                     var items = group.Value.Select(p => new PositionModel
                     {

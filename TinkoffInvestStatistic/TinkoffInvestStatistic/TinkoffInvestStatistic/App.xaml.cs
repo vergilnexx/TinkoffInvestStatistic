@@ -21,16 +21,12 @@ namespace TinkoffInvestStatistic
 
         private static void ConfigureUtility()
         {
-            DependencyService.RegisterSingleton(new ChartUtility());
-            DependencyService.RegisterSingleton(new ChartColors());
+            DependencyService.RegisterSingleton(ChartUtility.Instance ?? new ChartUtility());
+            DependencyService.RegisterSingleton(ChartColors.Instance ?? new ChartColors());
         }
 
         private static void ConfigureViewModels()
         {
-            DependencyService.Register<PortfolioViewModel>();
-            DependencyService.Register<AccountsViewModel>();
-            DependencyService.Register<LoginViewModel>();
-            DependencyService.Register<NewItemViewModel>();
         }
 
         protected override void OnStart()

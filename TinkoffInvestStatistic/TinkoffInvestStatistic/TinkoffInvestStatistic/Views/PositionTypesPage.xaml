@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms" 
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels" 
+             xmlns:model="clr-namespace:TinkoffInvestStatistic.Models"
+             x:Class="TinkoffInvestStatistic.Views.PositionTypesPage">
+
+    <RefreshView x:DataType="local:PositionTypeViewModel" Command="{Binding LoadPositionTypesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <Grid RowDefinitions="Auto, *">
+            <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="250" >
+            </forms:ChartView>
+            <CollectionView x:Name="ItemsListView"
+                    Grid.Row="1"
+                    ItemsSource="{Binding PositionTypes}"
+                    SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10" x:DataType="model:PositionTypeModel">
+                            <Label Text="{Binding TypeName}" 
+                                LineBreakMode="NoWrap"
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="13" />
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:PositionTypeViewModel}}, Path=ItemTapped}"		
+                                    CommandParameter="{Binding .}">
+                                </TapGestureRecognizer>
+                            </StackLayout.GestureRecognizers>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </RefreshView>
+</ContentPage>

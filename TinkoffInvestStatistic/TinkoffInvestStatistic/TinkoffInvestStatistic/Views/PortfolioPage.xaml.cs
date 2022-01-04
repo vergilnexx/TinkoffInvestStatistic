@@ -5,7 +5,7 @@ namespace TinkoffInvestStatistic.Views
 {
     public partial class PortfolioPage : ContentPage
     {
-        PortfolioViewModel _viewModel = DependencyService.Resolve<PortfolioViewModel>();
+        PortfolioViewModel _viewModel = new PortfolioViewModel();
 
         public PortfolioPage()
         {
