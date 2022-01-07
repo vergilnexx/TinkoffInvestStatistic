@@ -25,7 +25,6 @@ namespace TinkoffInvestStatistic.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            _viewModel = null;
         }
     }
 }

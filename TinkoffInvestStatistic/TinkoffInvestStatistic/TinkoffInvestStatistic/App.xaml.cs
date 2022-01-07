@@ -1,6 +1,8 @@
 ﻿using Infrastructure.Container;
+using Infrastructure.Services;
+using Services;
+using System.Threading.Tasks;
 using TinkoffInvestStatistic.Utility;
-using TinkoffInvestStatistic.ViewModels;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic
@@ -12,7 +14,6 @@ namespace TinkoffInvestStatistic
             InitializeComponent();
 
             ConfigureUtility();
-            ConfigureViewModels();
 
             DependencyInjectionContainer.Configure();
 
@@ -21,16 +22,16 @@ namespace TinkoffInvestStatistic
 
         private static void ConfigureUtility()
         {
-            DependencyService.RegisterSingleton(ChartUtility.Instance ?? new ChartUtility());
-            DependencyService.RegisterSingleton(ChartColors.Instance ?? new ChartColors());
-        }
+            DependencyService.RegisterSingleton(new ChartUtility());
+            DependencyService.RegisterSingleton(new ChartColors());
 
-        private static void ConfigureViewModels()
-        {
+            DependencyService.RegisterSingleton(new DataStorageService());
         }
 
         protected override void OnStart()
         {
+            base.OnStart();
+            Task.Run(() => DataStorageService.Instance.LoadAccountData());
         }
 
         protected override void OnSleep()

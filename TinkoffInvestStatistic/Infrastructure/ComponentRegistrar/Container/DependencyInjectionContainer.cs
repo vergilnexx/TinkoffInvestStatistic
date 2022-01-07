@@ -23,6 +23,7 @@ namespace Infrastructure.Container
         {
             DependencyService.Register<IAccountService, AccountService>();
             DependencyService.Register<IPositionService, PositionService>();
+            DependencyService.Register<IDataStorageAccessService, FileService>();
         }
 
         private static void ConfigureClients()

@@ -2,6 +2,7 @@
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -11,10 +12,14 @@ namespace Services
     public class AccountService : IAccountService
     {
         /// <inheritdoc/>
-        public Task<IReadOnlyCollection<Account>> GetAccountsAsync()
+        public async Task<IReadOnlyCollection<Account>> GetAccountsAsync()
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            return bankBrokerClient.GetAccountsAsync();
+            var externalAccounts = await bankBrokerClient.GetAccountsAsync();
+
+            var accounts = await DataStorageService.Instance.MergeAccountData(externalAccounts);
+
+            return accounts.ToArray();
         }
     }
 }
