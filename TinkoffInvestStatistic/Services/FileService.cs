@@ -2,6 +2,7 @@
 using Infrastructure.Services;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,15 +19,31 @@ namespace Services
         /// <inheritdoc/>
         public async Task<AccountData[]> GetAccountDataAsync()
         {
-            var data = await ReadDataFromFile(AccountFilePath);
-            return JsonConvert.DeserializeObject<AccountData[]>(data) ?? Array.Empty<AccountData>();
+            try
+            {
+                var data = await ReadDataFromFile(AccountFilePath);
+                return JsonConvert.DeserializeObject<AccountData[]>(data) ?? Array.Empty<AccountData>();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
         }
 
         /// <inheritdoc/>
-        public Task SaveAccountDataAsync(AccountData[] data)
+        public async Task SaveAccountDataAsync(AccountData[] data)
         {
-            var json = JsonConvert.SerializeObject(data);
-            return WriteDataToFile(AccountFilePath, json);
+            try
+            {
+                var json = JsonConvert.SerializeObject(data);
+                await WriteDataToFile(AccountFilePath, json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw ex;
+            }
         }
 
         private async Task<string> ReadDataFromFile(string filePath) 
@@ -57,7 +74,7 @@ namespace Services
             using var sourceStream =
                 new FileStream(
                     filePath,
-                    FileMode.OpenOrCreate, FileAccess.Write, FileShare.None,
+                    FileMode.Create, FileAccess.Write, FileShare.None,
                     bufferSize: 4096, useAsync: true);
 
             await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);

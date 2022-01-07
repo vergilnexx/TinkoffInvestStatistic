@@ -23,6 +23,7 @@ namespace Infrastructure.Container
         {
             DependencyService.Register<IAccountService, AccountService>();
             DependencyService.Register<IPositionService, PositionService>();
+            DependencyService.Register<IInstrumentService, InstrumentService>();
             DependencyService.Register<IDataStorageAccessService, FileService>();
         }
 

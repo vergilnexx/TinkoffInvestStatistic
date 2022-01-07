@@ -1,8 +1,10 @@
 ﻿using Contracts;
+using Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -54,12 +56,12 @@ namespace Services
         /// </summary>
         /// <param name="externalAccounts">Внешние данные по счетам.</param>
         /// <returns>Данные по счетам.</returns>
-        /// <exception cref="ArgumentNullException">Ошибка при неверно заданном параметре <see cref="externalAccounts"/></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task<Account[]> MergeAccountData(IReadOnlyCollection<Account> externalAccounts)
         {
             if (externalAccounts == null)
             {
-                throw new ArgumentNullException(nameof(externalAccounts), "Данные, полученные не могут быть неопределенными.");
+                throw new ArgumentNullException(nameof(externalAccounts), "Полученные данные не могут быть неопределенными.");
             }
 
             var result = (Accounts ?? Array.Empty<AccountData>()).ToList();
@@ -79,9 +81,80 @@ namespace Services
         }
 
         /// <summary>
+        /// Возвращает заполненные данные по инструментам.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positionTypes">Типы инструментов.</param>
+        /// <returns>Заполненные данные по инструментам</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public async Task<InstrumentData[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
+        {
+            if (positionTypes == null)
+            {
+                throw new ArgumentNullException(nameof(positionTypes), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (Accounts == null)
+            {
+                throw new ApplicationException("Данные по счетам не могут быть неопределенными при получении данных об инструментах по счету - " + accountNumber);
+            }
+
+            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
+            }
+
+            var result = new List<InstrumentData>();
+            foreach (var type in positionTypes)
+            {
+                var instrument = account.Instruments.FirstOrDefault(i => i.Type == type);
+                if(instrument == null)
+                {
+                    instrument = new InstrumentData(type);
+                }
+
+                result.Add(instrument);
+            }
+            
+            account.Instruments = result.ToArray();
+            await SaveAccountDataAsync();
+            return result.ToArray();
+        }
+
+        /// <summary>
+        /// Сохраняет данные по инструментам по конкретному счету.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="data">Данные по инструментам.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public Task SetPositionTypesData(string accountNumber, InstrumentData[] data)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
+            }
+
+            account.Instruments = data;
+            return SaveAccountDataAsync();
+        }
+
+        /// <summary>
         /// Сохранение данных.
         /// </summary>
-        /// <param name="data">Данные.</param>
         private async Task SaveAccountDataAsync()
         {
             if(Accounts == null)

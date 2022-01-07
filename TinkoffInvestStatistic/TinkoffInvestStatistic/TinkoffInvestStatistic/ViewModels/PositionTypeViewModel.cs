@@ -1,6 +1,9 @@
 ﻿using Contracts.Enums;
+using Domain;
+using Infrastructure.Services;
 using Microcharts;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -54,10 +57,12 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 PositionTypes.Clear();
-                var positionTypes = Enum.GetValues(typeof(PositionType)).Cast<PositionType>();
+                var service = DependencyService.Get<IInstrumentService>();
+                var positionTypes = await service.GetPositionTypes(AccountId);
                 foreach (var item in positionTypes)
                 {
-                    var model = new PositionTypeModel(item);
+                    var model = new PositionTypeModel(item.Type);
+                    model.PlanPercent = item.PlanPercent;
 
                     PositionTypes.Add(model);
                 }
@@ -72,6 +77,22 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        /// <summary>
+        /// Сохранение данных.
+        /// </summary>
+        public Task SavePlanPercent()
+        {
+            var service = DependencyService.Get<IInstrumentService>();
+            var data = new List<InstrumentData>();
+            foreach (var positionTypeItem in PositionTypes)
+            {
+                var item = new InstrumentData(positionTypeItem.Type);
+                item.PlanPercent = positionTypeItem.PlanPercent;
+                data.Add(item);
+            }
+            return service.SavePlanPercents(AccountId, data.ToArray());
         }
 
         public async Task LoadStatisticChartAsync()

@@ -19,6 +19,11 @@ namespace TinkoffInvestStatistic.Models
         public PositionType Type { get; set; }
 
         /// <summary>
+        /// Планируемый процент.
+        /// </summary>
+        public decimal PlanPercent { get; set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="type">Тип./param>

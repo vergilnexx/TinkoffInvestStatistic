@@ -16,5 +16,14 @@ namespace Domain
         /// Планируемый процент.
         /// </summary>
         public decimal PlanPercent { get; set; }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="type">Тип инструмента.</param>
+        public InstrumentData(PositionType type)
+        {
+            Type = type;
+        }
     }
 }
