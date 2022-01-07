@@ -1,5 +1,4 @@
 ﻿using Contracts.Enums;
-using System;
 
 namespace Contracts
 {
@@ -11,17 +10,17 @@ namespace Contracts
         /// <summary>
         /// Наименование.
         /// </summary>
-        public string Name { get; set; } = String.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Financial Instrument Global Identifier.
         /// </summary>
-        public string Figi { get; set; } = String.Empty;
+        public string Figi { get; set; } = string.Empty;
 
         /// <summary>
         /// Тикер.
         /// </summary>
-        public string Ticker { get; set; } = String.Empty;
+        public string Ticker { get; set; } = string.Empty;
 
         /// <summary>
         /// Тип.
@@ -52,5 +51,16 @@ namespace Contracts
         /// Цеа покупки без налогов.
         /// </summary>
         public CurrencyMoney? AveragePositionPriceNoNkd { get; set; }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="type">Тип инструмента.</param>
+        public Position(string figi, PositionType type)
+        {
+            Figi = figi;
+            Type = type;
+        }
     }
 }

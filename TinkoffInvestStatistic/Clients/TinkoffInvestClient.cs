@@ -45,5 +45,18 @@ namespace Clients.TinkoffInvest
 
             return result;
         }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyCollection<CurrencyMoney>> GetCurrenciesAsync()
+        {
+            using var connection = ConnectionFactory.GetConnection(Token);
+            var context = connection.Context;
+
+            var currencies = await context.PortfolioAsync().ConfigureAwait(continueOnCapturedContext: false);
+            var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.CurrencyMoney>>>();
+            var result = mapper.Map(currencies);
+
+            return result;
+        }
     }
 }

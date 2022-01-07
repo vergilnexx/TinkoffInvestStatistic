@@ -17,5 +17,10 @@ namespace Contracts
         /// Тип счета.
         /// </summary>
         public AccountType Type { get; set; }
+
+        /// <summary>
+        /// Сумма.
+        /// </summary>
+        public decimal Sum { get; set; }
     }
 }

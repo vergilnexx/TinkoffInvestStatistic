@@ -55,7 +55,7 @@ namespace TinkoffInvestStatistic.Utility
         private Task<ChartEntry[]> GetAccountEntriesAsync(AccountsViewModel vm)
         {
             var result = vm.Accounts
-                            .Select(a => EntryUtility.GetEntry(int.Parse(a.AccountId), GetColor(), a.AccountType, a.AccountId))
+                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.AccountType, a.CurrentSumText))
                             .ToArray();
             return Task.FromResult(result);
         }

@@ -1,4 +1,6 @@
-﻿namespace TinkoffInvestStatistic.Models
+﻿using System.Globalization;
+
+namespace TinkoffInvestStatistic.Models
 {
     /// <summary>
     /// Модель счета.
@@ -14,5 +16,15 @@
         /// Тип счета.
         /// </summary>
         public string AccountType { get; set; }
+
+        /// <summary>
+        /// Текущая сумма по счету.
+        /// </summary>
+        public decimal CurrentSum { get; set; }
+
+        /// <summary>
+        /// Текущая сумма по счету.
+        /// </summary>
+        public string CurrentSumText => CurrentSum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
     }
 }

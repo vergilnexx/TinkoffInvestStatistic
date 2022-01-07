@@ -23,10 +23,17 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10" x:DataType="model:AccountModel">
-                            <Label Text="{Binding AccountType}" 
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
+                            <Grid RowDefinitions="Auto, *">
+                                <Label Text="{Binding AccountType}" 
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" />
+                                <Label Text="{Binding CurrentSumText}" 
+                                       Grid.Column="1"
+                                       HorizontalTextAlignment="End"
+                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" />
+                            </Grid>
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"

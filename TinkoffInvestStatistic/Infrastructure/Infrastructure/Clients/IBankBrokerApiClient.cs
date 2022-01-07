@@ -21,5 +21,11 @@ namespace Infrastructure.Clients
         /// <param name="accountId">Идентификатор счета.</param>
         /// <returns>Список позиций только для чтения.</returns>
         public Task<IReadOnlyCollection<Position>> GetPositionsAsync(string accountId);
+
+        /// <summary>
+        /// Возвращает данные по валютам.
+        /// </summary>
+        /// <returns>Список данных по валютам.</returns>
+        public Task<IReadOnlyCollection<CurrencyMoney>> GetCurrenciesAsync();
     }
 }

@@ -4,6 +4,7 @@ using Microcharts;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
@@ -44,6 +45,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
                     model.AccountId = item.ID;
                     model.AccountType = item.Type.GetDescription();
+                    model.CurrentSum = item.Sum;
 
                     Accounts.Add(model);
                 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Contracts.Attributes;
+using System.ComponentModel;
 
 namespace Contracts.Enums
 {
@@ -17,12 +18,14 @@ namespace Contracts.Enums
         /// Доллар.
         /// </summary>
         [Description("USD")]
+        [Figi("BBG0013HGFT4")]
         Usd,
 
         /// <summary>
         /// Еро.
         /// </summary>
         [Description("EUR")]
+        [Figi("BBG0013HJJ31")]
         Eur,
 
         /// <summary>

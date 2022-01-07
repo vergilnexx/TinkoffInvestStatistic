@@ -38,6 +38,8 @@ namespace Infrastructure.Container
                 TinkoffAccountToAccountMapper>();
             DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>,
                 TinkoffPositionToPositionMapper>();
+            DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.CurrencyMoney>>,
+                TinkoffPortfolioToCurrencyMoneyMapper>();
         }
     }
 }

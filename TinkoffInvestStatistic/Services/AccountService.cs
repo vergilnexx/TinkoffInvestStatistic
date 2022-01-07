@@ -17,6 +17,12 @@ namespace Services
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
             var externalAccounts = await bankBrokerClient.GetAccountsAsync();
 
+            var positionService = DependencyService.Resolve<IPositionService>();
+            foreach (var account in externalAccounts)
+            {
+                account.Sum = await positionService.GetPositionsSumAsync(account.ID);
+            }
+
             var accounts = await DataStorageService.Instance.MergeAccountData(externalAccounts);
 
             return accounts.ToArray();
