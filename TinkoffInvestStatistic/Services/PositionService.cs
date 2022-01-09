@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Contracts.Enums;
+using Domain;
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using System;
@@ -17,7 +18,10 @@ namespace Services
         public async Task<Dictionary<PositionType, Position[]>> GetGroupedPositionsAsync(string accountId)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            
+            positions = await DataStorageService.Instance.MergePositionData(accountId, positions);
+
             return positions.GroupBy(p => p.Type).ToDictionary(g => g.Key, g => g.ToArray());
         }
 
@@ -51,6 +55,12 @@ namespace Services
                 result = GetSumByPositions(positions.ToArray(), Array.Empty<CurrencyMoney>(), currencies) ?? 0;
             }
             return result;
+        }
+
+        /// <inheritdoc/>
+        public Task SavePlanPercents(string accountId, PositionData[] data)
+        {
+            return DataStorageService.Instance.SetPositionData(accountId, data);
         }
 
         protected decimal? GetSumByPositions(

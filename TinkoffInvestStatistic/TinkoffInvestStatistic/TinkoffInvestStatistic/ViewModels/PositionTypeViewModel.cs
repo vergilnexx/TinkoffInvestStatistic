@@ -104,21 +104,34 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Сохранение данных.
         /// </summary>
-        public Task SavePlanPercent()
+        public async Task SavePlanPercent()
         {
-            var service = DependencyService.Get<IInstrumentService>();
-            var data = new List<InstrumentData>();
-            foreach (var positionTypeItem in PositionTypes)
+            IsBusy = true;
+
+            try
             {
-                var item = new InstrumentData(positionTypeItem.Type);
-                item.PlanPercent = positionTypeItem.PlanPercent;
-                data.Add(item);
+                var service = DependencyService.Get<IInstrumentService>();
+                var data = new List<InstrumentData>();
+                foreach (var positionTypeItem in PositionTypes)
+                {
+                    var item = new InstrumentData(positionTypeItem.Type);
+                    item.PlanPercent = positionTypeItem.PlanPercent;
+                    data.Add(item);
+                }
+
+                SumPercent = (PositionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
+                OnPropertyChanged(nameof(SumPercent));
+
+                await service.SavePlanPercents(AccountId, data.ToArray());
             }
-
-            SumPercent = (PositionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
-            OnPropertyChanged(nameof(SumPercent));
-
-            return service.SavePlanPercents(AccountId, data.ToArray());
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         public async Task LoadStatisticChartAsync()

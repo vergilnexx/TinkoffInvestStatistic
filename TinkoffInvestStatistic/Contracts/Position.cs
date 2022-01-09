@@ -8,14 +8,14 @@ namespace Contracts
     public class Position
     {
         /// <summary>
-        /// Наименование.
-        /// </summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
         /// Financial Instrument Global Identifier.
         /// </summary>
-        public string Figi { get; set; } = string.Empty;
+        public string Figi { get; private set; }
+
+        /// <summary>
+        /// Тип.
+        /// </summary>
+        public PositionType Type { get; private set; }
 
         /// <summary>
         /// Тикер.
@@ -23,9 +23,9 @@ namespace Contracts
         public string Ticker { get; set; } = string.Empty;
 
         /// <summary>
-        /// Тип.
+        /// Наименование.
         /// </summary>
-        public PositionType Type { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Количество позиций.
@@ -36,6 +36,11 @@ namespace Contracts
         /// Заблокировано.
         /// </summary>
         public decimal Blocked { get; set; }
+
+        /// <summary>
+        /// Планируемый процент.
+        /// </summary>
+        public decimal PlanPercent { get; set; }
 
         /// <summary>
         /// Текущее изменение цены.

@@ -4,10 +4,15 @@ using Infrastructure.Helpers;
 namespace TinkoffInvestStatistic.Models
 {
     /// <summary>
-    /// 
+    /// Модель позиции.
     /// </summary>
     public class PositionModel
     {
+        /// <summary>
+        /// Финансовый идентификатор.
+        /// </summary>
+        public string Figi { get; set; }
+
         /// <summary>
         /// Наименование.
         /// </summary>
@@ -21,7 +26,12 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Тип.
         /// </summary>
-        public string Type { get; set; }
+        public PositionType Type { get; set; }
+
+        /// <summary>
+        /// Тип.
+        /// </summary>
+        public string TypeName => Type.GetDescription();
 
         /// <summary>
         /// Баланс.
@@ -44,6 +54,16 @@ namespace TinkoffInvestStatistic.Models
         public decimal SumInCurrency { get; set; }
 
         /// <summary>
+        /// Разница в валюте.
+        /// </summary>
+        public decimal DifferenceSumInCurrency { get; set; }
+
+        /// <summary>
+        /// Текст разницы в валюте.
+        /// </summary>
+        public string DifferenceSumInCurrencyText => $"{DifferenceSumInCurrency} {Currency.GetDescription()}";
+
+        /// <summary>
         /// Сумма.
         /// </summary>
         public decimal Sum { get; set; }
@@ -54,8 +74,24 @@ namespace TinkoffInvestStatistic.Models
         public decimal PlanPercent { get; set; }
 
         /// <summary>
+        /// Текущий процент.
+        /// </summary>
+        public decimal CurrentPercent { get; set; }
+
+        /// <summary>
         /// Текст суммы в валюте.
         /// </summary>
         public string SumInCurrencyText => $"{SumInCurrency} {Currency.GetDescription()}";
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="type">Тип позиции.</param>
+        public PositionModel(string figi, PositionType type)
+        {
+            Figi = figi;
+            Type = type;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
@@ -73,33 +74,6 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
-        public async Task<StatisticItem[]> GetStatisticAsync()
-        {
-            var result = new List<StatisticItem>();
-            try
-            {
-                var service = DependencyService.Get<IPositionService>();
-                var grouped = await service.GetGroupedPositionsAsync(AccountId);
-
-                var etf = grouped.FirstOrDefault(x => x.Key == Contracts.Enums.PositionType.Etf);
-                foreach (var item in etf.Value)
-                {
-                    var statisticItem = new StatisticItem();
-                    
-                    statisticItem.Name = item.Name;
-                    statisticItem.SumInRub = item.PositionCount;
-
-                    result.Add(statisticItem);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-
-            return result.ToArray();
-        }
-
         async Task LoadGroupedPositionsByAccountIdAsync()
         {
             Sum = SumPercent = string.Empty;
@@ -111,15 +85,16 @@ namespace TinkoffInvestStatistic.ViewModels
                 var service = DependencyService.Get<IPositionService>();
                 var group = (await service.GetGroupedPositionsAsync(AccountId)).FirstOrDefault(g => g.Key == _positionType);
 
-                var models = group.Value.Select(p => new PositionModel
+                var models = group.Value.Select(p => new PositionModel(p.Figi, p.Type)
                 {
                     Name = p.Name,
-                    Type = p.Type.GetDescription(),
                     PositionCount = p.PositionCount,
                     Blocked = p.Blocked,
                     Ticker = p.Ticker,
                     Currency = p.AveragePositionPrice.Currency,
+                    PlanPercent = p.PlanPercent,
                     SumInCurrency = p.PositionCount * p.AveragePositionPrice.Value + p.ExpectedYield.Value, // Расчет текущей цены.
+                    DifferenceSumInCurrency = p.ExpectedYield.Value
                 }).ToList();
                 var model = new GroupedPositionsModel(group.Key, models);
 
@@ -142,6 +117,31 @@ namespace TinkoffInvestStatistic.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// Сохранение данных.
+        /// </summary>
+        public async Task SavePlanPercent()
+        {
+            try
+            {
+                var service = DependencyService.Get<IPositionService>();
+                var data = new List<PositionData>();
+                var group = GroupedPositions.FirstOrDefault();
+                foreach (var position in group)
+                {
+                    var item = new PositionData(position.Figi, position.Type);
+                    item.PlanPercent = position.PlanPercent;
+                    data.Add(item);
+                }
+
+                await service.SavePlanPercents(AccountId, data.ToArray());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
 

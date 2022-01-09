@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Contracts.Enums;
+using Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,5 +32,12 @@ namespace Infrastructure.Services
         /// <param name="accountId">Номер счета.</param>
         /// <returns>Сумма.</returns>
         public Task<decimal> GetPositionsSumAsync(string accountId);
+        
+        /// <summary>
+        /// Сохранение данных позиций по счету.
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <param name="data">Данные по позициям</param>
+        public Task SavePlanPercents(string accountId, PositionData[] data);
     }
 }

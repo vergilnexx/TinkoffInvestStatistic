@@ -124,6 +124,52 @@ namespace Services
         }
 
         /// <summary>
+        /// Возвращает заполненные данные по позициям счета.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positions">Позиции.</param>
+        /// <returns>Список заполненных позиций.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public async Task<IEnumerable<Position>> MergePositionData(string accountNumber, IEnumerable<Position> positions)
+        {
+            if (positions == null || positions.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(positions), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (Accounts == null)
+            {
+                throw new ApplicationException("Данные по счетам не могут быть неопределенными при получении данных об инструментах по счету - " + accountNumber);
+            }
+
+            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
+            }
+
+            var result = new List<PositionData>();
+            foreach (var position in positions)
+            {
+                var positionData = account.Positions.FirstOrDefault(i => i.Figi == position.Figi);
+                if (positionData == null)
+                {
+                    positionData = new PositionData(position.Figi, position.Type);
+                }
+                else
+                {
+                    position.PlanPercent = positionData.PlanPercent;
+                }
+                result.Add(positionData);
+            }
+
+            account.Positions = result.ToArray();
+            await SaveAccountDataAsync();
+            return positions.ToArray();
+        }
+
+        /// <summary>
         /// Сохраняет данные по инструментам по конкретному счету.
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
@@ -137,7 +183,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (data == null)
+            if (data == null || data.Length == 0)
             {
                 throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
             }
@@ -149,6 +195,38 @@ namespace Services
             }
 
             account.Instruments = data;
+            return SaveAccountDataAsync();
+        }
+
+        /// <summary>
+        /// Сохраняет данные позиций по конкретному счету.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="data">Данные позиций.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public Task SetPositionData(string accountNumber, PositionData[] data)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (data == null || data.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
+            }
+
+            // Заменяем только то, что изменяется, остальные оставляем без изменения.
+            var changedPositionType = data.FirstOrDefault().Type;
+            var notReplacedPositions = account.Positions.Where(a => a.Type != changedPositionType);
+            account.Positions = notReplacedPositions.Union(data).ToArray();
             return SaveAccountDataAsync();
         }
 

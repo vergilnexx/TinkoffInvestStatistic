@@ -34,30 +34,70 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10,0,10,0" x:DataType="model:PositionModel"
-                              ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, 1">
+                              ColumnDefinitions="180, Auto, *, 10" RowDefinitions="Auto, Auto, 1">
                             <Label 
                                 Text="{Binding Name}" 
-                                LineBreakMode="NoWrap" 
+                                LineBreakMode="WordWrap"
                                 Style="{DynamicResource ListItemTextStyle}" 
                                 FontSize="13" 
                                 FontAttributes="Bold"
                                 Padding="0,10,0,0"/>
-                            <Label Grid.Column="1"
+                            <Label 
+                                Grid.Column="1"
                                 Text="{Binding SumInCurrencyText}" 
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="12"
-                                HorizontalOptions="End"
+                                FontSize="12" 
                                 Padding="0,10,0,0"/>
-                            
-                            <Label 
-                                Grid.Row="1"
-                                Text="{Binding Ticker}" 
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="10" />
+                            <Label Text="{Binding CurrentPercent}" 
+                                    Grid.Column="2"
+                                    HorizontalTextAlignment="End"
+                                    HorizontalOptions="End"
+                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" 
+                                    Padding="0,10,0,0"/>
+                            <Label Text="%" 
+                                    Grid.Column="3"
+                                    HorizontalTextAlignment="Start"
+                                    HorizontalOptions="Start"
+                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" 
+                                    Padding="0,10,0,0"/>
 
-                            <BoxView HeightRequest="1" Grid.Row="2" Grid.ColumnSpan="2" Color="LightGray"/>
+                            <Label Text="{Binding Ticker}" 
+                                    Grid.Row="1"
+                                    HorizontalTextAlignment="Start"
+                                    HorizontalOptions="Start"
+                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" 
+                                    VerticalOptions="Center"/>
+                            <Label Text="{Binding DifferenceSumInCurrencyText}" 
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="Start"
+                                    HorizontalOptions="Start"
+                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" 
+                                    VerticalOptions="Center"/>
+                            <Entry Keyboard="Numeric" 
+                                   HorizontalOptions="End" 
+                                   HorizontalTextAlignment="End"
+                                   Text="{Binding PlanPercent}" 
+                                   Grid.Row="1"
+                                   Grid.Column="2"
+                                   WidthRequest="50"
+                                   Completed="PlanPercent_Completed">
+                            </Entry>
+                            <Label Text="%" 
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    HorizontalTextAlignment="Start"
+                                    HorizontalOptions="Start"
+                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" 
+                                    VerticalOptions="Center"/>
+
+                            <BoxView HeightRequest="1" Grid.Row="2" Grid.ColumnSpan="4" Color="LightGray"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
