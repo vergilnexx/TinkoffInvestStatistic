@@ -97,6 +97,7 @@ namespace TinkoffInvestStatistic.ViewModels
                         CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
                         Sum = p.Sum,
                         SumInCurrency = p.SumInCurrency,
+                        DifferenceSum = p.DifferenceSum,
                         DifferenceSumInCurrency = p.ExpectedYield.Value,
                         DifferenceSumInCurrencyTextColor = p.ExpectedYield.Value > 0 ? Color.Green : Color.Red
                     })

@@ -66,6 +66,16 @@ namespace TinkoffInvestStatistic.Models
         public string DifferenceSumInCurrencyText => CurrencyUtility.ToCurrencyString(DifferenceSumInCurrency, Currency);
 
         /// <summary>
+        /// Разница.
+        /// </summary>
+        public decimal DifferenceSum { get; set; }
+
+        /// <summary>
+        /// Текст разницы.
+        /// </summary>
+        public string DifferenceSumText => Currency != Currency.Rub ? $" / {CurrencyUtility.ToCurrencyString(DifferenceSum, Currency.Rub)}" : string.Empty;
+
+        /// <summary>
         /// Цвет текста разницы в валюте.
         /// </summary>
         public Color DifferenceSumInCurrencyTextColor { get; set; }

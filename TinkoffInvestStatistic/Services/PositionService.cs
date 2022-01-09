@@ -33,10 +33,12 @@ namespace Services
                     }
 
                     position.Sum = position.SumInCurrency * currency.Value;
+                    position.DifferenceSum = position.ExpectedYield.Value * currency.Value;
                 }
                 else
                 {
                     position.Sum = position.SumInCurrency;
+                    position.DifferenceSum = position.ExpectedYield.Value;
                 }
             }
             positions = await DataStorageService.Instance.MergePositionData(accountId, positions);

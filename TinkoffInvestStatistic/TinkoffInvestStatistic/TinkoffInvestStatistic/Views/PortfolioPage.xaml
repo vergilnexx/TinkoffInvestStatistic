@@ -80,6 +80,16 @@
                                     FontAttributes="Bold"
                                     TextColor="{Binding DifferenceSumInCurrencyTextColor}"
                                     VerticalOptions="Center"/>
+                            <Label 
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Text="{Binding DifferenceSumText}" 
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="12" 
+                                    FontAttributes="Bold"
+                                    TextColor="{Binding DifferenceSumInCurrencyTextColor}"
+                                    VerticalOptions="Center"/>
                             <Entry Keyboard="Numeric" 
                                    HorizontalOptions="End" 
                                    HorizontalTextAlignment="End"

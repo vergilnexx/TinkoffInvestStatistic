@@ -68,6 +68,11 @@ namespace Contracts
         public decimal SumInCurrency { get; set; }
 
         /// <summary>
+        /// Сумма разницы.
+        /// </summary>
+        public decimal DifferenceSum { get; set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Финансовый идентификатор.</param>
