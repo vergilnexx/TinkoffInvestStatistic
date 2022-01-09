@@ -1,6 +1,7 @@
 ﻿using Contracts.Enums;
 using Infrastructure.Helpers;
 using TinkoffInvestStatistic.Utility;
+using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -63,6 +64,11 @@ namespace TinkoffInvestStatistic.Models
         /// Текст разницы в валюте.
         /// </summary>
         public string DifferenceSumInCurrencyText => CurrencyUtility.ToCurrencyString(DifferenceSumInCurrency, Currency);
+
+        /// <summary>
+        /// Цвет текста разницы в валюте.
+        /// </summary>
+        public Color DifferenceSumInCurrencyTextColor { get; set; }
 
         /// <summary>
         /// Сумма.

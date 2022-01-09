@@ -70,6 +70,8 @@
                                     HorizontalOptions="Start"
                                     LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="13" 
+                                    FontAttributes="Bold"
+                                    TextColor="{Binding DifferenceSumInCurrencyTextColor}"
                                     VerticalOptions="Center"/>
                             <Entry Keyboard="Numeric" 
                                    HorizontalOptions="End" 

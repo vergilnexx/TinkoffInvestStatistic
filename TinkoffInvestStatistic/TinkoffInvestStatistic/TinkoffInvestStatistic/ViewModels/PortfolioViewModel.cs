@@ -95,7 +95,8 @@ namespace TinkoffInvestStatistic.ViewModels
                     PlanPercent = p.PlanPercent,
                     CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
                     SumInCurrency = p.SumInCurrency,
-                    DifferenceSumInCurrency = p.ExpectedYield.Value
+                    DifferenceSumInCurrency = p.ExpectedYield.Value,
+                    DifferenceSumInCurrencyTextColor = p.ExpectedYield.Value > 0 ? Color.Green : Color.Red
                 }).ToList();
                 var model = new GroupedPositionsModel(group.Key, models);
 
