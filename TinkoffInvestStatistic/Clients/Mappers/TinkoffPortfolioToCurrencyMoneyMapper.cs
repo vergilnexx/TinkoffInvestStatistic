@@ -20,7 +20,7 @@ namespace TinkoffInvest.Mappers
                                 .Where<Portfolio.Position>(p => p.InstrumentType == InstrumentType.Currency)
                                 .Select(i => new CurrencyMoney(
                                     currencies.FirstOrDefault(c => IsThisCurrency(i, c)), 
-                                    Math.Round(i.AveragePositionPrice.Value + i.ExpectedYield.Value / i.Balance , 2, MidpointRounding.ToEven)))
+                                    i.AveragePositionPrice.Value + i.ExpectedYield.Value / i.Balance))
                                 .ToArray();
             return result;
         }

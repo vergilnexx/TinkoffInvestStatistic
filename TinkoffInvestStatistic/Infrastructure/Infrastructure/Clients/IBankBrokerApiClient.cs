@@ -27,5 +27,12 @@ namespace Infrastructure.Clients
         /// </summary>
         /// <returns>Список данных по валютам.</returns>
         public Task<IReadOnlyCollection<CurrencyMoney>> GetCurrenciesAsync();
+
+        /// <summary>
+        /// Возвращает фиатные позиции по счету.
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <returns>Список фиатных позиций только для чтения.</returns>
+        public Task<IReadOnlyCollection<CurrencyMoney>> GetFiatPositionsAsync(string accountId);
     }
 }

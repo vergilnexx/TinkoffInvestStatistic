@@ -25,19 +25,24 @@ namespace Services
         public async Task<decimal> GetPositionsSumAsync(string accountId)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            IEnumerable<Position?> positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            positions = positions.Where(p => p.Type != PositionType.Currency);
+            var fiatPositions =  await bankBrokerClient.GetFiatPositionsAsync(accountId);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
-            var result = GetSumByPositions(positions, currencies);
+            var result = GetSumByPositions(positions.ToArray(), fiatPositions, currencies);
             return result ?? 0;
         }
 
-        protected decimal? GetSumByPositions(IReadOnlyCollection<Position> positions, IReadOnlyCollection<CurrencyMoney> currencies)
+        protected decimal? GetSumByPositions(
+            IReadOnlyCollection<Position> positions, 
+            IReadOnlyCollection<CurrencyMoney> fiatPositions, 
+            IReadOnlyCollection<CurrencyMoney> currencies)
         {
             var sum = 0m;
             var positionsByCurrency = positions.GroupBy(p => p.AveragePositionPrice?.Currency);
             foreach (var group in positionsByCurrency)
             {
-                var sumInCurrency = Math.Round(group.Sum(p => p.PositionCount * p.AveragePositionPrice.Value + p.ExpectedYield.Value), 2, MidpointRounding.ToEven);
+                var sumInCurrency = group.Sum(p => p.PositionCount * p.AveragePositionPrice.Value + p.ExpectedYield.Value);
                 if(group.Key != Currency.Rub)
                 {
                     var currency = currencies.FirstOrDefault(c => group.Key == c.Currency);
@@ -51,6 +56,25 @@ namespace Services
 
                 sum += sumInCurrency;
             }
+
+            foreach (var fiatPosition in fiatPositions)
+            {
+                if (fiatPosition.Currency != Currency.Rub)
+                {
+                    var currency = currencies.FirstOrDefault(c => fiatPosition.Currency == c.Currency);
+                    if (currency == null)
+                    {
+                        throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
+                    }
+
+                    sum += fiatPosition.Value * currency.Value;
+                }
+                else
+                {
+                    sum += fiatPosition.Value;
+                }
+            }
+
             return sum;
         }
     }

@@ -7,7 +7,7 @@ using Tinkoff.Trading.OpenApi.Models;
 namespace TinkoffInvest.Mappers
 {
     /// <summary>
-    /// Маппер из <see cref="Tinkoff.Trading.OpenApi.Models.Portfolio"/> в <see cref="Contracts.Account"/>
+    /// Маппер из <see cref="Tinkoff.Trading.OpenApi.Models.Portfolio"/> в <see cref="Contracts.Position"/>
     /// </summary>
     public class TinkoffPositionToPositionMapper : IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>
     {
