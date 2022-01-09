@@ -44,6 +44,16 @@ namespace TinkoffInvestStatistic.Models
         public decimal SumInCurrency { get; set; }
 
         /// <summary>
+        /// Сумма.
+        /// </summary>
+        public decimal Sum { get; set; }
+
+        /// <summary>
+        /// Сумма в валюте.
+        /// </summary>
+        public decimal PlanPercent { get; set; }
+
+        /// <summary>
         /// Текст суммы в валюте.
         /// </summary>
         public string SumInCurrencyText => $"{SumInCurrency} {Currency.GetDescription()}";

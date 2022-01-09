@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
@@ -16,6 +17,11 @@ namespace TinkoffInvestStatistic.ViewModels
     public class AccountsViewModel : BaseViewModel
     {
         private AccountModel _selectedItem;
+
+        /// <summary>
+        /// Сумма по всем инструментам.
+        /// </summary>
+        public string Sum { get; private set; }
 
         public ObservableCollection<AccountModel> Accounts { get; }
         public Chart StatisticChart { get; private set; }
@@ -32,6 +38,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async Task ExecuteLoadAccountsCommand()
         {
+            Sum = string.Empty;
             IsBusy = true;
 
             try
@@ -46,6 +53,10 @@ namespace TinkoffInvestStatistic.ViewModels
 
                     Accounts.Add(model);
                 }
+
+                var sum = accounts.Sum(t => t.Sum);
+                Sum = sum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+                OnPropertyChanged(nameof(Sum));
 
                 await LoadStatisticChartAsync();
             }

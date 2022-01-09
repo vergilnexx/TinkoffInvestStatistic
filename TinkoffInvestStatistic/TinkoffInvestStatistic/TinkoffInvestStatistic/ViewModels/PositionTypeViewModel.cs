@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
@@ -23,6 +24,16 @@ namespace TinkoffInvestStatistic.ViewModels
     {
         private string _accountId;
         private PositionTypeModel _selectedItem;
+
+        /// <summary>
+        /// Сумма по всем инструментам.
+        /// </summary>
+        public string Sum { get; private set; }
+
+        /// <summary>
+        /// Сумма процентов.
+        /// </summary>
+        public string SumPercent { get; private set; }
 
         public ObservableCollection<PositionTypeModel> PositionTypes { get; }
         public Chart StatisticChart { get; private set; }
@@ -53,6 +64,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async Task ExecuteLoadPositionTypesCommand()
         {
+            Sum = SumPercent = string.Empty;
             IsBusy = true;
 
             try
@@ -71,6 +83,11 @@ namespace TinkoffInvestStatistic.ViewModels
 
                     PositionTypes.Add(model);
                 }
+                Sum = sum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+                OnPropertyChanged(nameof(Sum));
+
+                SumPercent = (positionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
+                OnPropertyChanged(nameof(SumPercent));
 
                 await LoadStatisticChartAsync();
             }
@@ -97,6 +114,10 @@ namespace TinkoffInvestStatistic.ViewModels
                 item.PlanPercent = positionTypeItem.PlanPercent;
                 data.Add(item);
             }
+
+            SumPercent = (PositionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
+            OnPropertyChanged(nameof(SumPercent));
+
             return service.SavePlanPercents(AccountId, data.ToArray());
         }
 
