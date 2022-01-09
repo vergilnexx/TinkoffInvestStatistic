@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Services
 {
@@ -20,6 +21,12 @@ namespace Services
                                   .ToArray();
 
             var filledPositionTypes = await DataStorageService.Instance.MergePositionTypesData(accountNumber, positionTypes);
+
+            var positionService = DependencyService.Resolve<IPositionService>();
+            foreach (var positionType in filledPositionTypes)
+            {
+                positionType.Sum = await positionService.GetPositionsSumAsync(accountNumber, positionType.Type);
+            }
 
             return filledPositionTypes;
         }

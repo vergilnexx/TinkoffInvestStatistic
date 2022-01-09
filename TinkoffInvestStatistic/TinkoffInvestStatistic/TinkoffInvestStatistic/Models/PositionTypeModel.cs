@@ -1,5 +1,6 @@
 ﻿using Contracts.Enums;
 using Infrastructure.Helpers;
+using System.Globalization;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -22,6 +23,21 @@ namespace TinkoffInvestStatistic.Models
         /// Планируемый процент.
         /// </summary>
         public decimal PlanPercent { get; set; }
+
+        /// <summary>
+        /// Текущий процент от суммы по всем инструментам.
+        /// </summary>
+        public decimal CurrentPercent { get; set; }
+
+        /// <summary>
+        /// Текущая сумма по счету.
+        /// </summary>
+        public decimal CurrentSum { get; set; }
+
+        /// <summary>
+        /// Текущая сумма по счету.
+        /// </summary>
+        public string CurrentSumText => CurrentSum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
 
         /// <summary>
         /// Конструктор.

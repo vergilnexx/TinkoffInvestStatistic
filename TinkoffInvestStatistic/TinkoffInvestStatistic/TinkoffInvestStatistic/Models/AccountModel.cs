@@ -26,5 +26,16 @@ namespace TinkoffInvestStatistic.Models
         /// Текущая сумма по счету.
         /// </summary>
         public string CurrentSumText => CurrentSum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="accountId">Идентификатор счета.</param>
+        /// <param name="accountType">Тип счета.</param>
+        public AccountModel(string accountId, string accountType)
+        {
+            AccountId = accountId;
+            AccountType = accountType;
+        }
     }
 }

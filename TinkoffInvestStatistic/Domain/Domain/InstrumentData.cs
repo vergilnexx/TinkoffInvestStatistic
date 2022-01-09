@@ -18,6 +18,11 @@ namespace Domain
         public decimal PlanPercent { get; set; }
 
         /// <summary>
+        /// Сумма.
+        /// </summary>
+        public decimal Sum { get; set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="type">Тип инструмента.</param>

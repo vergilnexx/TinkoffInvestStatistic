@@ -41,6 +41,12 @@ namespace TinkoffInvestStatistic.Utility
             return new PieChart() { Entries = entries, HoleRadius = 0.7f, LabelTextSize = 30f, LabelColor=GetColor() };
         }
 
+        public async Task<Chart> GetChartAsync(PositionTypeViewModel vm)
+        {
+            var entries = await GetEntriesAsync(vm);
+            return new PieChart() { Entries = entries, HoleRadius = 0.7f, LabelTextSize = 30f, LabelColor = GetColor(), LabelMode = LabelMode.RightOnly };
+        }
+
         public async Task<Chart> GetChartAsync(PortfolioViewModel vm)
         {
             var entries = await GetEntriesAsync(vm);
@@ -56,6 +62,20 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.Accounts
                             .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.AccountType, a.CurrentSumText))
+                            .ToArray();
+            return Task.FromResult(result);
+        }
+
+        private Task<ChartEntry[]> GetEntriesAsync(PositionTypeViewModel vm)
+        {
+            return GetPositiionTypeEntriesAsync(vm);
+        }
+
+        private Task<ChartEntry[]> GetPositiionTypeEntriesAsync(PositionTypeViewModel vm)
+        {
+            var result = vm.PositionTypes
+                            .OrderByDescending(t => t.CurrentSum)
+                            .Select(t => EntryUtility.GetEntry((float)t.CurrentSum, GetColor(), t.TypeName, t.CurrentSumText))
                             .ToArray();
             return Task.FromResult(result);
         }

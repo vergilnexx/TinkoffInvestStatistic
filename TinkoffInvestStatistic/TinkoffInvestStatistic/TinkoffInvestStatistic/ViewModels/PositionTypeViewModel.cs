@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -58,11 +59,15 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 PositionTypes.Clear();
                 var service = DependencyService.Get<IInstrumentService>();
-                var positionTypes = await service.GetPositionTypes(AccountId);
+                IEnumerable<InstrumentData> positionTypes = await service.GetPositionTypes(AccountId);
+                positionTypes = positionTypes.OrderByDescending(t => t.Sum);
+                var sum = positionTypes.Sum(t => t.Sum);
                 foreach (var item in positionTypes)
                 {
                     var model = new PositionTypeModel(item.Type);
                     model.PlanPercent = item.PlanPercent;
+                    model.CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 2, MidpointRounding.AwayFromZero);
+                    model.CurrentSum = item.Sum;
 
                     PositionTypes.Add(model);
                 }
@@ -97,7 +102,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public async Task LoadStatisticChartAsync()
         {
-            //StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
+            StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
 

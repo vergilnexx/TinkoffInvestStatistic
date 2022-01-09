@@ -33,6 +33,26 @@ namespace Services
             return result ?? 0;
         }
 
+        /// <inheritdoc/>
+        public async Task<decimal> GetPositionsSumAsync(string accountId, PositionType positionType)
+        {
+            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+            IEnumerable<Position?> positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            var currencies = await bankBrokerClient.GetCurrenciesAsync();
+            decimal result;
+            if(positionType == PositionType.Currency)
+            {
+                var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
+                result = GetSumByPositions(Array.Empty<Position>(), fiatPositions, currencies) ?? 0;
+            }
+            else
+            {
+                positions = positions.Where(p => p.Type == positionType);
+                result = GetSumByPositions(positions.ToArray(), Array.Empty<CurrencyMoney>(), currencies) ?? 0;
+            }
+            return result;
+        }
+
         protected decimal? GetSumByPositions(
             IReadOnlyCollection<Position> positions, 
             IReadOnlyCollection<CurrencyMoney> fiatPositions, 

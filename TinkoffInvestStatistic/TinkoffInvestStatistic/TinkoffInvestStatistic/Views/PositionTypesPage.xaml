@@ -17,12 +17,49 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10" x:DataType="model:PositionTypeModel">
-                            <Label Text="{Binding TypeName}" 
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
-                            <Entry Keyboard="Numeric" HorizontalOptions="FillAndExpand" Text="{Binding PlanPercent}" Completed="PlanPercent_Completed">
-                            </Entry>
+                            <Grid ColumnDefinitions="80, 100, Auto, 10, *, 10" RowDefinitions="Auto">
+                                <Label Text="{Binding TypeName}" 
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding CurrentSumText}" 
+                                       Grid.Column="1"
+                                       HorizontalTextAlignment="Start"
+                                       HorizontalOptions="Start"
+                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding CurrentPercent}" 
+                                       Grid.Column="2"
+                                       HorizontalTextAlignment="End"
+                                       HorizontalOptions="End"
+                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="%" 
+                                       Grid.Column="3"
+                                       HorizontalTextAlignment="Start"
+                                       HorizontalOptions="Start"
+                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" 
+                                       VerticalOptions="Center"/>
+                                <Entry Keyboard="Numeric" 
+                                       HorizontalOptions="End" 
+                                       HorizontalTextAlignment="End"
+                                       Text="{Binding PlanPercent}" 
+                                       Grid.Column="4"
+                                       WidthRequest="100"
+                                       Completed="PlanPercent_Completed">
+                                </Entry>
+                                <Label Text="%" 
+                                       Grid.Column="5"
+                                       HorizontalTextAlignment="Start"
+                                       HorizontalOptions="Start"
+                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" 
+                                       VerticalOptions="Center"/>
+                            </Grid>
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"

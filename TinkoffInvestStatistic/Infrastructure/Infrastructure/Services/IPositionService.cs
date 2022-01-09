@@ -18,6 +18,14 @@ namespace Infrastructure.Services
         public Task<Dictionary<PositionType, Position[]>> GetGroupedPositionsAsync(string accountId);
 
         /// <summary>
+        /// Возвращает список позиций по счету.
+        /// </summary>
+        /// <param name="accountId">Идентификатор счета.</param>
+        /// <param name="positionType">Тип инструмента.</param>
+        /// <returns>Группированный список позиций только для чтения.</returns>
+        public Task<decimal> GetPositionsSumAsync(string accountId, PositionType positionType);
+
+        /// <summary>
         /// Расчитывает сумма по всем позициям на счете.
         /// </summary>
         /// <param name="accountId">Номер счета.</param>
