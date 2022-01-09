@@ -32,7 +32,7 @@ namespace TinkoffInvestStatistic.Utility
 
         public SKColor GetColor()
         {
-            return ChartColors.Instance.GetColor();
+            return ChartColorsUtility.Instance.GetColor();
         }
 
         public async Task<Chart> GetChartAsync(AccountsViewModel vm)

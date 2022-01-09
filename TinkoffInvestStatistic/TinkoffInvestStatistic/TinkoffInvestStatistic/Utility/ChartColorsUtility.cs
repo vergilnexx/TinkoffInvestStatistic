@@ -3,15 +3,16 @@ using System;
 
 namespace TinkoffInvestStatistic.Utility
 {
-
-    public class ChartColors
+    /// <summary>
+    /// Работа с цветами диаграмм
+    /// </summary>
+    public class ChartColorsUtility
     {
-        public static ChartColors Instance { get; private set; }
+        public static ChartColorsUtility Instance { get; private set; }
 
-        Random rnd;
         int currentIdx = 0;
 
-        public ChartColors()
+        public ChartColorsUtility()
         {
             if (Instance != null)
             {
@@ -20,8 +21,6 @@ namespace TinkoffInvestStatistic.Utility
             else
             {
                 Instance = this;
-                RandomGenerator generator = new RandomGenerator();
-                this.rnd = generator.GetRandom(null);
             }
         }
 
@@ -64,14 +63,12 @@ namespace TinkoffInvestStatistic.Utility
             SKColor.Parse("#D1C4E9"),
         };
 
-
-
-
         public SKColor GetColor()
         {
-            // If we've exceeded the length of the array, start over:
             if (currentIdx >= Colors.Length - 1)
+            {
                 currentIdx = 0;
+            }
 
             return Colors[currentIdx++];
         }

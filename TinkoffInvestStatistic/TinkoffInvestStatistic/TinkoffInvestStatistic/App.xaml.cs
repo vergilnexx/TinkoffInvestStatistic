@@ -23,7 +23,7 @@ namespace TinkoffInvestStatistic
         private static void ConfigureUtility()
         {
             DependencyService.RegisterSingleton(new ChartUtility());
-            DependencyService.RegisterSingleton(new ChartColors());
+            DependencyService.RegisterSingleton(new ChartColorsUtility());
 
             DependencyService.RegisterSingleton(new DataStorageService());
         }
