@@ -75,7 +75,7 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.PositionTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.CurrentSum, GetColor(), t.TypeName, t.CurrentSumText))
+                            .Select(t => EntryUtility.GetEntry((float)t.CurrentPercent, GetColor(), t.TypeName, (t.CurrentPercent / 100).ToString("P")))
                             .ToArray();
             return Task.FromResult(result);
         }
