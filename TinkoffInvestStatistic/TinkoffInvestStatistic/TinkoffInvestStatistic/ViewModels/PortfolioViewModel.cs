@@ -3,6 +3,7 @@ using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -44,7 +45,8 @@ namespace TinkoffInvestStatistic.ViewModels
         public PortfolioViewModel()
         {
             GroupedPositions = new ObservableCollection<GroupedPositionsModel>();
-            LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync());
+            LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync()); 
+            StatisticChart = GetChart();
         }
 
         /// <summary>
@@ -76,6 +78,19 @@ namespace TinkoffInvestStatistic.ViewModels
                 _positionType = (PositionType)value;
                 Title = _positionType.GetDescription();
             }
+        }
+
+        private static PieChart GetChart()
+        {
+            return new PieChart()
+            {
+                HoleRadius = 0.7f,
+                LabelTextSize = 30f,
+                BackgroundColor = SKColor.Parse("#2B373D"),
+                LabelColor = new SKColor(255, 255, 255),
+                GraphPosition = GraphPosition.AutoFill,
+                LabelMode = LabelMode.None
+            };
         }
 
         async Task LoadGroupedPositionsByAccountIdAsync()
@@ -169,7 +184,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public async Task LoadStatisticChartAsync()
         {
-            StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
 

@@ -13,6 +13,8 @@ namespace TinkoffInvestStatistic
         {
             InitializeComponent();
 
+            Application.Current.UserAppTheme = OSAppTheme.Dark;
+
             ConfigureUtility();
 
             DependencyInjectionContainer.Configure();

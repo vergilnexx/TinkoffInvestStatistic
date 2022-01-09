@@ -29,22 +29,19 @@ namespace TinkoffInvestStatistic.Utility
             return ChartColorsUtility.Instance.GetColor();
         }
 
-        public async Task<Chart> GetChartAsync(AccountsViewModel vm)
+        public async Task<ChartEntry[]> GetChartAsync(AccountsViewModel vm)
         {
-            var entries = await GetEntriesAsync(vm);
-            return new PieChart() { Entries = entries, HoleRadius = 0.7f, LabelTextSize = 30f, LabelColor=GetColor() };
+            return await GetEntriesAsync(vm);
         }
 
-        public async Task<Chart> GetChartAsync(PositionTypeViewModel vm)
+        public Task<ChartEntry[]> GetChartAsync(PositionTypeViewModel vm)
         {
-            var entries = await GetEntriesAsync(vm);
-            return new PieChart() { Entries = entries, HoleRadius = 0.7f, LabelTextSize = 30f, LabelColor = GetColor(), LabelMode = LabelMode.RightOnly };
+            return GetEntriesAsync(vm);
         }
 
-        public async Task<Chart> GetChartAsync(PortfolioViewModel vm)
+        public Task<ChartEntry[]> GetChartAsync(PortfolioViewModel vm)
         {
-            var entries = await GetEntriesAsync(vm);
-            return new PieChart() { Entries = entries, HoleRadius = 0.7f, LabelTextSize = 30f, LabelColor = GetColor(), GraphPosition = GraphPosition.AutoFill, LabelMode = LabelMode.None };
+            return GetEntriesAsync(vm);
         }
 
         private Task<ChartEntry[]> GetEntriesAsync(AccountsViewModel vm)

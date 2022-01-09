@@ -11,7 +11,9 @@ namespace TinkoffInvestStatistic.Utility
             {
                 Label = label,
                 ValueLabel = valueLabel,
-                Color = color
+                Color = color,
+                ValueLabelColor = color,
+                TextColor = new SKColor(255, 255, 255)
             };
             return _entry;
         }

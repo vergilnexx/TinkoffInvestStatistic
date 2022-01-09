@@ -9,14 +9,19 @@
              x:Name="BrowseItemsPage"
              xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
              >
-
     <!--
       x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
-    <RefreshView x:DataType="local:AccountsViewModel" Command="{Binding LoadAccountsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <Grid RowDefinitions="Auto, *">
-            <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="250"
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 x:DataType="local:AccountsViewModel" 
+                 Command="{Binding LoadAccountsCommand}" 
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <Grid RowDefinitions="Auto, *" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <forms:ChartView Chart="{Binding StatisticChart}" 
+                             HeightRequest="250"
+                             BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
             
@@ -30,13 +35,14 @@
                             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, 1">
                                 <Label Text="{Binding AccountType}" 
                                     LineBreakMode="NoWrap"
-                                    Style="{DynamicResource ListItemDetailTextStyle}"
-                                    FontSize="13" />
+                                    FontSize="13" 
+                                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
                                 <Label Text="{Binding CurrentSumText}" 
                                        Grid.Column="1"
                                        HorizontalTextAlignment="End"
-                                       LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
-                                       FontSize="13" />
+                                       LineBreakMode="NoWrap"
+                                       FontSize="13" 
+                                       TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
 
                                 <BoxView HeightRequest="1" Grid.Row="2" Grid.ColumnSpan="2" Color="LightGray"/>
                             </Grid>
@@ -56,14 +62,14 @@
                         <Grid ColumnDefinitions="80, *">
                             <Label Text="Всего:" 
                                    LineBreakMode="NoWrap"
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
                                    VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                    FontSize="Body"
                                    FontAttributes="Bold"/>
                             <Label Text="{Binding Sum}" 
+                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                    Grid.Column="1"
                                    LineBreakMode="NoWrap" 
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
                                    VerticalOptions="Center"
                                    HorizontalOptions="End" 
                                    HorizontalTextAlignment="End"

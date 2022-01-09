@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
+using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -32,8 +33,20 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             Title = "Счета";
             Accounts = new ObservableCollection<AccountModel>();
+            StatisticChart = GetChart();
             LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
             ItemTapped = new Command<AccountModel>(OnAccountSelected);
+        }
+
+        private static PieChart GetChart()
+        {
+            return new PieChart()
+            {
+                HoleRadius = 0.7f,
+                LabelTextSize = 30f,
+                BackgroundColor = SKColor.Parse("#2B373D"),
+                LabelColor = new SKColor(255,255,255),
+            };
         }
 
         private async Task ExecuteLoadAccountsCommand()
@@ -72,7 +85,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public async Task LoadStatisticChartAsync()
         {
-            StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
 

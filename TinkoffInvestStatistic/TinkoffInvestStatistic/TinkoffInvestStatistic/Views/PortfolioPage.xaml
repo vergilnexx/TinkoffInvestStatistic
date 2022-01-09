@@ -12,8 +12,12 @@
       x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
-    <RefreshView x:DataType="local:PortfolioViewModel" Command="{Binding LoadGroupedPositionsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <Grid RowDefinitions="Auto, 1, *, Auto">
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 x:DataType="local:PortfolioViewModel" 
+                 Command="{Binding LoadGroupedPositionsCommand}" 
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <Grid RowDefinitions="Auto, 1, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
             <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="250"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
@@ -30,7 +34,7 @@
                             <Label 
                                 Text="{Binding Name}" 
                                 LineBreakMode="WordWrap"
-                                Style="{DynamicResource ListItemTextStyle}" 
+                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                 FontSize="13" 
                                 FontAttributes="Bold"
                                 Padding="0,10,0,0"/>
@@ -38,21 +42,21 @@
                                 Grid.Column="1"
                                 Text="{Binding SumInCurrencyText}" 
                                 LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                 FontSize="12" 
                                 Padding="0,10,0,0"/>
                             <Label 
                                 Grid.Column="2"
                                 Text="{Binding SumText}" 
                                 LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                 FontSize="12" 
                                 Padding="0,10,0,0"/>
                             <Label Text="{Binding CurrentPercent}" 
                                     Grid.Column="3"
                                     HorizontalTextAlignment="End"
                                     HorizontalOptions="End"
-                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    LineBreakMode="NoWrap"
                                     FontSize="13" 
                                     TextColor="{Binding CurrentPercentColor}"
                                     FontAttributes="Bold"
@@ -62,7 +66,7 @@
                                     HorizontalTextAlignment="Start"
                                     HorizontalOptions="Start"
                                     TextColor="{Binding CurrentPercentColor}"
-                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    LineBreakMode="NoWrap"
                                     FontSize="13" 
                                     FontAttributes="Bold"
                                     Padding="0,10,0,0"/>
@@ -71,7 +75,8 @@
                                     Grid.Row="1"
                                     HorizontalTextAlignment="Start"
                                     HorizontalOptions="Start"
-                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    LineBreakMode="NoWrap"
+                                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                     FontSize="13" 
                                     VerticalOptions="Center"/>
                             <Label Text="{Binding DifferenceSumInCurrencyText}" 
@@ -79,7 +84,7 @@
                                     Grid.Column="1"
                                     HorizontalTextAlignment="Start"
                                     HorizontalOptions="Start"
-                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    LineBreakMode="NoWrap"
                                     FontSize="13" 
                                     FontAttributes="Bold"
                                     TextColor="{Binding DifferenceSumInCurrencyTextColor}"
@@ -89,7 +94,6 @@
                                     Grid.Column="2"
                                     Text="{Binding DifferenceSumText}" 
                                     LineBreakMode="NoWrap"
-                                    Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="12" 
                                     FontAttributes="Bold"
                                     TextColor="{Binding DifferenceSumInCurrencyTextColor}"
@@ -98,9 +102,11 @@
                                    HorizontalOptions="End" 
                                    HorizontalTextAlignment="End"
                                    Text="{Binding PlanPercent}" 
+                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                    Grid.Row="1"
                                    Grid.Column="3"
                                    WidthRequest="50"
+                                   MaxLength="6"
                                    Completed="PlanPercent_Completed">
                             </Entry>
                             <Label Text="%" 
@@ -108,7 +114,8 @@
                                     Grid.Column="4"
                                     HorizontalTextAlignment="Start"
                                     HorizontalOptions="Start"
-                                    LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
+                                    LineBreakMode="NoWrap"
+                                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                     FontSize="13" 
                                     VerticalOptions="Center"/>
 
@@ -124,14 +131,14 @@
                 <Grid ColumnDefinitions="80, Auto, *">
                     <Label Text="Всего:" 
                             LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                             VerticalOptions="Center"
                             FontSize="Body"
                             FontAttributes="Bold"/>
                     <Label Text="{Binding Sum}" 
                             Grid.Column="1"
                             LineBreakMode="NoWrap" 
-                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                             VerticalOptions="Center"
                             FontSize="Body"
                             FontAttributes="Bold"/>
@@ -141,7 +148,6 @@
                             HorizontalOptions="End" 
                             HorizontalTextAlignment="End"
                             TextColor="{Binding SumPercentColor}"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
                             VerticalOptions="Center"
                             FontSize="Body"
                             FontAttributes="Bold"/>

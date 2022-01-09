@@ -3,6 +3,7 @@ using Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using Microcharts;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -65,8 +66,20 @@ namespace TinkoffInvestStatistic.ViewModels
             PositionTypes = new ObservableCollection<PositionTypeModel>();
             LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommand());
             ItemTapped = new Command<PositionTypeModel>(OnPositionTypeSelected);
+            StatisticChart = GetChart();
         }
 
+        private static PieChart GetChart()
+        {
+            return new PieChart()
+            {
+                HoleRadius = 0.7f,
+                LabelTextSize = 30f,
+                BackgroundColor = SKColor.Parse("#2B373D"),
+                LabelColor = new SKColor(255, 255, 255),
+                LabelMode = LabelMode.RightOnly
+            };
+        }
         private async Task ExecuteLoadPositionTypesCommand()
         {
             Sum = SumPercent = string.Empty;
@@ -144,7 +157,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public async Task LoadStatisticChartAsync()
         {
-            StatisticChart = await ChartUtility.Instance.GetChartAsync(this);
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
 
