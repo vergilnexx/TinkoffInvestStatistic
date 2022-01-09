@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
@@ -83,7 +82,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
                     PositionTypes.Add(model);
                 }
-                Sum = sum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+                Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
                 SumPercent = (positionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");

@@ -55,7 +55,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 }
 
                 var sum = accounts.Sum(t => t.Sum);
-                Sum = sum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+                Sum = CurrencyUtility.ToCurrencyString(sum, Contracts.Enums.Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
                 await LoadStatisticChartAsync();

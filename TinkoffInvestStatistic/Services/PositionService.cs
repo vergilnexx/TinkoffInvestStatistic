@@ -19,7 +19,26 @@ namespace Services
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
             IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
-            
+            var currencies = await bankBrokerClient.GetCurrenciesAsync();
+
+            foreach (var position in positions)
+            {
+                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Value ?? 0) + (position.ExpectedYield?.Value ?? 0);
+                if (position.AveragePositionPrice?.Currency != Currency.Rub)
+                {
+                    var currency = currencies.FirstOrDefault(c => position.AveragePositionPrice?.Currency == c.Currency);
+                    if (currency == null)
+                    {
+                        throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
+                    }
+
+                    position.Sum = position.SumInCurrency * currency.Value;
+                }
+                else
+                {
+                    position.Sum = position.SumInCurrency;
+                }
+            }
             positions = await DataStorageService.Instance.MergePositionData(accountId, positions);
 
             return positions.GroupBy(p => p.Type).ToDictionary(g => g.Key, g => g.ToArray());

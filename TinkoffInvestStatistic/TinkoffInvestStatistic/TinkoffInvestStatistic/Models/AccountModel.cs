@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using TinkoffInvestStatistic.Utility;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -25,7 +25,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текущая сумма по счету.
         /// </summary>
-        public string CurrentSumText => CurrentSum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+        public string CurrentSumText => CurrencyUtility.ToCurrencyString(CurrentSum, Contracts.Enums.Currency.Rub);
 
         /// <summary>
         /// Конструктор.

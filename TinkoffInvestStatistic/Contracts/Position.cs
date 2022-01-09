@@ -53,9 +53,19 @@ namespace Contracts
         public CurrencyMoney? AveragePositionPrice { get; set; }
 
         /// <summary>
-        /// Цеа покупки без налогов.
+        /// Цена покупки без налогов.
         /// </summary>
         public CurrencyMoney? AveragePositionPriceNoNkd { get; set; }
+
+        /// <summary>
+        /// Сумма в валюте.
+        /// </summary>
+        public decimal Sum { get; set; }
+
+        /// <summary>
+        /// Сумма в валюте.
+        /// </summary>
+        public decimal SumInCurrency { get; set; }
 
         /// <summary>
         /// Конструктор.

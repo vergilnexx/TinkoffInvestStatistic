@@ -1,5 +1,6 @@
 ﻿using Contracts.Enums;
 using Infrastructure.Helpers;
+using TinkoffInvestStatistic.Utility;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -61,7 +62,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст разницы в валюте.
         /// </summary>
-        public string DifferenceSumInCurrencyText => $"{DifferenceSumInCurrency} {Currency.GetDescription()}";
+        public string DifferenceSumInCurrencyText => CurrencyUtility.ToCurrencyString(DifferenceSumInCurrency, Currency);
 
         /// <summary>
         /// Сумма.
@@ -81,7 +82,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст суммы в валюте.
         /// </summary>
-        public string SumInCurrencyText => $"{SumInCurrency} {Currency.GetDescription()}";
+        public string SumInCurrencyText => CurrencyUtility.ToCurrencyString(SumInCurrency, Currency);
 
         /// <summary>
         /// Конструктор.

@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
@@ -85,6 +84,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var service = DependencyService.Get<IPositionService>();
                 var group = (await service.GetGroupedPositionsAsync(AccountId)).FirstOrDefault(g => g.Key == _positionType);
 
+                var sum = group.Value.Sum(p => p.Sum);
                 var models = group.Value.Select(p => new PositionModel(p.Figi, p.Type)
                 {
                     Name = p.Name,
@@ -93,15 +93,15 @@ namespace TinkoffInvestStatistic.ViewModels
                     Ticker = p.Ticker,
                     Currency = p.AveragePositionPrice.Currency,
                     PlanPercent = p.PlanPercent,
-                    SumInCurrency = p.PositionCount * p.AveragePositionPrice.Value + p.ExpectedYield.Value, // Расчет текущей цены.
+                    CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
+                    SumInCurrency = p.SumInCurrency,
                     DifferenceSumInCurrency = p.ExpectedYield.Value
                 }).ToList();
                 var model = new GroupedPositionsModel(group.Key, models);
 
                 GroupedPositions.Add(model);
 
-                var sum = models.Sum(t => t.Sum);
-                Sum = sum.ToString("C", CultureInfo.GetCultureInfo("ru-RU"));
+                Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
                 SumPercent = (models.Sum(t => t.PlanPercent) / 100).ToString("P");
@@ -136,6 +136,9 @@ namespace TinkoffInvestStatistic.ViewModels
                     item.PlanPercent = position.PlanPercent;
                     data.Add(item);
                 }
+
+                SumPercent = (group.Sum(t => t.PlanPercent) / 100).ToString("P");
+                OnPropertyChanged(nameof(SumPercent));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());
             }

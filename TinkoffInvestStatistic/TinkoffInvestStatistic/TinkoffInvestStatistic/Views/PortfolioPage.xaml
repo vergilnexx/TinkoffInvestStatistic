@@ -13,24 +13,16 @@
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
     <RefreshView x:DataType="local:PortfolioViewModel" Command="{Binding LoadGroupedPositionsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <Grid RowDefinitions="Auto, *, Auto">
+        <Grid RowDefinitions="Auto, 1, *, Auto">
             <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="250"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
+            <BoxView HeightRequest="1" Grid.Row="1" Color="LightGray"/>
             <CollectionView x:Name="PositionsListView" 
-                            Grid.Row="1"
+                            Grid.Row="2"
                             ItemsSource="{Binding GroupedPositions}"
                             SelectionMode="None"
                             IsGrouped="true">
-                <CollectionView.GroupHeaderTemplate>
-                    <DataTemplate x:DataType="model:GroupedPositionsModel">
-                        <Label Text="{Binding Name}"
-                               Padding="10,0,0,0"
-                               BackgroundColor="LightGray"
-                               FontSize="Large"
-                               FontAttributes="Bold" />
-                    </DataTemplate>
-                </CollectionView.GroupHeaderTemplate>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10,0,10,0" x:DataType="model:PositionModel"
@@ -102,7 +94,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <StackLayout Padding="10" Grid.Row="2" IsVisible="false">
+            <StackLayout Padding="10" Grid.Row="3"
+                         IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
                 <BoxView HeightRequest="1" 
                          Color="LightGray"/>
                 <Grid ColumnDefinitions="80, Auto, *">
