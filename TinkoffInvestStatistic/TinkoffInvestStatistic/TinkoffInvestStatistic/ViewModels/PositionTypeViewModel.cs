@@ -116,8 +116,6 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public async Task SavePlanPercent()
         {
-            IsBusy = true;
-
             try
             {
                 var service = DependencyService.Get<IInstrumentService>();
@@ -141,10 +139,6 @@ namespace TinkoffInvestStatistic.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
 
