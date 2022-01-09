@@ -85,19 +85,23 @@ namespace TinkoffInvestStatistic.ViewModels
                 var group = (await service.GetGroupedPositionsAsync(AccountId)).FirstOrDefault(g => g.Key == _positionType);
 
                 var sum = group.Value.Sum(p => p.Sum);
-                var models = group.Value.Select(p => new PositionModel(p.Figi, p.Type)
-                {
-                    Name = p.Name,
-                    PositionCount = p.PositionCount,
-                    Blocked = p.Blocked,
-                    Ticker = p.Ticker,
-                    Currency = p.AveragePositionPrice.Currency,
-                    PlanPercent = p.PlanPercent,
-                    CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
-                    SumInCurrency = p.SumInCurrency,
-                    DifferenceSumInCurrency = p.ExpectedYield.Value,
-                    DifferenceSumInCurrencyTextColor = p.ExpectedYield.Value > 0 ? Color.Green : Color.Red
-                }).ToList();
+                var models = group.Value
+                    .Select(p => new PositionModel(p.Figi, p.Type)
+                    {
+                        Name = p.Name,
+                        PositionCount = p.PositionCount,
+                        Blocked = p.Blocked,
+                        Ticker = p.Ticker,
+                        Currency = p.AveragePositionPrice.Currency,
+                        PlanPercent = p.PlanPercent,
+                        CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
+                        Sum = p.Sum,
+                        SumInCurrency = p.SumInCurrency,
+                        DifferenceSumInCurrency = p.ExpectedYield.Value,
+                        DifferenceSumInCurrencyTextColor = p.ExpectedYield.Value > 0 ? Color.Green : Color.Red
+                    })
+                    .OrderByDescending(p => p.CurrentPercent)
+                    .ToList();
                 var model = new GroupedPositionsModel(group.Key, models);
 
                 GroupedPositions.Add(model);

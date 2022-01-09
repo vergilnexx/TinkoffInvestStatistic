@@ -82,15 +82,16 @@ namespace TinkoffInvestStatistic.Utility
 
         private Task<ChartEntry[]> GetEntriesAsync(PortfolioViewModel vm)
         {
-            return GetFundEntriesAsync(vm);
+            return GetPositionEntriesAsync(vm);
         }
 
-        private Task<ChartEntry[]> GetFundEntriesAsync(PortfolioViewModel vm)
+        private Task<ChartEntry[]> GetPositionEntriesAsync(PortfolioViewModel vm)
         {
             var result = vm.GroupedPositions
                             .Where(g => g.Type == (PositionType)vm.PositionType)
                             .FirstOrDefault()
-                            .Select(p => EntryUtility.GetEntry((float)p.SumInCurrency, GetColor(), p.Name, $"{p.SumInCurrency} {p.Currency.GetDescription()}"))
+                            .Select(p => EntryUtility.GetEntry((float)p.Sum, GetColor(), p.Name, CurrencyUtility.ToCurrencyString(p.Sum, Currency.Rub)))
+                            .OrderByDescending(p => p.Value)
                             .ToArray();
             return Task.FromResult(result);
         }

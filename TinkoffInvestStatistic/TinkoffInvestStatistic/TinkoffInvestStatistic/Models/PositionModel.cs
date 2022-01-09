@@ -13,7 +13,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Финансовый идентификатор.
         /// </summary>
-        public string Figi { get; set; }
+        public string Figi { get; private set; }
 
         /// <summary>
         /// Наименование.
@@ -28,7 +28,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Тип.
         /// </summary>
-        public PositionType Type { get; set; }
+        public PositionType Type { get; private set; }
 
         /// <summary>
         /// Тип.
@@ -74,6 +74,11 @@ namespace TinkoffInvestStatistic.Models
         /// Сумма.
         /// </summary>
         public decimal Sum { get; set; }
+
+        /// <summary>
+        /// Текст суммы.
+        /// </summary>
+        public string SumText => Currency != Currency.Rub ? $" / {CurrencyUtility.ToCurrencyString(Sum, Currency.Rub)}" : string.Empty;
 
         /// <summary>
         /// Сумма в валюте.
