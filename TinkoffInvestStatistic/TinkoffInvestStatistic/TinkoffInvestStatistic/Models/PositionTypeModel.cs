@@ -1,6 +1,7 @@
 ﻿using Contracts.Enums;
 using Infrastructure.Helpers;
 using TinkoffInvestStatistic.Utility;
+using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -28,6 +29,11 @@ namespace TinkoffInvestStatistic.Models
         /// Текущий процент от суммы по всем инструментам.
         /// </summary>
         public decimal CurrentPercent { get; set; }
+
+        /// <summary>
+        /// Цвет процента.
+        /// </summary>
+        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercent);
 
         /// <summary>
         /// Текущая сумма по счету.

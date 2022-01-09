@@ -32,6 +32,11 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public string SumPercent { get; private set; }
 
+        /// <summary>
+        /// Цвет суммы процентов.
+        /// </summary>
+        public Color SumPercentColor { get; private set; }
+
         public ObservableCollection<GroupedPositionsModel> GroupedPositions { get; }
         public Chart StatisticChart { get; private set; }
         public Command LoadGroupedPositionsCommand { get; }
@@ -76,6 +81,7 @@ namespace TinkoffInvestStatistic.ViewModels
         async Task LoadGroupedPositionsByAccountIdAsync()
         {
             Sum = SumPercent = string.Empty;
+            SumPercentColor = Color.Default;
             IsBusy = true;
 
             try
@@ -110,9 +116,12 @@ namespace TinkoffInvestStatistic.ViewModels
                 Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
-                SumPercent = (models.Sum(t => t.PlanPercent) / 100).ToString("P");
+                var sumPercent = models.Sum(t => t.PlanPercent);
+                SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
             }
@@ -143,8 +152,12 @@ namespace TinkoffInvestStatistic.ViewModels
                     data.Add(item);
                 }
 
-                SumPercent = (group.Sum(t => t.PlanPercent) / 100).ToString("P");
+                var sumPercent = group.Sum(t => t.PlanPercent);
+                SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
+
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());
             }

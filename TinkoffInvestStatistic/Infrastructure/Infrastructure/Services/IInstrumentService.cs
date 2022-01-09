@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Contracts;
+using Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
         /// <returns>Список инструментов.</returns>
-        Task<IReadOnlyCollection<InstrumentData>> GetPositionTypes(string accountNumber);
+        Task<IReadOnlyCollection<Instrument>> GetPositionTypes(string accountNumber);
 
         /// <summary>
         /// Сохраняет данные планируемого процента для счета.

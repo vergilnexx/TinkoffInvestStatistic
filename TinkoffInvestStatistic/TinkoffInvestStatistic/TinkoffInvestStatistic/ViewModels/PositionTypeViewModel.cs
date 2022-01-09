@@ -1,4 +1,5 @@
-﻿using Contracts.Enums;
+﻿using Contracts;
+using Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using Microcharts;
@@ -34,6 +35,11 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public string SumPercent { get; private set; }
 
+        /// <summary>
+        /// Цвет суммы процентов.
+        /// </summary>
+        public Color SumPercentColor { get; private set; }
+
         public ObservableCollection<PositionTypeModel> PositionTypes { get; }
         public Chart StatisticChart { get; private set; }
         public Command LoadPositionTypesCommand { get; }
@@ -64,13 +70,14 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task ExecuteLoadPositionTypesCommand()
         {
             Sum = SumPercent = string.Empty;
+            SumPercentColor = Color.Default;
             IsBusy = true;
 
             try
             {
                 PositionTypes.Clear();
                 var service = DependencyService.Get<IInstrumentService>();
-                IEnumerable<InstrumentData> positionTypes = await service.GetPositionTypes(AccountId);
+                IEnumerable<Instrument> positionTypes = await service.GetPositionTypes(AccountId);
                 positionTypes = positionTypes.OrderByDescending(t => t.Sum);
                 var sum = positionTypes.Sum(t => t.Sum);
                 foreach (var item in positionTypes)
@@ -85,8 +92,12 @@ namespace TinkoffInvestStatistic.ViewModels
                 Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
-                SumPercent = (positionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
+                var sumPercent = positionTypes.Sum(t => t.PlanPercent);
+                SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
+
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
             }
@@ -118,8 +129,12 @@ namespace TinkoffInvestStatistic.ViewModels
                     data.Add(item);
                 }
 
-                SumPercent = (PositionTypes.Sum(t => t.PlanPercent) / 100).ToString("P");
+                var sumPercent = PositionTypes.Sum(t => t.PlanPercent);
+                SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
+
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());
             }

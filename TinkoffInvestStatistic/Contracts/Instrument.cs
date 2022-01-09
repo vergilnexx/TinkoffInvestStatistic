@@ -1,11 +1,11 @@
 ﻿using Contracts.Enums;
 
-namespace Domain
+namespace Contracts
 {
     /// <summary>
     /// Данные об инструменте.
     /// </summary>
-    public class InstrumentData
+    public class Instrument
     {
         /// <summary>
         /// Тип инструмента.
@@ -18,10 +18,15 @@ namespace Domain
         public decimal PlanPercent { get; set; }
 
         /// <summary>
+        /// Сумма.
+        /// </summary>
+        public decimal Sum { get; set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="type">Тип инструмента.</param>
-        public InstrumentData(PositionType type)
+        public Instrument(PositionType type)
         {
             Type = type;
         }

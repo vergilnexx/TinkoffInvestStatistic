@@ -1,4 +1,5 @@
-﻿using Contracts.Enums;
+﻿using Contracts;
+using Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using System;
@@ -13,7 +14,7 @@ namespace Services
     public class InstrumentService : IInstrumentService
     {
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<InstrumentData>> GetPositionTypes(string accountNumber)
+        public async Task<IReadOnlyCollection<Instrument>> GetPositionTypes(string accountNumber)
         {
             var positionTypes = Enum
                                   .GetValues(typeof(PositionType))

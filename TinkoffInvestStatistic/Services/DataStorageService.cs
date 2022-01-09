@@ -88,7 +88,7 @@ namespace Services
         /// <returns>Заполненные данные по инструментам</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<InstrumentData[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
+        public async Task<Instrument[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
         {
             if (positionTypes == null)
             {
@@ -106,19 +106,21 @@ namespace Services
                 throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
             }
 
-            var result = new List<InstrumentData>();
+            var result = new List<Instrument>();
+            var data = new List<InstrumentData>();
             foreach (var type in positionTypes)
             {
-                var instrument = account.Instruments.FirstOrDefault(i => i.Type == type);
-                if(instrument == null)
+                var instrumentData = account.Instruments.FirstOrDefault(i => i.Type == type);
+                if(instrumentData == null)
                 {
-                    instrument = new InstrumentData(type);
+                    instrumentData = new InstrumentData(type);
                 }
 
-                result.Add(instrument);
+                data.Add(instrumentData);
+                result.Add(new Instrument(type) { PlanPercent = instrumentData?.PlanPercent ?? 0 });
             }
             
-            account.Instruments = result.ToArray();
+            account.Instruments = data.ToArray();
             await SaveAccountDataAsync();
             return result.ToArray();
         }

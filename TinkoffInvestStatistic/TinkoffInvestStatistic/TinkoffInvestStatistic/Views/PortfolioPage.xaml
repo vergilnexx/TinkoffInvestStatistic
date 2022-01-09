@@ -54,13 +54,17 @@
                                     HorizontalOptions="End"
                                     LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="13" 
+                                    TextColor="{Binding CurrentPercentColor}"
+                                    FontAttributes="Bold"
                                     Padding="0,10,0,0"/>
                             <Label Text="%" 
                                     Grid.Column="4"
                                     HorizontalTextAlignment="Start"
                                     HorizontalOptions="Start"
+                                    TextColor="{Binding CurrentPercentColor}"
                                     LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="13" 
+                                    FontAttributes="Bold"
                                     Padding="0,10,0,0"/>
 
                             <Label Text="{Binding Ticker}" 
@@ -119,27 +123,28 @@
                          Color="LightGray"/>
                 <Grid ColumnDefinitions="80, Auto, *">
                     <Label Text="Всего:" 
-                                   LineBreakMode="NoWrap"
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
-                                   VerticalOptions="Center"
-                                   FontSize="Body"
-                                   FontAttributes="Bold"/>
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            VerticalOptions="Center"
+                            FontSize="Body"
+                            FontAttributes="Bold"/>
                     <Label Text="{Binding Sum}" 
-                                   Grid.Column="1"
-                                   LineBreakMode="NoWrap" 
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
-                                   VerticalOptions="Center"
-                                   FontSize="Body"
-                                   FontAttributes="Bold"/>
+                            Grid.Column="1"
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            VerticalOptions="Center"
+                            FontSize="Body"
+                            FontAttributes="Bold"/>
                     <Label Text="{Binding SumPercent}" 
-                                   Grid.Column="3"
-                                   LineBreakMode="NoWrap" 
-                                   HorizontalOptions="End" 
-                                   HorizontalTextAlignment="End"
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
-                                   VerticalOptions="Center"
-                                   FontSize="Body"
-                                   FontAttributes="Bold"/>
+                            Grid.Column="3"
+                            LineBreakMode="NoWrap" 
+                            HorizontalOptions="End" 
+                            HorizontalTextAlignment="End"
+                            TextColor="{Binding SumPercentColor}"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            VerticalOptions="Center"
+                            FontSize="Body"
+                            FontAttributes="Bold"/>
                 </Grid>
             </StackLayout>
         </Grid>

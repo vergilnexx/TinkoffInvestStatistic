@@ -1,9 +1,7 @@
 ﻿using Contracts.Enums;
-using Infrastructure.Helpers;
 using Microcharts;
 using SkiaSharp;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
@@ -14,8 +12,6 @@ namespace TinkoffInvestStatistic.Utility
     {
         public static ChartUtility Instance { get; private set; }
 
-        Random rnd;
-
         public ChartUtility()
         {
             if (Instance != null)
@@ -25,8 +21,6 @@ namespace TinkoffInvestStatistic.Utility
             else
             {
                 Instance = this;
-                RandomGenerator generator = new RandomGenerator();
-                this.rnd = generator.GetRandom(null);
             }
         }
 

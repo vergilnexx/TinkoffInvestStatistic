@@ -101,6 +101,11 @@ namespace TinkoffInvestStatistic.Models
         public decimal CurrentPercent { get; set; }
 
         /// <summary>
+        /// Цвет процента.
+        /// </summary>
+        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercent);
+
+        /// <summary>
         /// Текст суммы в валюте.
         /// </summary>
         public string SumInCurrencyText => CurrencyUtility.ToCurrencyString(SumInCurrency, Currency);
