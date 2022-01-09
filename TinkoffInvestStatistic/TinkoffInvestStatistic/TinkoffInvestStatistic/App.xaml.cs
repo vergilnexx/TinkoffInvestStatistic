@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Container;
-using Infrastructure.Services;
 using Services;
+using System.Globalization;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
@@ -11,6 +11,12 @@ namespace TinkoffInvestStatistic
     {
         public App()
         {
+            var culture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
             InitializeComponent();
 
             Application.Current.UserAppTheme = OSAppTheme.Dark;
@@ -38,10 +44,17 @@ namespace TinkoffInvestStatistic
 
         protected override void OnSleep()
         {
+
         }
 
         protected override void OnResume()
         {
+            base.OnResume();
+            var culture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
         }
     }
 }
