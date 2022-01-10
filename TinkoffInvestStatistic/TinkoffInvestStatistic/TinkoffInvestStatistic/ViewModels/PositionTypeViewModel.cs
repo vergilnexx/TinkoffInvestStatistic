@@ -183,9 +183,13 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 return;
             }
+
+            var sum = PositionTypes.Sum(t => t.CurrentSum);
             var url = $"{nameof(PortfolioPage)}" +
                 $"?{nameof(PortfolioViewModel.AccountId)}={AccountId}" +
-                $"&{nameof(PortfolioViewModel.PositionType)}={(int)item.Type}";
+                $"&{nameof(PortfolioViewModel.PositionType)}={(int)item.Type}" +
+                $"&{nameof(PortfolioViewModel.GroupPlanPercent)}={item.PlanPercent}" +
+                $"&{nameof(PortfolioViewModel.AccountSum)}={Math.Round(sum, 2, MidpointRounding.ToEven)}";
             await Shell.Current.GoToAsync(url, true);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Contracts.Enums;
+﻿using Contracts;
+using Contracts.Enums;
 using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
@@ -18,6 +19,8 @@ namespace TinkoffInvestStatistic.ViewModels
 {
     [QueryProperty(nameof(AccountId), nameof(AccountId))]
     [QueryProperty(nameof(PositionType), nameof(PositionType))]
+    [QueryProperty(nameof(GroupPlanPercent), nameof(GroupPlanPercent))]
+    [QueryProperty(nameof(AccountSum), nameof(AccountSum))]
     public class PortfolioViewModel : BaseViewModel
     {
         private string _accountId;
@@ -80,6 +83,38 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
+        /// <summary>
+        /// Планируемый процент по группе.
+        /// </summary>
+        private decimal _groupPlanPercent;
+        public decimal GroupPlanPercent
+        {
+            get
+            {
+                return _groupPlanPercent;
+            }
+            set
+            {
+                _groupPlanPercent = value;
+            }
+        }
+
+        /// <summary>
+        /// Сумма по счету.
+        /// </summary>
+        private decimal _accountSum;
+        public decimal AccountSum
+        {
+            get
+            {
+                return _accountSum;
+            }
+            set
+            {
+                _accountSum = value;
+            }
+        }
+
         private static PieChart GetChart()
         {
             return new PieChart()
@@ -105,7 +140,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var service = DependencyService.Get<IPositionService>();
                 var group = (await service.GetGroupedPositionsAsync(AccountId)).FirstOrDefault(g => g.Key == _positionType);
 
-                var sum = group.Value.Sum(p => p.Sum);
+                var sum = AccountSum;
                 var models = group.Value
                     .Select(p => new PositionModel(p.Figi, p.Type)
                     {
@@ -128,14 +163,14 @@ namespace TinkoffInvestStatistic.ViewModels
 
                 GroupedPositions.Add(model);
 
-                Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
+                Sum = CurrencyUtility.ToCurrencyString(group.Value.Sum(p => p.Sum), Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
                 var sumPercent = models.Sum(t => t.PlanPercent);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
@@ -171,7 +206,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());
