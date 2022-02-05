@@ -12,11 +12,12 @@ namespace Infrastructure.Services
     public interface IPositionService
     {
         /// <summary>
-        /// Возвращает список позиций по счету.
+        /// Возвращает список позиций определенного типа по счету.
         /// </summary>
         /// <param name="accountId">Идентификатор счета.</param>
+        /// <param name="positionType">Тип позиции.</param>
         /// <returns>Группированный список позиций только для чтения.</returns>
-        public Task<Dictionary<PositionType, Position[]>> GetGroupedPositionsAsync(string accountId);
+        public Task<IReadOnlyCollection<Position>> GetGroupedPositionsAsync(string accountId, PositionType positionType);
 
         /// <summary>
         /// Возвращает список позиций по счету.

@@ -82,5 +82,21 @@ namespace Contracts
             Figi = figi;
             Type = type;
         }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="type">Тип инструмента.</param>
+        /// <param name="name">Наименование.</param>
+        /// <param name="sum">Сумма в валюте.</param>
+        public Position(string figi, PositionType type, string name, decimal sum)
+        {
+            Figi = figi;
+            Type = type;
+            Name = name;
+            Sum = 
+                SumInCurrency = sum;
+        }
     }
 }

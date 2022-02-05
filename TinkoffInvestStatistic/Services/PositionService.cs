@@ -15,7 +15,7 @@ namespace Services
     public class PositionService : IPositionService
     {
         /// <inheritdoc/>
-        public async Task<Dictionary<PositionType, Position[]>> GetGroupedPositionsAsync(string accountId)
+        public async Task<IReadOnlyCollection<Position>> GetGroupedPositionsAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
             IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
@@ -24,6 +24,8 @@ namespace Services
             foreach (var position in positions)
             {
                 position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Value ?? 0) + (position.ExpectedYield?.Value ?? 0);
+
+                // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
                 {
                     var currency = currencies.FirstOrDefault(c => position.AveragePositionPrice?.Currency == c.Currency);
@@ -41,9 +43,23 @@ namespace Services
                     position.DifferenceSum = position.ExpectedYield.Value;
                 }
             }
+
+            // Добавляем данные про кэш в рублях.
+            var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
+            positions = positions.Union(rubles).ToArray();
+
             positions = await DataStorageService.Instance.MergePositionData(accountId, positions);
 
-            return positions.GroupBy(p => p.Type).ToDictionary(g => g.Key, g => g.ToArray());
+            return positions.Where(p => p.Type == positionType).ToArray();
+        }
+
+        private static async Task<IEnumerable<Position>> AddFiatRubles(string accountId, IBankBrokerApiClient bankBrokerClient, IEnumerable<Position> positions)
+        {
+            var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
+            var rubles = fiatPositions
+                .Where(fp => fp.Currency == Currency.Rub)
+                .Select(fp => new Position(string.Empty, PositionType.Currency, "Рубль", fp.Value));
+            return rubles;
         }
 
         /// <inheritdoc/>

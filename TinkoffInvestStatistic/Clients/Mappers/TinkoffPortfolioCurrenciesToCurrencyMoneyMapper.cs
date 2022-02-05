@@ -7,7 +7,7 @@ namespace TinkoffInvest.Mappers
     /// <summary>
     /// Маппер из <see cref="Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies"/> в <see cref="Contracts.CurrencyMoney"/>
     /// </summary>
-    public class TinkoffPortfolioCurrenciesToPositionMapper : IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<Contracts.CurrencyMoney>>
+    public class TinkoffPortfolioCurrenciesToCurrencyMoneyMapper : IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<Contracts.CurrencyMoney>>
     {
         /// <inheritdoc/>
         public IReadOnlyCollection<Contracts.CurrencyMoney> Map(PortfolioCurrencies portfolio)
