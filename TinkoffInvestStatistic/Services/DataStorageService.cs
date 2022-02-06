@@ -117,7 +117,7 @@ namespace Services
                 }
 
                 data.Add(instrumentData);
-                result.Add(new Instrument(type) { PlanPercent = instrumentData?.PlanPercent ?? 0 });
+                result.Add(new Instrument(type, instrumentData?.PlanPercent ?? 0));
             }
             
             account.Instruments = data.ToArray();
@@ -133,7 +133,7 @@ namespace Services
         /// <returns>Список заполненных позиций.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<IEnumerable<Position>> MergePositionData(string accountNumber, IEnumerable<Position> positions)
+        public async Task<IEnumerable<Position>> MergeAndSavePositionData(string accountNumber, IEnumerable<Position> positions)
         {
             if (positions == null || positions.Count() == 0)
             {

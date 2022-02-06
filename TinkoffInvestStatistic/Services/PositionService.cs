@@ -23,7 +23,8 @@ namespace Services
 
             foreach (var position in positions)
             {
-                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Value ?? 0) + (position.ExpectedYield?.Value ?? 0);
+                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Value ?? 0) + 
+                                            (position.ExpectedYield?.Value ?? 0);
 
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
@@ -48,7 +49,7 @@ namespace Services
             var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
             positions = positions.Union(rubles).ToArray();
 
-            positions = await DataStorageService.Instance.MergePositionData(accountId, positions);
+            positions = await DataStorageService.Instance.MergeAndSavePositionData(accountId, positions);
 
             return positions.Where(p => p.Type == positionType).ToArray();
         }

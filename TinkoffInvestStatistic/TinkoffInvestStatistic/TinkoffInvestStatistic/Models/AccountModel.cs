@@ -10,17 +10,17 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Идентификатор счета.
         /// </summary>
-        public string AccountId { get; set; }
+        public string AccountId { get; }
 
         /// <summary>
         /// Тип счета.
         /// </summary>
-        public string AccountType { get; set; }
+        public string AccountType { get; }
 
         /// <summary>
         /// Текущая сумма по счету.
         /// </summary>
-        public decimal CurrentSum { get; set; }
+        public decimal CurrentSum { get; }
 
         /// <summary>
         /// Текущая сумма по счету.
@@ -32,10 +32,12 @@ namespace TinkoffInvestStatistic.Models
         /// </summary>
         /// <param name="accountId">Идентификатор счета.</param>
         /// <param name="accountType">Тип счета.</param>
-        public AccountModel(string accountId, string accountType)
+        /// <param name="currentSum">Текущая сумма по счету.</param>
+        public AccountModel(string accountId, string accountType, decimal currentSum)
         {
             AccountId = accountId;
             AccountType = accountType;
+            CurrentSum = currentSum;
         }
     }
 }

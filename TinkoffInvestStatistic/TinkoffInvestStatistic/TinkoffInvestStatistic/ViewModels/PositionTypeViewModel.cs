@@ -82,6 +82,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 LabelMode = LabelMode.RightOnly
             };
         }
+
         private async Task ExecuteLoadPositionTypesCommand()
         {
             Sum = SumPercent = string.Empty;
@@ -135,13 +136,7 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 var service = DependencyService.Get<IInstrumentService>();
-                var data = new List<InstrumentData>();
-                foreach (var positionTypeItem in PositionTypes)
-                {
-                    var item = new InstrumentData(positionTypeItem.Type);
-                    item.PlanPercent = positionTypeItem.PlanPercent;
-                    data.Add(item);
-                }
+                var data = PositionTypes.Select(pt => new InstrumentData(pt.Type, pt.PlanPercent));
 
                 var sumPercent = PositionTypes.Sum(t => t.PlanPercent);
                 SumPercent = (sumPercent / 100).ToString("P");
@@ -174,6 +169,7 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             IsBusy = true;
             SelectedItem = null;
+            Title = "Инструменты";
         }
 
         public PositionTypeModel SelectedItem

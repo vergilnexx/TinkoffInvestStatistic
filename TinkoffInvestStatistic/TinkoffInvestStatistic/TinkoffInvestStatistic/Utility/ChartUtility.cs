@@ -2,6 +2,7 @@
 using Microcharts;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
@@ -44,15 +45,42 @@ namespace TinkoffInvestStatistic.Utility
             return GetEntriesAsync(vm);
         }
 
+        public async Task<ChartEntry[]> GetChartAsync(CurrencyViewModel vm)
+        {
+            return await GetEntriesAsync(vm);
+        }
+
         private Task<ChartEntry[]> GetEntriesAsync(AccountsViewModel vm)
         {
             return GetAccountEntriesAsync(vm);
+        }
+
+        private Task<ChartEntry[]> GetEntriesAsync(CurrencyViewModel vm)
+        {
+            return GetCurrenciesEntriesAsync(vm);
         }
 
         private Task<ChartEntry[]> GetAccountEntriesAsync(AccountsViewModel vm)
         {
             var result = vm.Accounts
                             .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.AccountType, a.CurrentSumText))
+                            .ToArray();
+            return Task.FromResult(result);
+        }
+
+        private Task<ChartEntry[]> GetCurrenciesEntriesAsync(CurrencyViewModel vm)
+        {
+            var result = vm.CurrencyTypes
+                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.Name, a.CurrentSumText))
+                            .ToArray();
+            return Task.FromResult(result);
+        }
+
+        public Task<ChartEntry[]> GetPlannedCurrenciesEntriesAsync(CurrencyViewModel vm)
+        {
+            var result = vm.CurrencyTypes
+                            .OrderByDescending(t => t.CurrentSum)
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercent, GetColor(), t.Name, (t.PlanPercent / 100).ToString("P")))
                             .ToArray();
             return Task.FromResult(result);
         }

@@ -12,12 +12,12 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Наименование группы.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Тип группы.
         /// </summary>
-        public PositionType Type { get; private set; }
+        public PositionType Type { get; }
 
         /// <summary>
         /// Конструктор.

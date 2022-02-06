@@ -13,7 +13,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Финансовый идентификатор.
         /// </summary>
-        public string Figi { get; private set; }
+        public string Figi { get; }
 
         /// <summary>
         /// Наименование.
@@ -28,7 +28,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Тип.
         /// </summary>
-        public PositionType Type { get; private set; }
+        public PositionType Type { get; }
 
         /// <summary>
         /// Тип.

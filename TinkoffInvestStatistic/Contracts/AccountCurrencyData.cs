@@ -3,19 +3,19 @@
 namespace Contracts
 {
     /// <summary>
-    /// Данные об инструменте.
+    /// Данные счет по валютно.
     /// </summary>
-    public class Instrument
+    public class AccountCurrencyData
     {
         /// <summary>
-        /// Тип инструмента.
+        /// Валюта.
         /// </summary>
-        public PositionType Type { get; }
+        public Currency Currency { get; set; }
 
         /// <summary>
         /// Планируемый процент.
         /// </summary>
-        public decimal PlanPercent { get; }
+        public decimal PlanPercent { get; set; }
 
         /// <summary>
         /// Сумма.
@@ -25,12 +25,14 @@ namespace Contracts
         /// <summary>
         /// Конструктор.
         /// </summary>
-        /// <param name="type">Тип инструмента.</param>
+        /// <param name="currency">Валюта.</param>
         /// <param name="planPercent">Планируемый процент.</param>
-        public Instrument(PositionType type, decimal planPercent)
+        /// <param name="sum">Сумма.</param>
+        public AccountCurrencyData(Currency currency, decimal planPercent, decimal sum)
         {
-            Type = type;
+            Currency = currency;
             PlanPercent = planPercent;
+            Sum = sum;
         }
     }
 }

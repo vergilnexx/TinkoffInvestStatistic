@@ -21,9 +21,11 @@ namespace Domain
         /// Конструктор.
         /// </summary>
         /// <param name="type">Тип инструмента.</param>
-        public InstrumentData(PositionType type)
+        /// <param name="planPercent">Планируемый процент.</param>
+        public InstrumentData(PositionType type, decimal planPercent)
         {
             Type = type;
+            PlanPercent = planPercent;
         }
     }
 }

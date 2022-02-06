@@ -18,7 +18,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Тип.
         /// </summary>
-        public PositionType Type { get; set; }
+        public PositionType Type { get; }
 
         /// <summary>
         /// Планируемый процент.
