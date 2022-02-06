@@ -43,6 +43,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public ObservableCollection<PositionTypeModel> PositionTypes { get; }
         public Chart StatisticChart { get; private set; }
+        public Chart PlannedStatisticChart { get; private set; }
         public Command LoadPositionTypesCommand { get; }
         public Command<PositionTypeModel> ItemTapped { get; }
 
@@ -67,13 +68,14 @@ namespace TinkoffInvestStatistic.ViewModels
             LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommand());
             ItemTapped = new Command<PositionTypeModel>(OnPositionTypeSelected);
             StatisticChart = GetChart();
+            PlannedStatisticChart = GetChart();
         }
 
         private static PieChart GetChart()
         {
             return new PieChart()
             {
-                HoleRadius = 0.7f,
+                HoleRadius = 0.6f,
                 LabelTextSize = 30f,
                 BackgroundColor = SKColor.Parse("#2B373D"),
                 LabelColor = new SKColor(255, 255, 255),
@@ -113,6 +115,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
+                await LoadPlannedStatisticChartAsync();
             }
             catch (Exception ex)
             {
@@ -159,6 +162,12 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
+        }
+
+        public async Task LoadPlannedStatisticChartAsync()
+        {
+            PlannedStatisticChart.Entries = await ChartUtility.Instance.GetPlannedPositiionTypeEntriesAsync(this);
+            OnPropertyChanged(nameof(PlannedStatisticChart));
         }
 
         public void OnAppearing()

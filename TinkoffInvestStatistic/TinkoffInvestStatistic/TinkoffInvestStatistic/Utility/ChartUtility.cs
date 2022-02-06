@@ -71,6 +71,15 @@ namespace TinkoffInvestStatistic.Utility
             return Task.FromResult(result);
         }
 
+        public Task<ChartEntry[]> GetPlannedPositiionTypeEntriesAsync(PositionTypeViewModel vm)
+        {
+            var result = vm.PositionTypes
+                            .OrderByDescending(t => t.CurrentSum)
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercent, GetColor(), t.TypeName, (t.PlanPercent / 100).ToString("P")))
+                            .ToArray();
+            return Task.FromResult(result);
+        }
+
         private Task<ChartEntry[]> GetEntriesAsync(PortfolioViewModel vm)
         {
             return GetPositionEntriesAsync(vm);

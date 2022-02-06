@@ -42,7 +42,7 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             return new PieChart()
             {
-                HoleRadius = 0.7f,
+                HoleRadius = 0.6f,
                 LabelTextSize = 30f,
                 BackgroundColor = SKColor.Parse("#2B373D"),
                 LabelColor = new SKColor(255,255,255),

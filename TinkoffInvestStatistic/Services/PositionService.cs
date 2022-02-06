@@ -18,7 +18,7 @@ namespace Services
         public async Task<IReadOnlyCollection<Position>> GetGroupedPositionsAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            IEnumerable<Position> positions = (await bankBrokerClient.GetPositionsAsync(accountId)).Where(p => p.Type == positionType);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
 
             foreach (var position in positions)

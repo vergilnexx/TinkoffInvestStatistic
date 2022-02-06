@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Clients\TinkoffInvest.csproj" />
+    <ProjectReference Include="..\..\Clients\TinkoffInvestAPI\TinkoffInvest.csproj" />
     <ProjectReference Include="..\..\Services\Services.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
