@@ -5,10 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TinkoffInvestStatistic.Views.LoginPage"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"
              Shell.NavBarIsVisible="False">
-    <ContentPage.Content>
-        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-            <Button VerticalOptions="Center" Text="Login" Command="{Binding LoginCommand}"/>
+
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 x:DataType="local:LoginViewModel" 
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <StackLayout Padding="10,0,10,0" VerticalOptions="Center" >
+            <Button VerticalOptions="Center" Text="Вход" Command="{Binding LoginCommand}"/>
         </StackLayout>
-    </ContentPage.Content>
+    </RefreshView>
 </ContentPage>

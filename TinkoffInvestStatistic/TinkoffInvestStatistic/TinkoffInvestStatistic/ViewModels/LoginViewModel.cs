@@ -1,4 +1,6 @@
-﻿using TinkoffInvestStatistic.Views;
+﻿using Plugin.Fingerprint;
+using System.Threading.Tasks;
+using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
@@ -9,13 +11,36 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(OnLoginClicked);
+            LoginCommand = new Command(async () => await CheckAuthorization());
         }
 
-        private async void OnLoginClicked(object obj)
+        public async Task OnAppearing()
         {
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
+            await CheckAuthorization();
+        }
+
+        private async Task CheckAuthorization()
+        {
+            IsBusy = true;
+            var availability = await CrossFingerprint.Current.IsAvailableAsync();
+
+            if (!availability)
+            {
+                IsBusy = false;
+                return;
+            }
+
+            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
+                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Вход", string.Empty)));
+            if(authResult.Authenticated)
+            {
+                // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
+                await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
+            }
+            else
+            {
+                IsBusy = false;
+            }
         }
     }
 }

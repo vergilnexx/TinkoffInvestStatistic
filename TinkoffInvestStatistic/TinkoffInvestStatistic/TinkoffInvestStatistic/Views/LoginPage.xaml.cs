@@ -14,5 +14,11 @@ namespace TinkoffInvestStatistic.Views
             InitializeComponent();
             this.BindingContext = _viewModel;
         }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _viewModel.OnAppearing();
+        }
     }
 }
