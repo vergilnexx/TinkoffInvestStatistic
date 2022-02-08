@@ -20,10 +20,10 @@ namespace TinkoffInvestStatistic.ViewModels
     /// <summary>
     /// Модель типов инструменто (ETF, акции, облигации)
     /// </summary>
-    [QueryProperty(nameof(AccountId), nameof(AccountId))]
     public class PositionTypeViewModel : BaseViewModel
     {
-        private string _accountId;
+        public string AccountId { get; set; }
+
         private PositionTypeModel _selectedItem;
 
         /// <summary>
@@ -46,21 +46,6 @@ namespace TinkoffInvestStatistic.ViewModels
         public Chart PlannedStatisticChart { get; private set; }
         public Command LoadPositionTypesCommand { get; }
         public Command<PositionTypeModel> ItemTapped { get; }
-
-        /// <summary>
-        /// Номер счета.
-        /// </summary>
-        public string AccountId
-        {
-            get
-            {
-                return _accountId;
-            }
-            set
-            {
-                _accountId = value;
-            }
-        }
 
         public PositionTypeViewModel()
         {

@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Contracts.Enums;
 using Infrastructure.Clients;
+using Infrastructure.Helpers;
 using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -37,16 +38,12 @@ namespace Services
             IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
 
-            var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
-            var rubles = fiatPositions
-                .Where(fp => fp.Currency == Currency.Rub)
-                .Select(fp => new Position(string.Empty, PositionType.Currency, "Рубль", fp.Value) { AveragePositionPrice = new CurrencyMoney(Currency.Rub, 0) });
-
-            // Добавляем данные про кэш в рублях.
-            positions = positions.Union(rubles).ToArray();
+            // Данные в позициях о валютах не подходят, так как они представляют курс, а не размер кэша, поэтому кэш добавляем отдельно.
+            positions = positions.Where(p => p.Type != PositionType.Currency).ToArray();
             foreach (var position in positions)
             {
-                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Value ?? 0) + (position.ExpectedYield?.Value ?? 0);
+                var expectedYield = position.ExpectedYield?.Sum ?? 0;
+                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Sum ?? 0) + expectedYield;
 
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
@@ -57,16 +54,36 @@ namespace Services
                         throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
                     }
 
-                    position.Sum = position.SumInCurrency * currency.Value;
-                    position.DifferenceSum = position.ExpectedYield.Value * currency.Value;
+                    position.Sum = position.SumInCurrency * currency.Sum;
+                    position.DifferenceSum = expectedYield * currency.Sum;
                 }
                 else
                 {
                     position.Sum = position.SumInCurrency;
-                    position.DifferenceSum = position.ExpectedYield.Value;
+                    position.DifferenceSum = expectedYield;
                 }
             }
-            
+
+            var sum = positions.Sum(p => p.Sum);
+            var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
+            foreach (var currencyPosition in fiatPositions)
+            {
+                if (currencyPosition.Currency != Currency.Rub)
+                {
+                    var currency = currencies.FirstOrDefault(c => currencyPosition.Currency == c.Currency);
+                    if (currency == null)
+                    {
+                        throw new ApplicationException("Не найдена валюта типа: " + currency);
+                    }
+
+                    currencyPosition.Sum *= currency.Sum;
+                }
+            }
+            var currenciesPositions = fiatPositions
+                .Select(fp => new Position(string.Empty, PositionType.Currency, fp.Currency.GetDescription(), fp.Sum) { AveragePositionPrice = new CurrencyMoney(fp.Currency, 0) });
+
+            var sum2 = currenciesPositions.Sum(p => p.Sum);
+            positions = positions.Union(currenciesPositions).ToArray();
             var result = positions
                             .GroupBy(p => p.AveragePositionPrice.Currency)
                             .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, 0, currencyGroup.Sum(cg => cg.Sum)))

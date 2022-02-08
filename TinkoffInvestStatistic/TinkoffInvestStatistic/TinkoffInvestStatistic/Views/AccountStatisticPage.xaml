@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TinkoffInvestStatistic.Views.AccountStatisticPage"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.Views;assembly=TinkoffInvestStatistic"
+            BarBackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+    <TabbedPage.Children x:DataType="local:AccountStatisticViewModel">
+        <local:PositionTypesPage Title="Инструменты" BackgroundColor="Black"/>
+        <local:CurrencyPage Title="Валюты" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+    </TabbedPage.Children>
+</TabbedPage>

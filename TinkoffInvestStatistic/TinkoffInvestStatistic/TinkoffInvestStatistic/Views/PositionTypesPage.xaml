@@ -16,14 +16,14 @@
                                     LineBreakMode="NoWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                     FontSize="13" />
-            <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="170" Grid.Row="1"
+            <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="150" Grid.Row="1"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
             <Label Text="Актуальное:" Grid.Row="2"
                                     LineBreakMode="NoWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                     FontSize="13" />
-            <forms:ChartView Chart="{Binding PlannedStatisticChart}" HeightRequest="170"  Grid.Row="3"
+            <forms:ChartView Chart="{Binding PlannedStatisticChart}" HeightRequest="150"  Grid.Row="3"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
             <StackLayout Padding="10,0,10,0"  Grid.Row="4">

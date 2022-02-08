@@ -111,8 +111,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 return;
             }
 
-            await Shell.Current.GoToAsync($"{nameof(PositionTypesPage)}" +
-                $"?{nameof(PositionTypeViewModel.AccountId)}={item.AccountId}", true);
+            await Shell.Current.GoToAsync($"{nameof(AccountStatisticPage)}" +
+                $"?{nameof(AccountStatisticViewModel.AccountId)}={item.AccountId}", true);
         }
     }
 }

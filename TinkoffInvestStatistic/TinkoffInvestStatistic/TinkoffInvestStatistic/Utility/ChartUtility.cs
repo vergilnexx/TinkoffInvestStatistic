@@ -71,7 +71,7 @@ namespace TinkoffInvestStatistic.Utility
         private Task<ChartEntry[]> GetCurrenciesEntriesAsync(CurrencyViewModel vm)
         {
             var result = vm.CurrencyTypes
-                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.Name, a.CurrentSumText))
+                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.Name, (a.CurrentPercent / 100).ToString("P")))
                             .ToArray();
             return Task.FromResult(result);
         }

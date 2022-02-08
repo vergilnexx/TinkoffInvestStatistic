@@ -54,7 +54,7 @@ namespace TinkoffInvestStatistic.Models
         /// <param name="currentPercent">Текущий процент.</param>
         public CurrencyTypeModel(Currency currency, decimal currentSum, decimal planPercent, decimal currentPercent)
         {
-            Name = Currency.GetDescription();
+            Name = currency.GetDescription();
             Currency = currency;
             CurrentSum = currentSum;
             PlanPercent = planPercent;

@@ -10,12 +10,22 @@ namespace Domain
         /// <summary>
         /// Тип инструмента.
         /// </summary>
-        public PositionType Type { get; private set; }
+        public PositionType Type { get; }
 
         /// <summary>
         /// Планируемый процент.
         /// </summary>
         public decimal PlanPercent { get; set; }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="type">Тип инструмента.</param>
+        public InstrumentData(PositionType type)
+        {
+            Type = type;
+            PlanPercent = 0;
+        }
 
         /// <summary>
         /// Конструктор.

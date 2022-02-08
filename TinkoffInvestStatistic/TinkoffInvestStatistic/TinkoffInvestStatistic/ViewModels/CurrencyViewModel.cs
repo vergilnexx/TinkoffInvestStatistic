@@ -3,6 +3,7 @@ using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -16,19 +17,9 @@ namespace TinkoffInvestStatistic.ViewModels
     /// <summary>
     /// Модель представления статистики по валютам.
     /// </summary>
-    [QueryProperty(nameof(AccountId), nameof(AccountId))]
     public class CurrencyViewModel : BaseViewModel
     {
-        private string _accountId;
-
-        /// <summary>
-        /// Номер счета.
-        /// </summary>
-        public string AccountId
-        {
-            get { return _accountId;}
-            set { _accountId = value; }
-        }
+        public string AccountId { get; set; }
 
         /// <summary>
         /// Сумма по всем инструментам.

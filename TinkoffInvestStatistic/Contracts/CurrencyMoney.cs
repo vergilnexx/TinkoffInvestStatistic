@@ -13,19 +13,19 @@ namespace Contracts
         public Currency Currency { get; set; }
 
         /// <summary>
-        /// Количество.
+        /// Сумма.
         /// </summary>
-        public decimal Value { get; set; }
+        public decimal Sum { get; set; }
 
         /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="currency">Валюта.</param>
-        /// <param name="value">Количество.</param>
-        public CurrencyMoney(Currency currency, decimal value)
+        /// <param name="sum">Сумма.</param>
+        public CurrencyMoney(Currency currency, decimal sum)
         {
             Currency = currency;
-            Value = value;
+            Sum = sum;
         }
     }
 }
