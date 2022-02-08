@@ -23,6 +23,11 @@ namespace Domain
         public PositionData[] Positions { get; set; } = Array.Empty<PositionData>();
 
         /// <summary>
+        /// Информация о позициях.
+        /// </summary>
+        public CurrencyData[] Currencies { get; set; } = Array.Empty<CurrencyData>();
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="number">Номер счета.</param>

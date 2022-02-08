@@ -1,16 +1,16 @@
 ﻿using Contracts.Enums;
 
-namespace Contracts
+namespace Domain
 {
     /// <summary>
-    /// Данные об инструменте.
+    /// Данные о валюте.
     /// </summary>
-    public class Instrument
+    public class CurrencyData
     {
         /// <summary>
-        /// Тип инструмента.
+        /// Валюта.
         /// </summary>
-        public PositionType Type { get; }
+        public Currency Currency { get; }
 
         /// <summary>
         /// Планируемый процент.
@@ -18,18 +18,23 @@ namespace Contracts
         public decimal PlanPercent { get; set; }
 
         /// <summary>
-        /// Сумма.
+        /// Конструктор.
         /// </summary>
-        public decimal Sum { get; set; }
+        /// <param name="currency">Валюта.</param>
+        public CurrencyData(Currency currency)
+        {
+            Currency = currency;
+            PlanPercent = 0;
+        }
 
         /// <summary>
         /// Конструктор.
         /// </summary>
-        /// <param name="type">Тип инструмента.</param>
+        /// <param name="currency">Валюта.</param>
         /// <param name="planPercent">Планируемый процент.</param>
-        public Instrument(PositionType type, decimal planPercent)
+        public CurrencyData(Currency currency, decimal planPercent)
         {
-            Type = type;
+            Currency = currency;
             PlanPercent = planPercent;
         }
     }

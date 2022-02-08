@@ -33,7 +33,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Планируемый процент.
         /// </summary>
-        public decimal PlanPercent { get; }
+        public decimal PlanPercent { get; set; }
 
         /// <summary>
         /// Текущий процент от суммы по всем инструментам.

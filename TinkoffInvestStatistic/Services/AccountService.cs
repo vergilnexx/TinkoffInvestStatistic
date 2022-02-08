@@ -64,7 +64,6 @@ namespace Services
                 }
             }
 
-            var sum = positions.Sum(p => p.Sum);
             var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
             foreach (var currencyPosition in fiatPositions)
             {
@@ -80,13 +79,16 @@ namespace Services
                 }
             }
             var currenciesPositions = fiatPositions
-                .Select(fp => new Position(string.Empty, PositionType.Currency, fp.Currency.GetDescription(), fp.Sum) { AveragePositionPrice = new CurrencyMoney(fp.Currency, 0) });
+                .Select(fp => new Position(string.Empty, PositionType.Currency, fp.Currency.GetDescription(), fp.Sum) 
+                { 
+                    AveragePositionPrice = new CurrencyMoney(fp.Currency, 0) 
+                });
 
-            var sum2 = currenciesPositions.Sum(p => p.Sum);
             positions = positions.Union(currenciesPositions).ToArray();
             var result = positions
                             .GroupBy(p => p.AveragePositionPrice.Currency)
-                            .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, 0, currencyGroup.Sum(cg => cg.Sum)))
+                            .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, 0, 
+                                                        currencyGroup.Sum(cg => cg.Sum)))
                             .ToArray();
             return result;
         }

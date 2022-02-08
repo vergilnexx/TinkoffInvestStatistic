@@ -201,6 +201,35 @@ namespace Services
         }
 
         /// <summary>
+        /// Сохраняет данные по валютам по конкретному счету.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="data">Данные по ввалютам.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public Task SetCurrenciesData(string accountNumber, CurrencyData[] data)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (data == null || data.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
+            }
+
+            account.Currencies = data;
+            return SaveAccountDataAsync();
+        }
+
+        /// <summary>
         /// Сохраняет данные позиций по конкретному счету.
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>

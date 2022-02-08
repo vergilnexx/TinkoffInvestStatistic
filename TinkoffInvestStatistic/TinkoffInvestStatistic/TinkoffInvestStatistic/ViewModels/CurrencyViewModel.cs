@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Domain;
 using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
@@ -121,27 +122,21 @@ namespace TinkoffInvestStatistic.ViewModels
             IsBusy = true;
         }
 
-        public void SavePlanPercent()
+        public async Task SavePlanPercent()
         {
             try
             {
-                //var service = DependencyService.Get<IInstrumentService>();
-                //var data = new List<InstrumentData>();
-                //foreach (var positionTypeItem in PositionTypes)
-                //{
-                //    var item = new InstrumentData(positionTypeItem.Type);
-                //    item.PlanPercent = positionTypeItem.PlanPercent;
-                //    data.Add(item);
-                //}
+                var service = DependencyService.Get<ICurrencyService>();
+                var data = CurrencyTypes.Select(c => new CurrencyData(c.Currency, c.PlanPercent));
 
-                //var sumPercent = PositionTypes.Sum(t => t.PlanPercent);
-                //SumPercent = (sumPercent / 100).ToString("P");
-                //OnPropertyChanged(nameof(SumPercent));
+                var sumPercent = CurrencyTypes.Sum(t => t.PlanPercent);
+                SumPercent = (sumPercent / 100).ToString("P");
+                OnPropertyChanged(nameof(SumPercent));
 
-                //SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
-                //OnPropertyChanged(nameof(SumPercentColor));
+                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                OnPropertyChanged(nameof(SumPercentColor));
 
-                //await service.SavePlanPercents(AccountId, data.ToArray());
+                await service.SavePlanPercents(AccountId, data.ToArray());
             }
             catch (Exception ex)
             {
