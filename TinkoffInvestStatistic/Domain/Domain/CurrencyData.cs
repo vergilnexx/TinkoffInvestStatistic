@@ -1,4 +1,6 @@
 ﻿using Contracts.Enums;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace Domain
 {
@@ -8,14 +10,32 @@ namespace Domain
     public class CurrencyData
     {
         /// <summary>
+        /// Идентификатор.
+        /// </summary>
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Номер счета.
+        /// </summary>
+        public string AccountNumber { get; set; }
+
+        /// <summary>
         /// Валюта.
         /// </summary>
-        public Currency Currency { get; }
+        public Currency Currency { get; set; }
 
         /// <summary>
         /// Планируемый процент.
         /// </summary>
         public decimal PlanPercent { get; set; }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        public CurrencyData() 
+        { 
+        }
 
         /// <summary>
         /// Конструктор.
@@ -30,10 +50,12 @@ namespace Domain
         /// <summary>
         /// Конструктор.
         /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
         /// <param name="currency">Валюта.</param>
         /// <param name="planPercent">Планируемый процент.</param>
-        public CurrencyData(Currency currency, decimal planPercent)
+        public CurrencyData(string accountNumber, Currency currency, decimal planPercent)
         {
+            AccountNumber = accountNumber;
             Currency = currency;
             PlanPercent = planPercent;
         }

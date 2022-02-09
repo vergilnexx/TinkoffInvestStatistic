@@ -33,9 +33,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Task SavePlanPercents(string accountNumber, InstrumentData[] data)
+        public Task SavePlanPercents(string accountNumber, PositionTypeData[] data)
         {
-            return DataStorageService.Instance.SetPositionTypesData(accountNumber, data);
+            return DataStorageService.Instance.SavePositionTypesData(accountNumber, data);
         }
     }
 }

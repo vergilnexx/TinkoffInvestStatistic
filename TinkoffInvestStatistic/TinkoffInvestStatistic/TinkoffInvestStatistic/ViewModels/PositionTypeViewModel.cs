@@ -97,7 +97,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
@@ -121,13 +121,13 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 var service = DependencyService.Get<IInstrumentService>();
-                var data = PositionTypes.Select(pt => new InstrumentData(pt.Type, pt.PlanPercent));
+                var data = PositionTypes.Select(pt => new PositionTypeData(AccountId, pt.Type, pt.PlanPercent));
 
                 var sumPercent = PositionTypes.Sum(t => t.PlanPercent);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());

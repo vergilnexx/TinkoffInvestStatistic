@@ -15,10 +15,10 @@ namespace Services
     public class PositionService : IPositionService
     {
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<Position>> GetGroupedPositionsAsync(string accountId, PositionType positionType)
+        public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position> positions = (await bankBrokerClient.GetPositionsAsync(accountId)).Where(p => p.Type == positionType);
+            var positions = (await bankBrokerClient.GetPositionsAsync(accountId)).Where(p => p.Type == positionType);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
 
             foreach (var position in positions)
@@ -45,13 +45,16 @@ namespace Services
                 }
             }
 
-            // Добавляем данные про кэш в рублях.
-            var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
-            positions = positions.Union(rubles).ToArray();
+            if(positionType == PositionType.Currency)
+            {
+                // Добавляем данные про кэш в рублях.
+                var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
+                positions = positions.Union(rubles).ToArray();
+            }            
 
-            positions = await DataStorageService.Instance.MergeAndSavePositionData(accountId, positions);
+            positions = await DataStorageService.Instance.MergePositionData(accountId, positionType, positions.ToArray());
 
-            return positions.Where(p => p.Type == positionType).ToArray();
+            return positions.ToArray();
         }
 
         private static async Task<IEnumerable<Position>> AddFiatRubles(string accountId, IBankBrokerApiClient bankBrokerClient, IEnumerable<Position> positions)
@@ -96,9 +99,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Task SavePlanPercents(string accountId, PositionData[] data)
+        public Task SavePlanPercents(string accountId, PositionType positionType, PositionData[] data)
         {
-            return DataStorageService.Instance.SetPositionData(accountId, data);
+            return DataStorageService.Instance.SavePositionDataAsync(accountId, positionType, data);
         }
 
         protected decimal? GetSumByPositions(

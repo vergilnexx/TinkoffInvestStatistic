@@ -22,6 +22,6 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
         /// <param name="data">Данные для сохранения.</param>
-        Task SavePlanPercents(string accountNumber, InstrumentData[] data);
+        Task SavePlanPercents(string accountNumber, PositionTypeData[] data);
     }
 }

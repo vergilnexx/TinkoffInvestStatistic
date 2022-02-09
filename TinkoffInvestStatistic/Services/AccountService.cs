@@ -90,6 +90,7 @@ namespace Services
                             .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, 0, 
                                                         currencyGroup.Sum(cg => cg.Sum)))
                             .ToArray();
+            result = await DataStorageService.Instance.MergeCurrenciesData(accountId, result);
             return result;
         }
     }

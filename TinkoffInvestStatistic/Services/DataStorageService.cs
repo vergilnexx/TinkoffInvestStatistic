@@ -5,6 +5,7 @@ using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -16,11 +17,6 @@ namespace Services
     /// </summary>
     public sealed class DataStorageService
     {
-        /// <summary>
-        /// Данные по счетам.
-        /// </summary>
-        public AccountData[]? Accounts { get; private set; }
-
         /// <summary>
         /// Экземпляр.
         /// </summary>
@@ -43,15 +39,6 @@ namespace Services
         }
 
         /// <summary>
-        /// Загрузка данных.
-        /// </summary>
-        public async Task LoadAccountData()
-        {
-            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
-            Accounts = await dataAccessService.GetAccountDataAsync();
-        }
-
-        /// <summary>
         /// Объединение данных полученных из внешнего источника с локальными данными.
         /// </summary>
         /// <param name="externalAccounts">Внешние данные по счетам.</param>
@@ -64,7 +51,9 @@ namespace Services
                 throw new ArgumentNullException(nameof(externalAccounts), "Полученные данные не могут быть неопределенными.");
             }
 
-            var result = (Accounts ?? Array.Empty<AccountData>()).ToList();
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var accounts = await dataAccessService.GetAccountDataAsync();
+            var result = (accounts ?? Array.Empty<AccountData>()).ToList();
             foreach (var externalAccount in externalAccounts)
             {
                 var account = result.FirstOrDefault(x => x.Number == externalAccount.ID);
@@ -75,8 +64,7 @@ namespace Services
                 }
             }
 
-            Accounts = result.ToArray();
-            await SaveAccountDataAsync();
+            await dataAccessService.SaveAccountDataAsync(result.ToArray());
             return externalAccounts.ToArray();
         }
 
@@ -90,38 +78,69 @@ namespace Services
         /// <exception cref="ApplicationException"></exception>
         public async Task<Instrument[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
         {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
             if (positionTypes == null)
             {
                 throw new ArgumentNullException(nameof(positionTypes), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (Accounts == null)
-            {
-                throw new ApplicationException("Данные по счетам не могут быть неопределенными при получении данных об инструментах по счету - " + accountNumber);
-            }
-
-            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
-            if (account == null)
-            {
-                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
-            }
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var instrumentEntities = await dataAccessService.GetPositionTypesAsync(accountNumber, positionTypes);
 
             var result = new List<Instrument>();
-            var data = new List<InstrumentData>();
             foreach (var type in positionTypes)
             {
-                var instrumentData = account.Instruments.FirstOrDefault(i => i.Type == type);
-                if(instrumentData == null)
+                var instrumentEntity = instrumentEntities.FirstOrDefault(i => i.Type == type);
+                if(instrumentEntity == null)
                 {
-                    instrumentData = new InstrumentData(type);
+                    instrumentEntity = new PositionTypeData(type);
                 }
 
-                data.Add(instrumentData);
-                result.Add(new Instrument(type, instrumentData?.PlanPercent ?? 0));
+                result.Add(new Instrument(type, instrumentEntity?.PlanPercent ?? 0));
             }
             
-            account.Instruments = data.ToArray();
-            await SaveAccountDataAsync();
+            return result.ToArray();
+        }
+
+        /// <summary>
+        /// Возвращает заполненные данные по инструментам.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="currencies">Данные по валюте.</param>
+        /// <returns>Заполненные данные по инструментам</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        public async Task<AccountCurrencyData[]> MergeCurrenciesData(string accountNumber, AccountCurrencyData[] currencies)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (currencies == null)
+            {
+                throw new ArgumentNullException(nameof(currencies), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var currenciesEntities = await dataAccessService.GetCurrenciesDataAsync(accountNumber);
+
+            var result = new List<AccountCurrencyData>();
+            foreach (var currency in currencies)
+            {
+                var currencyEntity = currenciesEntities.FirstOrDefault(i => i.Currency == currency.Currency);
+                if (currencyEntity != null)
+                {
+                    currencyEntity.PlanPercent = currencyEntity?.PlanPercent ?? 0;
+                }
+
+                result.Add(new AccountCurrencyData(currency.Currency, currencyEntity.PlanPercent, currency.Sum));
+            }
+
             return result.ToArray();
         }
 
@@ -133,31 +152,28 @@ namespace Services
         /// <returns>Список заполненных позиций.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<IEnumerable<Position>> MergeAndSavePositionData(string accountNumber, IEnumerable<Position> positions)
+        public async Task<IEnumerable<Position>> MergePositionData(string accountNumber, PositionType positionType, IReadOnlyCollection<Position> positions)
         {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
             if (positions == null || positions.Count() == 0)
             {
                 throw new ArgumentNullException(nameof(positions), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (Accounts == null)
-            {
-                throw new ApplicationException("Данные по счетам не могут быть неопределенными при получении данных об инструментах по счету - " + accountNumber);
-            }
-
-            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
-            if (account == null)
-            {
-                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
-            }
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var positionEntities = await dataAccessService.GetPositionsAsync(accountNumber, positionType);
 
             var result = new List<PositionData>();
             foreach (var position in positions)
             {
-                var positionData = account.Positions.FirstOrDefault(i => i.Figi == position.Figi);
+                var positionData = positionEntities.FirstOrDefault(i => i.Figi == position.Figi);
                 if (positionData == null)
                 {
-                    positionData = new PositionData(position.Figi, position.Type);
+                    positionData = new PositionData(accountNumber, position.Figi, position.Type);
                 }
                 else
                 {
@@ -166,8 +182,6 @@ namespace Services
                 result.Add(positionData);
             }
 
-            account.Positions = result.ToArray();
-            await SaveAccountDataAsync();
             return positions.ToArray();
         }
 
@@ -178,7 +192,7 @@ namespace Services
         /// <param name="data">Данные по инструментам.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SetPositionTypesData(string accountNumber, InstrumentData[] data)
+        public Task SavePositionTypesData(string accountNumber, PositionTypeData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -190,14 +204,8 @@ namespace Services
                 throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
             }
 
-            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
-            if (account == null)
-            {
-                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
-            }
-
-            account.Instruments = data;
-            return SaveAccountDataAsync();
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.SavePositionTypesDataAsync(accountNumber, data);
         }
 
         /// <summary>
@@ -207,7 +215,7 @@ namespace Services
         /// <param name="data">Данные по ввалютам.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SetCurrenciesData(string accountNumber, CurrencyData[] data)
+        public Task SaveCurrenciesData(string accountNumber, CurrencyData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -219,24 +227,19 @@ namespace Services
                 throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
             }
 
-            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
-            if (account == null)
-            {
-                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
-            }
-
-            account.Currencies = data;
-            return SaveAccountDataAsync();
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.SaveCurrenciesDataAsync(accountNumber, data);
         }
 
         /// <summary>
         /// Сохраняет данные позиций по конкретному счету.
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positionType">Тип позиции.</param>
         /// <param name="data">Данные позиций.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SetPositionData(string accountNumber, PositionData[] data)
+        public Task SavePositionDataAsync(string accountNumber, PositionType positionType, PositionData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -248,31 +251,14 @@ namespace Services
                 throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
             }
 
-            var account = Accounts.FirstOrDefault(a => a.Number == accountNumber);
-            if (account == null)
+            var isAnotherType = data.Any(a => a.Type == positionType);
+            if (!isAnotherType)
             {
-                throw new ApplicationException("Данные по счету " + accountNumber + " не найдены");
-            }
-
-            // Заменяем только то, что изменяется, остальные оставляем без изменения.
-            var changedPositionType = data.FirstOrDefault().Type;
-            var notReplacedPositions = account.Positions.Where(a => a.Type != changedPositionType);
-            account.Positions = notReplacedPositions.Union(data).ToArray();
-            return SaveAccountDataAsync();
-        }
-
-        /// <summary>
-        /// Сохранение данных.
-        /// </summary>
-        private async Task SaveAccountDataAsync()
-        {
-            if(Accounts == null)
-            {
-                return;
+                throw new ApplicationException("Попытка изменить позиции другого типа.");
             }
 
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
-            await dataAccessService.SaveAccountDataAsync(Accounts);
+            return dataAccessService.SavePositionsDataAsync(accountNumber, data);
         }
     }
 }

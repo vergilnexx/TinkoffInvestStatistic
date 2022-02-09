@@ -127,7 +127,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var group = GroupedPositions.FirstOrDefault();
                 foreach (var position in group)
                 {
-                    var item = new PositionData(position.Figi, position.Type);
+                    var item = new PositionData(AccountId, position.Figi, position.Type);
                     item.PlanPercent = position.PlanPercent;
                     data.Add(item);
                 }
@@ -136,10 +136,10 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, GroupPlanPercent);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
-                await service.SavePlanPercents(AccountId, data.ToArray());
+                await service.SavePlanPercents(AccountId, _positionType, data.ToArray());
             }
             catch (Exception ex)
             {
@@ -170,7 +170,7 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 GroupedPositions.Clear();
                 var service = DependencyService.Get<IPositionService>();
-                var data = await service.GetGroupedPositionsAsync(AccountId, _positionType);
+                var data = await service.GetPositionsByTypeAsync(AccountId, _positionType);
 
                 var sum = AccountSum;
                 var models = data
@@ -202,7 +202,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, GroupPlanPercent);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();

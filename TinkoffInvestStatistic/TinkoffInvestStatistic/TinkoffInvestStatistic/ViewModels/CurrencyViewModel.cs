@@ -89,7 +89,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
@@ -127,13 +127,13 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 var service = DependencyService.Get<ICurrencyService>();
-                var data = CurrencyTypes.Select(c => new CurrencyData(c.Currency, c.PlanPercent));
+                var data = CurrencyTypes.Select(c => new CurrencyData(AccountId, c.Currency, c.PlanPercent));
 
                 var sumPercent = CurrencyTypes.Sum(t => t.PlanPercent);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetPercentWithoutAllowedDifferenceColor(sumPercent, 100);
+                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, data.ToArray());

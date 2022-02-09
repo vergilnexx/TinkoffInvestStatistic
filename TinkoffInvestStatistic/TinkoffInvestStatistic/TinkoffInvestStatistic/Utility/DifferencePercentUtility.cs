@@ -35,7 +35,7 @@ namespace TinkoffInvestStatistic.Utility
         /// <param name="currentPercentValue">Текущее значение.</param>
         /// <param name="plannedPercentValue">Планируемое значение.</param>
         /// <returns>Цвет.</returns>
-        public static Color GetPercentWithoutAllowedDifferenceColor(decimal currentPercentValue, decimal plannedPercentValue)
+        public static Color GetColorPercentWithoutAllowedDifference(decimal currentPercentValue, decimal plannedPercentValue)
         {
             if (currentPercentValue != plannedPercentValue)
             {

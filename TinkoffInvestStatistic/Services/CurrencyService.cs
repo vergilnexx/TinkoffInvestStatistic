@@ -10,7 +10,7 @@ namespace Services
         /// <inheritdoc/>
         public Task SavePlanPercents(string accountNumber, CurrencyData[] data)
         {
-            return DataStorageService.Instance.SetCurrenciesData(accountNumber, data);
+            return DataStorageService.Instance.SaveCurrenciesData(accountNumber, data);
         }
     }
 }

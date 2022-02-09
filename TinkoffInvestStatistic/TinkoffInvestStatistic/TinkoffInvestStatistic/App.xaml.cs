@@ -39,7 +39,6 @@ namespace TinkoffInvestStatistic
         protected override void OnStart()
         {
             base.OnStart();
-            Task.Run(() => DataStorageService.Instance.LoadAccountData());
         }
 
         protected override void OnSleep()

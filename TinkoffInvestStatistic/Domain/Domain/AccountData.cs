@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SQLite;
 
 namespace Domain
 {
@@ -10,22 +10,15 @@ namespace Domain
         /// <summary>
         /// Номер счета.
         /// </summary>
-        public string Number { get; private set; }
+        [PrimaryKey]
+        public string Number { get; set; }
 
         /// <summary>
-        /// Данные по инструментам.
+        /// Конструктор.
         /// </summary>
-        public InstrumentData[] Instruments { get; set; } = Array.Empty<InstrumentData>();
-
-        /// <summary>
-        /// Информация о позициях.
-        /// </summary>
-        public PositionData[] Positions { get; set; } = Array.Empty<PositionData>();
-
-        /// <summary>
-        /// Информация о позициях.
-        /// </summary>
-        public CurrencyData[] Currencies { get; set; } = Array.Empty<CurrencyData>();
+        public AccountData()
+        {
+        }
 
         /// <summary>
         /// Конструктор.
