@@ -192,7 +192,7 @@ namespace Services
                     var positionTypeEntity = await _database
                                                     .Table<PositionData>()
                                                     .Where(pt => pt.AccountNumber == positionTypeData.AccountNumber)
-                                                    .FirstOrDefaultAsync(pt => pt.Figi == pt.Figi)
+                                                    .FirstOrDefaultAsync(pt => pt.Figi == positionTypeData.Figi)
                                                     .ConfigureAwait(false);
                     if (positionTypeEntity != null)
                     {

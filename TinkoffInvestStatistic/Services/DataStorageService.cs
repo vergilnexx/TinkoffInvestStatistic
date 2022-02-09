@@ -138,7 +138,7 @@ namespace Services
                     currencyEntity.PlanPercent = currencyEntity?.PlanPercent ?? 0;
                 }
 
-                result.Add(new AccountCurrencyData(currency.Currency, currencyEntity.PlanPercent, currency.Sum));
+                result.Add(new AccountCurrencyData(currency.Currency, currencyEntity?.PlanPercent ?? 0, currency.Sum));
             }
 
             return result.ToArray();

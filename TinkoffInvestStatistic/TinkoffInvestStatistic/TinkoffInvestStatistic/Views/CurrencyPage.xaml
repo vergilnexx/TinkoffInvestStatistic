@@ -16,8 +16,8 @@
                    LineBreakMode="NoWrap"
                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                    FontSize="13" />
-            <forms:ChartView Chart="{Binding StatisticChart}" 
-                             HeightRequest="170" 
+            <forms:ChartView Chart="{Binding PlannedStatisticChart}" 
+                             HeightRequest="170"
                              Grid.Row="1"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
@@ -26,8 +26,8 @@
                    LineBreakMode="NoWrap"
                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                    FontSize="13" />
-            <forms:ChartView Chart="{Binding PlannedStatisticChart}" 
-                             HeightRequest="170"
+            <forms:ChartView Chart="{Binding StatisticChart}" 
+                             HeightRequest="170" 
                              Grid.Row="3"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
