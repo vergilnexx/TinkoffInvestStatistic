@@ -9,6 +9,7 @@ namespace TinkoffInvestStatistic
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(SectorDetailPage), typeof(SectorDetailPage));
             Routing.RegisterRoute(nameof(AccountStatisticPage), typeof(AccountStatisticPage));
             Routing.RegisterRoute(nameof(PositionTypesPage), typeof(PositionTypesPage));
             Routing.RegisterRoute(nameof(PortfolioPage), typeof(PortfolioPage));

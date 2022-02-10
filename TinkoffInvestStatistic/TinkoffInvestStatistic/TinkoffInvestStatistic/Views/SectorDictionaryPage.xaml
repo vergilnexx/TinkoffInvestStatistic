@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:model="clr-namespace:TinkoffInvestStatistic.Models" 
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"
+             x:Class="TinkoffInvestStatistic.Views.SectorDictionaryPage"
+             Title="Справочник секторов">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить" Command="{Binding AddSectorCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView x:DataType="local:SectorDictionaryViewModel" Command="{Binding LoadSectorsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}"
+                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}">
+        <CollectionView x:Name="ItemsListView"
+                ItemsSource="{Binding Sectors}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" x:DataType="model:SectorModel">
+                        <Label Text="{Binding Name}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:SectorDictionaryViewModel}}, Path=SectorTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

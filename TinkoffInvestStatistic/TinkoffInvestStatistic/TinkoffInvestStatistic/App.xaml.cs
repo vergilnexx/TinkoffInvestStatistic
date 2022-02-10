@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Container;
 using Services;
 using System.Globalization;
-using System.Threading.Tasks;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
 

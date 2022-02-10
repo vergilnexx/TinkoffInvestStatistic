@@ -26,6 +26,7 @@ namespace Infrastructure.Container
             DependencyService.Register<IInstrumentService, InstrumentService>();
             DependencyService.Register<ICurrencyService, CurrencyService>();
             DependencyService.Register<IDataStorageAccessService, DatabaseService>();
+            DependencyService.Register<ISectorService, SectorService>();
         }
 
         private static void ConfigureClients()

@@ -4,8 +4,6 @@ using Domain;
 using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -20,7 +18,7 @@ namespace Services
         /// <summary>
         /// Экземпляр.
         /// </summary>
-        public static DataStorageService Instance { get; private set; }
+        internal static DataStorageService Instance { get; private set; }
 
         /// <summary>
         /// Конструктор.
@@ -44,7 +42,7 @@ namespace Services
         /// <param name="externalAccounts">Внешние данные по счетам.</param>
         /// <returns>Данные по счетам.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<Account[]> MergeAccountData(IReadOnlyCollection<Account> externalAccounts)
+        internal async Task<Account[]> MergeAccountData(IReadOnlyCollection<Account> externalAccounts)
         {
             if (externalAccounts == null)
             {
@@ -76,7 +74,7 @@ namespace Services
         /// <returns>Заполненные данные по инструментам</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<Instrument[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
+        internal async Task<Instrument[]> MergePositionTypesData(string accountNumber, PositionType[] positionTypes)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -114,7 +112,7 @@ namespace Services
         /// <returns>Заполненные данные по инструментам</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<AccountCurrencyData[]> MergeCurrenciesData(string accountNumber, AccountCurrencyData[] currencies)
+        internal async Task<AccountCurrencyData[]> MergeCurrenciesData(string accountNumber, AccountCurrencyData[] currencies)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -152,7 +150,7 @@ namespace Services
         /// <returns>Список заполненных позиций.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public async Task<IEnumerable<Position>> MergePositionData(string accountNumber, PositionType positionType, IReadOnlyCollection<Position> positions)
+        internal async Task<IEnumerable<Position>> MergePositionData(string accountNumber, PositionType positionType, IReadOnlyCollection<Position> positions)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -186,13 +184,56 @@ namespace Services
         }
 
         /// <summary>
+        /// Возвращает сектора.
+        /// </summary>
+        /// <returns>Сектора.</returns>
+        internal async Task<IReadOnlyCollection<Sector>> GetSectorsAsync()
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetSectorsAsync();
+            return data.Select(s => new Sector(s.Id, s.Name)).ToArray();
+        }
+
+        /// <summary>
+        /// Возвращает информацию по сектору.
+        /// </summary>
+        /// <param name="sectorId">Идентификатор сектора.</param>
+        /// <returns>Сектор.</returns>
+        internal async Task<Sector> GetSectorAsync(int sectorId)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetSectorAsync(sectorId);
+            return new Sector(data.Id, data.Name);
+        }
+
+        /// <summary>
+        /// Добавление сектора.
+        /// </summary>
+        /// <param name="sector">Сектор.</param>
+        internal Task AddSectorAsync(Sector sector)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.AddSectorAsync(new SectorData(sector.Id, sector.Name));
+        }
+
+        /// <summary>
+        /// Обновление сектора.
+        /// </summary>
+        /// <param name="sector">Сектор.</param>
+        internal Task UpdateSectorAsync(Sector sector)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.UpdateSectorAsync(new SectorData(sector.Id, sector.Name));
+        }
+
+        /// <summary>
         /// Сохраняет данные по инструментам по конкретному счету.
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
         /// <param name="data">Данные по инструментам.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SavePositionTypesData(string accountNumber, PositionTypeData[] data)
+        internal Task SavePositionTypesData(string accountNumber, PositionTypeData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -215,7 +256,7 @@ namespace Services
         /// <param name="data">Данные по ввалютам.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SaveCurrenciesData(string accountNumber, CurrencyData[] data)
+        internal Task SaveCurrenciesData(string accountNumber, CurrencyData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -239,7 +280,7 @@ namespace Services
         /// <param name="data">Данные позиций.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ApplicationException"></exception>
-        public Task SavePositionDataAsync(string accountNumber, PositionType positionType, PositionData[] data)
+        internal Task SavePositionDataAsync(string accountNumber, PositionType positionType, PositionData[] data)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {

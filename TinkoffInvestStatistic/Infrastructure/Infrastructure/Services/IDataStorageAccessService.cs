@@ -40,6 +40,19 @@ namespace Infrastructure.Services
         Task<IReadOnlyCollection<CurrencyData>> GetCurrenciesDataAsync(string accountNumber);
 
         /// <summary>
+        /// Возвращает сектора.
+        /// </summary>
+        /// <returns>Сектора.</returns>
+        Task<IReadOnlyCollection<SectorData>> GetSectorsAsync();
+
+        /// <summary>
+        /// Возвращает информацию по сектору.
+        /// </summary>
+        /// <param name="sectorId">Идентификатор сектора.</param>
+        /// <returns>Сектор.</returns>
+        Task<SectorData> GetSectorAsync(int sectorId);
+
+        /// <summary>
         /// Сохранение данных о счетах.
         /// </summary>
         Task SaveAccountDataAsync(AccountData[] data);
@@ -64,5 +77,17 @@ namespace Infrastructure.Services
         /// <param name="accountNumber">Номер счета.</param>
         /// <param name="data">Данные.</param>
         Task SavePositionsDataAsync(string accountNumber, PositionData[] data);
+
+        /// <summary>
+        /// Добавление сектора.
+        /// </summary>
+        /// <param name="sector">Сектор.</param>
+        Task AddSectorAsync(SectorData sectorData);
+
+        /// <summary>
+        /// Обновление сектора.
+        /// </summary>
+        /// <param name="sector">Сектор.</param>
+        Task UpdateSectorAsync(SectorData sectorData);
     }
 }

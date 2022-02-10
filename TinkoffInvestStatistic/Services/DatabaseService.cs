@@ -1,4 +1,5 @@
-﻿using Contracts.Enums;
+﻿using Contracts;
+using Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using SQLite;
@@ -25,6 +26,7 @@ namespace Services
             _database.CreateTableAsync<CurrencyData>().Wait();
             _database.CreateTableAsync<PositionTypeData>().Wait();
             _database.CreateTableAsync<PositionData>().Wait();
+            _database.CreateTableAsync<SectorData>().Wait();
         }
 
         ///<inheritdoc/>
@@ -90,6 +92,83 @@ namespace Services
                                     .ToArrayAsync()
                                     .ConfigureAwait(false);
                 return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<SectorData>> GetSectorsAsync()
+        {
+            try
+            {
+                var data = await _database.Table<SectorData>()
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<SectorData> GetSectorAsync(int sectorId)
+        {
+            try
+            {
+                var data = await _database.Table<SectorData>()
+                                    .FirstOrDefaultAsync(s => s.Id == sectorId)
+                                    .ConfigureAwait(false);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task AddSectorAsync(SectorData sectorData)
+        {
+            try
+            {
+                var sectorEntity = await _database
+                                        .Table<SectorData>()
+                                        .FirstOrDefaultAsync(sd => sd.Id == sectorData.Id)
+                                        .ConfigureAwait(false);
+                if (sectorEntity == null)
+                {
+                    await _database.InsertAsync(sectorData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task UpdateSectorAsync(SectorData sectorData)
+        {
+            try
+            {
+                var sectorEntity = await _database
+                                        .Table<SectorData>()
+                                        .FirstOrDefaultAsync(sd => sd.Id == sectorData.Id)
+                                        .ConfigureAwait(false);
+                if (sectorEntity != null)
+                {
+                    sectorEntity.Name = sectorData.Name;
+                    await _database.UpdateAsync(sectorEntity);
+                }
             }
             catch (Exception ex)
             {
