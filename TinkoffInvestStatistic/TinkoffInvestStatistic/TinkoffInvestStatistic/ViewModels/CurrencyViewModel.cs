@@ -78,7 +78,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 foreach (var item in currencies)
                 {
                     var currentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 2, MidpointRounding.AwayFromZero);
-                    var model = new CurrencyTypeModel(item.Currency, item.Sum, item.ToString(), currentPercent);
+                    var model = new CurrencyTypeModel(item.Currency, item.Sum, item.PlanPercent.ToString(), currentPercent);
 
                     CurrencyTypes.Add(model);
                 }

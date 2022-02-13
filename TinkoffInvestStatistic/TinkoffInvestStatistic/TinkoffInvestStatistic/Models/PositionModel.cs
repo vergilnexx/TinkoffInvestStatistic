@@ -98,7 +98,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Планируемый процент.
         /// </summary>
-        public decimal PlanPercentValue => decimal.Parse(PlanPercent);
+        public decimal PlanPercentValue => decimal.TryParse(PlanPercent, out decimal value) ? value : 0;
 
         /// <summary>
         /// Текущий процент.
