@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:TinkoffInvestStatistic.Views;assembly=TinkoffInvestStatistic"
             BarBackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
     <TabbedPage.Children x:DataType="local:AccountStatisticViewModel">
-        <local:PositionTypesPage Title="Инструменты" BackgroundColor="Black"/>
+        <local:PositionTypesPage Title="Инструменты" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
         <local:CurrencyPage Title="Валюты" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
     </TabbedPage.Children>
 </TabbedPage>

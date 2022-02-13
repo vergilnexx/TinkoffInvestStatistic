@@ -44,6 +44,8 @@ namespace Infrastructure.Container
                 TinkoffPortfolioToCurrencyMoneyMapper>();
             DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<Contracts.CurrencyMoney>>,
                 TinkoffPortfolioCurrenciesToCurrencyMoneyMapper>();
+            DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.MarketInstrumentList, IReadOnlyCollection<Contracts.Position>>,
+                TinkoffMarketInstrumentListToPositionListMapper>();
         }
     }
 }

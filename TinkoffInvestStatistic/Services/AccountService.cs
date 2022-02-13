@@ -35,7 +35,7 @@ namespace Services
         public async Task<IReadOnlyCollection<AccountCurrencyData>> GetAccountDataByCurrenciesTypes(string accountId)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position> positions = await bankBrokerClient.GetPositionsAsync(accountId);
+            IEnumerable<Position> positions = await bankBrokerClient.GetAccountPositionsAsync(accountId);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
 
             // Данные в позициях о валютах не подходят, так как они представляют курс, а не размер кэша, поэтому кэш добавляем отдельно.

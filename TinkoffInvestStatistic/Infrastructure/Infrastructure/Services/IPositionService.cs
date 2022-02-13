@@ -41,5 +41,23 @@ namespace Infrastructure.Services
         /// <param name="positionType">Тип позиций.</param>
         /// <param name="data">Данные по позициям</param>
         public Task SavePlanPercents(string accountId, PositionType positionType, PositionData[] data);
+        
+        /// <summary>
+        /// Возвращает позиции с определенным типом с фильтрацией по тикеру или названию.
+        /// </summary>
+        /// <param name="positionType">Тип позиции</param>
+        /// <param name="name">Наименование или тикер</param>
+        /// <returns>Список позиций.</returns>
+        public Task<IReadOnlyCollection<Position>> GetPositionByTickerAsync(PositionType positionType, string name);
+
+        /// <summary>
+        /// Добавляет планируемую для покупки позицию.
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <param name="type">Тип позиции.</param>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="name">Наименование.</param>
+        /// <param name="ticker">тикер.</param>
+        public Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker);
     }
 }

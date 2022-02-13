@@ -40,6 +40,14 @@ namespace Infrastructure.Services
         Task<IReadOnlyCollection<CurrencyData>> GetCurrenciesDataAsync(string accountNumber);
 
         /// <summary>
+        /// Возвращает данные о планируемых для покупки позиций.
+        /// </summary>
+        /// <param name="accountId">Идентификатор счета.</param>
+        /// <param name="type">Тип позиции.</param>
+        /// <returns>Данные о планируемых для покупки позиций.</returns>
+        Task<IReadOnlyCollection<PlannedPositionData>> GetPlannedPositionsAsync(string accountId, PositionType type);
+
+        /// <summary>
         /// Возвращает сектора.
         /// </summary>
         /// <returns>Сектора.</returns>
@@ -89,5 +97,15 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="sector">Сектор.</param>
         Task UpdateSectorAsync(SectorData sectorData);
+
+        /// <summary>
+        /// Добавление планируемой для покупки позиции
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <param name="type">Тип позиции</param>
+        /// <param name="figi">Финансовый идентификатор</param>
+        /// <param name="name">Наименование</param>
+        /// <param name="ticker">Тикер</param>
+        Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker);
     }
 }

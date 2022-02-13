@@ -13,7 +13,7 @@
     <RefreshView x:DataType="local:SectorDictionaryViewModel" Command="{Binding LoadSectorsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}"
                  BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                  RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}">
-        <CollectionView x:Name="ItemsListView"
+        <CollectionView 
                 ItemsSource="{Binding Sectors}"
                 SelectionMode="None">
             <CollectionView.ItemTemplate>

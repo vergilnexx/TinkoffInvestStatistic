@@ -27,6 +27,7 @@ namespace Services
             _database.CreateTableAsync<PositionTypeData>().Wait();
             _database.CreateTableAsync<PositionData>().Wait();
             _database.CreateTableAsync<SectorData>().Wait();
+            _database.CreateTableAsync<PlannedPositionData>().Wait();
         }
 
         ///<inheritdoc/>
@@ -118,6 +119,24 @@ namespace Services
         }
 
         ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<PlannedPositionData>> GetPlannedPositionsAsync(string accountId, PositionType type)
+        {
+            try
+            {
+                var data = await _database.Table<PlannedPositionData>()
+                                    .Where(p => p.AccountNumber == accountId && p.Type == type)
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
         public async Task<SectorData> GetSectorAsync(int sectorId)
         {
             try
@@ -168,6 +187,27 @@ namespace Services
                 {
                     sectorEntity.Name = sectorData.Name;
                     await _database.UpdateAsync(sectorEntity);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker)
+        {
+            try
+            {
+                var plannedPositionEntity = await _database
+                                            .Table<PlannedPositionData>()
+                                            .FirstOrDefaultAsync(a => a.Figi == figi)
+                                            .ConfigureAwait(false);
+                if (plannedPositionEntity == null)
+                {
+                    await _database.InsertAsync(new PlannedPositionData(accountId, figi, type, name, ticker));
                 }
             }
             catch (Exception ex)

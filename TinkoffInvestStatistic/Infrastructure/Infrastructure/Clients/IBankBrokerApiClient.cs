@@ -20,7 +20,7 @@ namespace Infrastructure.Clients
         /// </summary>
         /// <param name="accountId">Идентификатор счета.</param>
         /// <returns>Список позиций только для чтения.</returns>
-        public Task<IReadOnlyCollection<Position>> GetPositionsAsync(string accountId);
+        public Task<IReadOnlyCollection<Position>> GetAccountPositionsAsync(string accountId);
 
         /// <summary>
         /// Возвращает данные по валютам.
@@ -34,5 +34,12 @@ namespace Infrastructure.Clients
         /// <param name="accountId">Номер счета.</param>
         /// <returns>Список фиатных позиций только для чтения.</returns>
         public Task<IReadOnlyCollection<CurrencyMoney>> GetFiatPositionsAsync(string accountId);
+
+        /// <summary>
+        /// Возвращает позиции по тикеру.
+        /// </summary>
+        /// <param name="ticker">Тикер.</param>
+        /// <returns>Список позиций</returns>
+        public Task<IReadOnlyCollection<Position>> FindPositionsAsync(string ticker);
     }
 }

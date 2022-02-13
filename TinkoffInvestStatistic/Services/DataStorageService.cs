@@ -67,6 +67,19 @@ namespace Services
         }
 
         /// <summary>
+        /// Возвращает планируемые для покупки позиции.
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <param name="positionType">Тип позиций.</param>
+        /// <returns>Планируемые для покупки позиции.</returns>
+        internal async Task<IReadOnlyCollection<Position>> GetPlannedPositionsAsync(string accountId, PositionType positionType)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var positions = await dataAccessService.GetPlannedPositionsAsync(accountId, positionType);
+            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default) { Ticker = p.Ticker }).ToArray();
+        }
+
+        /// <summary>
         /// Возвращает заполненные данные по инструментам.
         /// </summary>
         /// <param name="accountNumber">Номер счета.</param>
@@ -140,6 +153,19 @@ namespace Services
             }
 
             return result.ToArray();
+        }
+
+        /// <summary>
+        /// Добавление планируемой для покупки позиции
+        /// </summary>
+        /// <param name="accountId">Номер счета.</param>
+        /// <param name="type">Тип позиции</param>
+        /// <param name="figi">Финансовый идентификатор</param>
+        /// <param name="name">Наименование</param>
+        internal async Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.AddPlannedPositionAsync(accountId, type, figi, name, ticker);
         }
 
         /// <summary>

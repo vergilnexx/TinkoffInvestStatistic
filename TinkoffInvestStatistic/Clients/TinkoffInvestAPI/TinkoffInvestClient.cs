@@ -34,7 +34,7 @@ namespace Clients.TinkoffInvest
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<Position>> GetPositionsAsync(string accountId)
+        public async Task<IReadOnlyCollection<Position>> GetAccountPositionsAsync(string accountId)
         {
             using var connection = ConnectionFactory.GetConnection(Token);
             var context = connection.Context;
@@ -68,6 +68,19 @@ namespace Clients.TinkoffInvest
             var portfolio = await context.PortfolioCurrenciesAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
             var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<Contracts.CurrencyMoney>>>();
             var result = mapper.Map(portfolio);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyCollection<Position>> FindPositionsAsync(string ticker)
+        {
+            using var connection = ConnectionFactory.GetConnection(Token);
+            var context = connection.Context;
+
+            var instruments = await context.MarketSearchByTickerAsync(ticker).ConfigureAwait(continueOnCapturedContext: false);
+            var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.MarketInstrumentList, IReadOnlyCollection<Contracts.Position>>>();
+            var result = mapper.Map(instruments);
 
             return result;
         }
