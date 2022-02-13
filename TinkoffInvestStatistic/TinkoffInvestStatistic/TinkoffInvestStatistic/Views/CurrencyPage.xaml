@@ -10,29 +10,36 @@
                  RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
                  x:DataType="local:CurrencyViewModel" Command="{Binding LoadCurrenciesCommand}" 
                  IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <Grid RowDefinitions="1, 15, 130, 1, 15, 130, Auto, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
-            <BoxView HeightRequest="1" Grid.Row="0" Color="LightGray"/>
+        <Grid RowDefinitions="1, 15, 130, 1, *, Auto" 
+              ColumnDefinitions="*, *"
+              BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <BoxView HeightRequest="1" Grid.ColumnSpan="2" Color="LightGray"/>
             <Label Text="Планируемое:" 
                    Grid.Row="1"
+                   Grid.Column="0"
                    LineBreakMode="NoWrap"
                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                    FontSize="13" />
             <forms:ChartView Chart="{Binding PlannedStatisticChart}" 
                              Grid.Row="2"
+                             Grid.Column="0"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
-            <BoxView HeightRequest="1" Grid.Row="3" Color="LightGray"/>
+
             <Label Text="Актуальное:" 
-                   Grid.Row="4"
+                   Grid.Row="1"
+                   Grid.Column="1"
                    LineBreakMode="NoWrap"
                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                    FontSize="13" />
             <forms:ChartView Chart="{Binding StatisticChart}" 
-                             Grid.Row="5"
+                             Grid.Row="2"
+                             Grid.Column="1"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
-            <BoxView HeightRequest="1" Grid.Row="6" Color="LightGray"/>
-            <CollectionView x:Name="ItemsListView" Grid.Row="7" ItemsSource="{Binding CurrencyTypes}">
+            
+            <BoxView HeightRequest="1" Grid.Row="3" Grid.ColumnSpan="2" Color="LightGray"/>
+            <CollectionView x:Name="ItemsListView" Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding CurrencyTypes}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10,0,10,0" x:DataType="model:CurrencyTypeModel">
@@ -101,7 +108,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <StackLayout x:DataType="local:CurrencyViewModel" Padding="10" Grid.Row="8" 
+            <StackLayout x:DataType="local:CurrencyViewModel" Padding="10" Grid.Row="5" Grid.ColumnSpan="2" 
                                  IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
                 <BoxView HeightRequest="1" Grid.ColumnSpan="8" Color="LightGray"/>
                 <Grid ColumnDefinitions="80, Auto, *">
