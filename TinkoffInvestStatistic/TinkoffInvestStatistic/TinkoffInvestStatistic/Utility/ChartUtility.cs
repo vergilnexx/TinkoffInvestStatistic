@@ -80,7 +80,7 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.CurrencyTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercent, GetColor(), t.Name, (t.PlanPercent / 100).ToString("P")))
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.Name, (t.PlanPercentValue / 100).ToString("P")))
                             .ToArray();
             return Task.FromResult(result);
         }
@@ -103,7 +103,7 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.PositionTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercent, GetColor(), t.TypeName, (t.PlanPercent / 100).ToString("P")))
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.TypeName, (t.PlanPercentValue / 100).ToString("P")))
                             .ToArray();
             return Task.FromResult(result);
         }

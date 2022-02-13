@@ -33,7 +33,12 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Планируемый процент.
         /// </summary>
-        public decimal PlanPercent { get; set; }
+        public string PlanPercent { get; set; }
+
+        /// <summary>
+        /// Планируемый процент.
+        /// </summary>
+        public decimal PlanPercentValue => decimal.Parse(PlanPercent);
 
         /// <summary>
         /// Текущий процент от суммы по всем инструментам.
@@ -43,7 +48,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Цвет процента.
         /// </summary>
-        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercent);
+        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercentValue);
 
         /// <summary>
         /// Конструктор.
@@ -52,7 +57,7 @@ namespace TinkoffInvestStatistic.Models
         /// <param name="currentSum">Сумма.</param>
         /// <param name="planPercent">Планируемый процент.</param>
         /// <param name="currentPercent">Текущий процент.</param>
-        public CurrencyTypeModel(Currency currency, decimal currentSum, decimal planPercent, decimal currentPercent)
+        public CurrencyTypeModel(Currency currency, decimal currentSum, string planPercent, decimal currentPercent)
         {
             Name = currency.GetDescription();
             Currency = currency;

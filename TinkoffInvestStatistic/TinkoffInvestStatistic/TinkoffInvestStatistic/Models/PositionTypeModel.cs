@@ -1,5 +1,6 @@
 ﻿using Contracts.Enums;
 using Infrastructure.Helpers;
+using System.Globalization;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
 
@@ -23,7 +24,12 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Планируемый процент.
         /// </summary>
-        public decimal PlanPercent { get; set; }
+        public string PlanPercent { get; set; }
+
+        /// <summary>
+        /// Планируемый процент.
+        /// </summary>
+        public decimal PlanPercentValue => decimal.Parse(PlanPercent);
 
         /// <summary>
         /// Текущий процент от суммы по всем инструментам.
@@ -33,7 +39,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Цвет процента.
         /// </summary>
-        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercent);
+        public Color CurrentPercentColor => DifferencePercentUtility.GetPercentColor(CurrentPercent, PlanPercentValue);
 
         /// <summary>
         /// Текущая сумма по счету.

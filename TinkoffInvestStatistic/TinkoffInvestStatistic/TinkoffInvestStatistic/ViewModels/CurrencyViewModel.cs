@@ -78,7 +78,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 foreach (var item in currencies)
                 {
                     var currentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 2, MidpointRounding.AwayFromZero);
-                    var model = new CurrencyTypeModel(item.Currency, item.Sum, item.PlanPercent, currentPercent);
+                    var model = new CurrencyTypeModel(item.Currency, item.Sum, item.ToString(), currentPercent);
 
                     CurrencyTypes.Add(model);
                 }
@@ -127,9 +127,9 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 var service = DependencyService.Get<ICurrencyService>();
-                var data = CurrencyTypes.Select(c => new CurrencyData(AccountId, c.Currency, c.PlanPercent));
+                var data = CurrencyTypes.Select(c => new CurrencyData(AccountId, c.Currency, c.PlanPercentValue));
 
-                var sumPercent = CurrencyTypes.Sum(t => t.PlanPercent);
+                var sumPercent = CurrencyTypes.Sum(t => t.PlanPercentValue);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 

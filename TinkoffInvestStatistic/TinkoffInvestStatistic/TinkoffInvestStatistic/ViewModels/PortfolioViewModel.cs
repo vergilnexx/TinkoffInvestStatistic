@@ -128,11 +128,11 @@ namespace TinkoffInvestStatistic.ViewModels
                 foreach (var position in group)
                 {
                     var item = new PositionData(AccountId, position.Figi, position.Type);
-                    item.PlanPercent = position.PlanPercent;
+                    item.PlanPercent = position.PlanPercentValue;
                     data.Add(item);
                 }
 
-                var sumPercent = group.Sum(t => t.PlanPercent);
+                var sumPercent = group.Sum(t => t.PlanPercentValue);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
@@ -181,7 +181,7 @@ namespace TinkoffInvestStatistic.ViewModels
                         Blocked = p.Blocked,
                         Ticker = p.Ticker,
                         Currency = p.AveragePositionPrice?.Currency ?? Currency.Rub,
-                        PlanPercent = p.PlanPercent,
+                        PlanPercent = p.PlanPercent.ToString(),
                         CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
                         Sum = p.Sum,
                         SumInCurrency = p.SumInCurrency,
@@ -198,7 +198,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 Sum = CurrencyUtility.ToCurrencyString(data.Sum(p => p.Sum), Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
-                var sumPercent = models.Sum(t => t.PlanPercent);
+                var sumPercent = models.Sum(t => t.PlanPercentValue);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 

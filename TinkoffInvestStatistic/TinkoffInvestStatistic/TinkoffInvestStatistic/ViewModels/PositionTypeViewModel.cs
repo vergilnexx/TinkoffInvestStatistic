@@ -84,7 +84,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 foreach (var item in positionTypes)
                 {
                     var model = new PositionTypeModel(item.Type);
-                    model.PlanPercent = item.PlanPercent;
+                    model.PlanPercent = item.PlanPercent.ToString();
                     model.CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 2, MidpointRounding.AwayFromZero);
                     model.CurrentSum = item.Sum;
 
@@ -121,9 +121,9 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 var service = DependencyService.Get<IInstrumentService>();
-                var data = PositionTypes.Select(pt => new PositionTypeData(AccountId, pt.Type, pt.PlanPercent));
+                var data = PositionTypes.Select(pt => new PositionTypeData(AccountId, pt.Type, pt.PlanPercentValue));
 
-                var sumPercent = PositionTypes.Sum(t => t.PlanPercent);
+                var sumPercent = PositionTypes.Sum(t => t.PlanPercentValue);
                 SumPercent = (sumPercent / 100).ToString("P");
                 OnPropertyChanged(nameof(SumPercent));
 
