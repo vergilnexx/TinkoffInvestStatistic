@@ -18,17 +18,18 @@
                  x:DataType="local:AccountsViewModel" 
                  Command="{Binding LoadAccountsCommand}" 
                  IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <Grid RowDefinitions="Auto, *" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+        <Grid RowDefinitions="Auto, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
             <forms:ChartView Chart="{Binding StatisticChart}" 
                              HeightRequest="250"
+                             Grid.Row="0"
                              BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
-            
+
             <CollectionView x:Name="ItemsListView"
-                    Grid.Row="1"
-                    ItemsSource="{Binding Accounts}"
-                    SelectionMode="None">
+                            Grid.Row="1"
+                            ItemsSource="{Binding Accounts}"
+                            SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10" x:DataType="model:AccountModel">
@@ -56,29 +57,30 @@
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                <CollectionView.Footer>
-                    <StackLayout x:DataType="local:AccountsViewModel" Padding="10" 
-                                 IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
-                        <Grid ColumnDefinitions="80, *">
-                            <Label Text="Всего:" 
-                                   LineBreakMode="NoWrap"
-                                   VerticalOptions="Center"
-                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
-                                   FontSize="Body"
-                                   FontAttributes="Bold"/>
-                            <Label Text="{Binding Sum}" 
-                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
-                                   Grid.Column="1"
-                                   LineBreakMode="NoWrap" 
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End" 
-                                   HorizontalTextAlignment="End"
-                                   FontSize="Body"
-                                   FontAttributes="Bold"/>
-                        </Grid>
-                    </StackLayout>
-                </CollectionView.Footer>
             </CollectionView>
+
+            <StackLayout x:DataType="local:AccountsViewModel" Padding="10" 
+                         Grid.Row="2"
+                         IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
+                <BoxView HeightRequest="1" Grid.ColumnSpan="8" Color="LightGray"/>
+                <Grid ColumnDefinitions="80, *">
+                    <Label Text="Всего:" 
+                           LineBreakMode="NoWrap"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                           FontSize="Body"
+                           FontAttributes="Bold"/>
+                    <Label Text="{Binding Sum}" 
+                           TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                           Grid.Column="1"
+                           LineBreakMode="NoWrap" 
+                           VerticalOptions="Center"
+                           HorizontalOptions="End" 
+                           HorizontalTextAlignment="End"
+                           FontSize="Body"
+                           FontAttributes="Bold"/>
+                </Grid>
+            </StackLayout>
         </Grid>
     </RefreshView>
 </ContentPage>
