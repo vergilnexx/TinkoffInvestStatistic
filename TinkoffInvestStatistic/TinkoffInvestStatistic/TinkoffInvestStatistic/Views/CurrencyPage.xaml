@@ -26,7 +26,7 @@
                              IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
 
-            <Label Text="Актуальное:" 
+            <Label Text="Актуальное:"
                    Grid.Row="1"
                    Grid.Column="1"
                    LineBreakMode="NoWrap"

@@ -8,9 +8,9 @@ namespace Contracts.Enums
     public enum PositionType
     {
         /// <summary>
-        /// Акция.
+        /// Акции.
         /// </summary>
-        [Description("Акция")]
+        [Description("Акции")]
         Stock,
 
         /// <summary>
@@ -20,15 +20,15 @@ namespace Contracts.Enums
         Currency,
 
         /// <summary>
-        /// Облигация.
+        /// Облигации.
         /// </summary>
-        [Description("Облигация")]
+        [Description("Облигации")]
         Bond,
 
         /// <summary>
-        /// Фонд.
+        /// Фонды.
         /// </summary>
-        [Description("Фонд")]
+        [Description("Фонды")]
         Etf
     }
 }
