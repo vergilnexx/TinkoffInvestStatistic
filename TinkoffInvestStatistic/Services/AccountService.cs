@@ -3,6 +3,7 @@ using Contracts.Enums;
 using Infrastructure.Clients;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
+using Services.Workaround;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,14 +49,23 @@ namespace Services
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
                 {
+                    decimal? currencySum;
                     var currency = currencies.FirstOrDefault(c => position.AveragePositionPrice?.Currency == c.Currency);
                     if (currency == null)
                     {
-                        throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
+                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, position.AveragePositionPrice?.Currency);
+                        if (currencySum == null)
+                        {
+                            throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
+                        }
+                    }
+                    else
+                    {
+                        currencySum = currency.Sum;
                     }
 
-                    position.Sum = position.SumInCurrency * currency.Sum;
-                    position.DifferenceSum = expectedYield * currency.Sum;
+                    position.Sum = position.SumInCurrency * currencySum.Value;
+                    position.DifferenceSum = expectedYield * currencySum.Value;
                 }
                 else
                 {
@@ -69,13 +79,22 @@ namespace Services
             {
                 if (currencyPosition.Currency != Currency.Rub)
                 {
+                    decimal? currencySum;
                     var currency = currencies.FirstOrDefault(c => currencyPosition.Currency == c.Currency);
                     if (currency == null)
                     {
-                        throw new ApplicationException("Не найдена валюта типа: " + currency);
+                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, currencyPosition.Currency);
+                        if (currencySum == null)
+                        {
+                            throw new ApplicationException("Не найдена валюта типа: " + currencyPosition.Currency);
+                        }
+                    }
+                    else
+                    {
+                        currencySum = currency.Sum;
                     }
 
-                    currencyPosition.Sum *= currency.Sum;
+                    currencyPosition.Sum *= currencySum.Value;
                 }
             }
             var currenciesPositions = fiatPositions

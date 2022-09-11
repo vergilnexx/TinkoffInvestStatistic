@@ -3,6 +3,7 @@ using Contracts.Enums;
 using Domain;
 using Infrastructure.Clients;
 using Infrastructure.Services;
+using Services.Workaround;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,14 +30,23 @@ namespace Services
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
                 {
+                    decimal? currencySum;
                     var currency = currencies.FirstOrDefault(c => position.AveragePositionPrice?.Currency == c.Currency);
                     if (currency == null)
                     {
-                        throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
+                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, position.AveragePositionPrice?.Currency);
+                        if (currencySum == null)
+                        {
+                            throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
+                        }
+                    }
+                    else
+                    {
+                        currencySum = currency.Sum;
                     }
 
-                    position.Sum = position.SumInCurrency * currency.Sum;
-                    position.DifferenceSum = position.ExpectedYield.Sum * currency.Sum;
+                    position.Sum = position.SumInCurrency * currencySum.Value;
+                    position.DifferenceSum = position.ExpectedYield.Sum * currencySum.Value;
                 }
                 else
                 {
@@ -137,13 +147,22 @@ namespace Services
                 var sumInCurrency = group.Sum(p => p.PositionCount * (p.AveragePositionPrice?.Sum ?? 0) + (p.ExpectedYield?.Sum ?? 0));
                 if(group.Key != Currency.Rub)
                 {
+                    decimal? currencySum;
                     var currency = currencies.FirstOrDefault(c => group.Key == c.Currency);
                     if (currency == null)
                     {
-                        throw new ApplicationException("Не найдена валюта типа: " + group.Key);
+                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, group.Key);
+                        if (currencySum == null)
+                        {
+                            throw new ApplicationException("Не найдена валюта типа: " + group.Key);
+                        }
+                    }
+                    else
+                    {
+                        currencySum = currency.Sum;
                     }
 
-                    sumInCurrency *= currency.Sum;
+                    sumInCurrency *= currencySum.Value;
                 }
 
                 sum += sumInCurrency;
@@ -153,13 +172,22 @@ namespace Services
             {
                 if (fiatPosition.Currency != Currency.Rub)
                 {
+                    decimal? currencySum;
                     var currency = currencies.FirstOrDefault(c => fiatPosition.Currency == c.Currency);
                     if (currency == null)
                     {
-                        throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
+                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, fiatPosition.Currency);
+                        if (currencySum == null)
+                        {
+                            throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
+                        }
+                    }
+                    else
+                    {
+                        currencySum = currency.Sum;
                     }
 
-                    sum += fiatPosition.Sum * currency.Sum;
+                    sum += fiatPosition.Sum * currencySum.Value;
                 }
                 else
                 {

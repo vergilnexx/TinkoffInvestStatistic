@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TinkoffInvestStatistic.Service;
+using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        protected readonly IMessageService _messageService;
+
         bool isBusy = false;
         public bool IsBusy
         {
@@ -15,6 +19,12 @@ namespace TinkoffInvestStatistic.ViewModels
         }
 
         string title = string.Empty;
+
+        public BaseViewModel()
+        {
+            _messageService = DependencyService.Get<IMessageService>();
+        }
+
         public string Title
         {
             get { return title; }

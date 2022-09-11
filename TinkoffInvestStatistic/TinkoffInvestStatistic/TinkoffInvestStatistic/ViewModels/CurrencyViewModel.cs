@@ -97,6 +97,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             catch (Exception ex)
             {
+                await _messageService.ShowAsync(ex.Message);
                 Debug.WriteLine(ex);
             }
             finally
@@ -140,6 +141,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             catch (Exception ex)
             {
+                await _messageService.ShowAsync(ex.Message);
                 Debug.WriteLine(ex);
             }
         }

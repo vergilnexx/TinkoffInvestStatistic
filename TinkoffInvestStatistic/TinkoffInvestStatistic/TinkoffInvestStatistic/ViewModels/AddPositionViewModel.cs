@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Service;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
@@ -98,6 +99,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             catch (Exception ex)
             {
+                await _messageService.ShowAsync(ex.Message);
                 Debug.WriteLine(ex);
             }
         }

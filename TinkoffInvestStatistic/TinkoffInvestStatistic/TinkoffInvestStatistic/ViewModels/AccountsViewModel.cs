@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
@@ -74,6 +75,8 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             catch (Exception ex)
             {
+                await _messageService.ShowAsync(ex.Message);
+
                 Debug.WriteLine(ex);
             }
             finally

@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Container;
 using Services;
-using System.Globalization;
+using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
 
@@ -23,6 +23,8 @@ namespace TinkoffInvestStatistic
 
         private static void ConfigureUtility()
         {
+            DependencyService.Register<IMessageService, MessageService>();
+
             DependencyService.RegisterSingleton(new ChartUtility());
             DependencyService.RegisterSingleton(new ChartColorsUtility());
 
