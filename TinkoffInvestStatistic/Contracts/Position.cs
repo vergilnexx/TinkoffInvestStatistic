@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 
-namespace Contracts
+namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Позиция.
@@ -33,11 +33,6 @@ namespace Contracts
         public decimal PositionCount { get; set; }
 
         /// <summary>
-        /// Заблокировано.
-        /// </summary>
-        public decimal Blocked { get; set; }
-
-        /// <summary>
         /// Планируемый процент.
         /// </summary>
         public decimal PlanPercent { get; set; }
@@ -53,12 +48,7 @@ namespace Contracts
         public CurrencyMoney? AveragePositionPrice { get; set; }
 
         /// <summary>
-        /// Цена покупки без налогов.
-        /// </summary>
-        public CurrencyMoney? AveragePositionPriceNoNkd { get; set; }
-
-        /// <summary>
-        /// Сумма в валюте.
+        /// Сумма в рублях.
         /// </summary>
         public decimal Sum { get; set; }
 
@@ -95,8 +85,8 @@ namespace Contracts
             Figi = figi;
             Type = type;
             Name = name;
-            Sum = 
-                SumInCurrency = sum;
+            Sum = sum;
+            SumInCurrency = sum;
         }
     }
 }

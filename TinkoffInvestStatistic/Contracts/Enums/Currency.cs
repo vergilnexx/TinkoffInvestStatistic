@@ -1,7 +1,7 @@
-﻿using Contracts.Attributes;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using TinkoffInvestStatistic.Contracts.Attributes;
 
-namespace Contracts.Enums
+namespace TinkoffInvestStatistic.Contracts.Enums
 {
     /// <summary>
     /// Валюты.

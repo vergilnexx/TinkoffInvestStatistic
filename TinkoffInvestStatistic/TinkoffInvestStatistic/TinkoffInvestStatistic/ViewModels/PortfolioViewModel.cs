@@ -1,6 +1,4 @@
-﻿using Contracts;
-using Contracts.Enums;
-using Domain;
+﻿using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
@@ -12,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Views;
@@ -183,7 +182,6 @@ namespace TinkoffInvestStatistic.ViewModels
                     {
                         Name = p.Name,
                         PositionCount = p.PositionCount,
-                        Blocked = p.Blocked,
                         Ticker = p.Ticker,
                         Currency = p.AveragePositionPrice?.Currency ?? Currency.Rub,
                         PlanPercent = p.PlanPercent.ToString(),

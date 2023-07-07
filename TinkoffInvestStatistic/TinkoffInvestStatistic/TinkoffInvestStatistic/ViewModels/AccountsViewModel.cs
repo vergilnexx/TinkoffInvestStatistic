@@ -62,7 +62,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var accounts = await service.GetAccountsAsync();
                 foreach (var item in accounts)
                 {
-                    var model = new AccountModel(item.ID, item.Type.GetDescription(), item.Sum);
+                    var model = new AccountModel(item.ID, item.Name, item.Type.GetDescription(), item.Sum);
 
                     Accounts.Add(model);
                 }

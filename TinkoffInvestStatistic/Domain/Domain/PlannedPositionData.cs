@@ -1,4 +1,4 @@
-﻿using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 using SQLite;
 
 namespace Domain

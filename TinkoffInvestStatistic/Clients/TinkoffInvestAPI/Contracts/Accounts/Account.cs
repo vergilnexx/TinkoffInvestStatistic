@@ -1,6 +1,7 @@
-﻿using TinkoffInvestStatistic.Contracts.Enums;
+﻿using Newtonsoft.Json;
+using TinkoffInvest.Contracts.Enums;
 
-namespace TinkoffInvestStatistic.Contracts
+namespace TinkoffInvest.Contracts.Accounts
 {
     /// <summary>
     /// Счет.
@@ -10,21 +11,19 @@ namespace TinkoffInvestStatistic.Contracts
         /// <summary>
         /// Идентификатор счета.
         /// </summary>
-        public string ID { get; set; }
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
 
         /// <summary>
         /// Наименование счета.
         /// </summary>
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Тип счета.
         /// </summary>
-        public AccountType Type { get; set; }
-
-        /// <summary>
-        /// Сумма.
-        /// </summary>
-        public decimal Sum { get; set; }
+        [JsonProperty(PropertyName = "type")]
+        public AccountType AccountType { get; set; }
     }
 }

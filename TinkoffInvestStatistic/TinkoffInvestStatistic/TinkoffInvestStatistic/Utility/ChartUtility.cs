@@ -1,10 +1,9 @@
-﻿using Contracts.Enums;
-using Microcharts;
+﻿using Microcharts;
 using SkiaSharp;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.ViewModels;
 
 namespace TinkoffInvestStatistic.Utility

@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 
-namespace Contracts
+namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Данные счет по валютно.

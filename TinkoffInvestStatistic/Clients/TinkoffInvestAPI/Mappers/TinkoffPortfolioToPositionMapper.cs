@@ -1,46 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Tinkoff.Trading.OpenApi.Models;
+using TinkoffInvest.Contracts.Common;
+using TinkoffInvest.Contracts.Portfolio;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvest.Mappers
 {
     /// <summary>
-    /// Маппер из <see cref="Tinkoff.Trading.OpenApi.Models.Portfolio"/> в <see cref="Contracts.Position"/>
+    /// Маппер из <see cref="PortfolioReponse"/> в <see cref="TinkoffInvestStatistic.Contracts.Position"/>
     /// </summary>
-    public class TinkoffPortfolioToPositionMapper : IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<Contracts.Position>>
+    public class TinkoffPortfolioToPositionMapper : IMapper<PortfolioReponse, IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>>
     {
         /// <inheritdoc/>
-        public IReadOnlyCollection<Contracts.Position> Map(Portfolio portfolio)
+        public IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position> Map(PortfolioReponse portfolio)
         {
             return portfolio.Positions
                     .Select(p => Map(p))
                     .ToArray();
         }
 
-        private Contracts.Position Map(Portfolio.Position position)
+        private TinkoffInvestStatistic.Contracts.Position Map(TinkoffInvest.Contracts.Portfolio.Position position)
         {
-            var result = new Contracts.Position(position.Figi, EnumMapper.MapType(position.InstrumentType));
+            var result = new TinkoffInvestStatistic.Contracts.Position(position.Figi, EnumMapper.MapInstruments(position.InstrumentType));
 
             result.Name = position.Name;
             result.Ticker = position.Ticker;
-            result.PositionCount = position.Balance;
-            result.Blocked = position.Blocked;
+            result.PositionCount = position.Quantity.GetValue();
             result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
-            result.AveragePositionPriceNoNkd = MapMoney(position.AveragePositionPriceNoNkd);
             result.ExpectedYield = MapMoney(position.ExpectedYield);
 
             return result;
         }
 
-        private Contracts.CurrencyMoney? MapMoney(MoneyAmount money)
+        private TinkoffInvestStatistic.Contracts.CurrencyMoney? MapMoney(CurrencyNumeric numeric)
         {
-            if(money == null)
+            if (numeric == null)
             {
                 return null;
             }
 
-            var result = new Contracts.CurrencyMoney(EnumMapper.MapCurrency(money.Currency), money.Value);
+            var result = new TinkoffInvestStatistic.Contracts.CurrencyMoney(
+                                EnumMapper.MapCurrency(numeric.Currency), numeric.GetValue());
+            return result;
+        }
+        private TinkoffInvestStatistic.Contracts.CurrencyMoney? MapMoney(Numeric numeric)
+        {
+            if (numeric == null)
+            {
+                return null;
+            }
 
+            var result = new TinkoffInvestStatistic.Contracts.CurrencyMoney(Currency.Rub, numeric.GetValue());
             return result;
         }
     }

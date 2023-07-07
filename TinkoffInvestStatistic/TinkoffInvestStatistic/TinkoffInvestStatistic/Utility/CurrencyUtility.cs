@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
-using System;
+﻿using System;
 using System.Globalization;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvestStatistic.Utility
 {

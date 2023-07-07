@@ -1,5 +1,4 @@
-﻿using Contracts.Enums;
-using Domain;
+﻿using Domain;
 using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
@@ -9,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;

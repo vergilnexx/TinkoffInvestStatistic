@@ -1,37 +1,37 @@
-﻿using Contracts;
-using Contracts.Enums;
-using System;
-using Tinkoff.Trading.OpenApi.Models;
+﻿using System;
+using TinkoffInvest.Contracts.Accounts;
+using TinkoffInvestStatistic.Contracts;
+using TinkoffInvestStatistic.Contracts.Enums;
+using TinkoffContracts = TinkoffInvest.Contracts;
 
 namespace TinkoffInvest.Mappers
 {
     /// <summary>
-    /// Маппер из <see cref="Tinkoff.Trading.OpenApi.Models.Account"/> в <see cref="Account"/>
+    /// Маппер из <see cref="TinkoffContracts.Accounts.Account"/> в <see cref="Account"/>
     /// </summary>
-    public class TinkoffAccountToAccountMapper : IMapper<Tinkoff.Trading.OpenApi.Models.Account, Contracts.Account>
+    public class TinkoffAccountToAccountMapper : IMapper<TinkoffContracts.Accounts.Account, TinkoffInvestStatistic.Contracts.Account>
     {
         /// <inheritdoc/>
-        public Contracts.Account Map(Tinkoff.Trading.OpenApi.Models.Account type)
+        public TinkoffInvestStatistic.Contracts.Account Map(TinkoffContracts.Accounts.Account brokerAccount)
         {
-            var result = new Contracts.Account();
+            var result = new TinkoffInvestStatistic.Contracts.Account();
             
-            result.ID = type.BrokerAccountId;
-            result.Type = MapType(type.BrokerAccountType);
+            result.ID = brokerAccount.Id;
+            result.Name = brokerAccount.Name;
+            result.Type = MapType(brokerAccount.AccountType);
 
             return result;
         }
 
-        private AccountType MapType(BrokerAccountType brokerAccountType)
+        private AccountType MapType(TinkoffContracts.Enums.AccountType brokerAccountType)
         {
-            switch (brokerAccountType)
+            return brokerAccountType switch
             {
-                case BrokerAccountType.Tinkoff:
-                    return AccountType.BrokerAccount;
-                case BrokerAccountType.TinkoffIis:
-                    return AccountType.Iis;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(brokerAccountType));
-            }
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF => AccountType.BrokerAccount,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF_IIS => AccountType.Iis,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_INVEST_BOX => AccountType.InvestBox,
+                _ => throw new ArgumentOutOfRangeException(nameof(brokerAccountType)),
+            };
         }
     }
 }

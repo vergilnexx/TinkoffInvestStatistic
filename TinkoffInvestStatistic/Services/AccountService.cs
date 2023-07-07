@@ -1,5 +1,4 @@
-﻿using Contracts;
-using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 using Infrastructure.Clients;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
 
 namespace Services

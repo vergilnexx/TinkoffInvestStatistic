@@ -29,11 +29,11 @@
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Accounts}"
                             SelectionMode="None">
-                <CollectionView.ItemTemplate>
+                <CollectionView.ItemTemplate>``
                     <DataTemplate>
                         <StackLayout Padding="10" x:DataType="model:AccountModel">
                             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, 1">
-                                <Label Text="{Binding AccountType}" 
+                                <Label Text="{Binding Name}" 
                                     LineBreakMode="NoWrap"
                                     FontSize="13" 
                                     TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>

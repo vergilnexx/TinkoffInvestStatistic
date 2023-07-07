@@ -1,13 +1,10 @@
-﻿using Contracts.Enums;
-using Infrastructure.Services;
+﻿using Infrastructure.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
-using TinkoffInvestStatistic.Service;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels

@@ -1,6 +1,6 @@
-﻿using Contracts;
-using Services;
+﻿using Services;
 using System.Collections.Generic;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Tests
 {

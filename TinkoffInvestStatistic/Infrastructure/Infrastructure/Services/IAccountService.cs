@@ -1,6 +1,6 @@
-﻿using Contracts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Infrastructure.Services
 {
