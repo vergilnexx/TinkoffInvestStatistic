@@ -1,32 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using TinkoffInvest.Contracts.Common;
 using TinkoffInvest.Contracts.Portfolio;
+using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvest.Mappers
 {
     /// <summary>
-    /// Маппер из <see cref="PortfolioReponse"/> в <see cref="TinkoffInvestStatistic.Contracts.Position"/>
+    /// Маппер из <see cref="PortfolioReponse"/> в <see cref="Portfolio"/>
     /// </summary>
-    public class TinkoffPortfolioToPositionMapper : IMapper<PortfolioReponse, IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>>
+    public class TinkoffPortfolioToPortfolioMapper : IMapper<PortfolioReponse, Portfolio>
     {
         /// <inheritdoc/>
-        public IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position> Map(PortfolioReponse portfolio)
+        public Portfolio Map(PortfolioReponse portfolio)
         {
-            return portfolio.Positions
-                    .Select(p => Map(p))
-                    .ToArray();
+            var positions = portfolio.Positions
+                                .Select(p => Map(p))
+                                .ToArray();
+            var result = new Portfolio(portfolio.AccountId!, MapMoney(portfolio.TotalAmount), positions)
+            {
+                TotalAmountStocks = MapMoney(portfolio.TotalAmountShares),
+                TotalAmountBonds = MapMoney(portfolio.TotalAmountShares),
+                TotalAmountEtf = MapMoney(portfolio.TotalAmountShares),
+                TotalAmountCurrencies = MapMoney(portfolio.TotalAmountShares)
+            };
+            return result;
         }
 
         private TinkoffInvestStatistic.Contracts.Position Map(TinkoffInvest.Contracts.Portfolio.Position position)
         {
             var result = new TinkoffInvestStatistic.Contracts.Position(position.Figi, EnumMapper.MapInstruments(position.InstrumentType));
 
-            result.Name = position.Name;
-            result.Ticker = position.Ticker;
-            result.PositionCount = position.Quantity.GetValue();
+            result.Name = position.Figi;
+            result.Ticker = position.Figi;
+
+            var quantity = position.Quantity.GetValue();
+            result.PositionCount = quantity;
+            result.SumInCurrency = position.CurrencyCurrentPrice.GetValue() * quantity;
             result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
             result.ExpectedYield = MapMoney(position.ExpectedYield);
 

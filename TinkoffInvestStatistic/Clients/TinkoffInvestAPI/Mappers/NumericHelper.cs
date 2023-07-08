@@ -19,9 +19,18 @@ namespace TinkoffInvest.Mappers
         /// <param name="numeric">Числовое представление.</param>
         /// <returns>Округленное сформатированное значение числового представления.</returns>
         public static decimal GetValue(this Numeric numeric)
-            => int.TryParse(numeric.IntegerPart, out int value)
-                ? value + decimal.Divide(decimal.Round(numeric.FractionalPart, NUMERIC_DECIMALS), 100)
-                : throw new ApplicationException(
-                    $"Не удалось преобразовать числовое представление: {numeric.IntegerPart}.{numeric.FractionalPart}");
+        {
+            if (!int.TryParse(numeric.IntegerPart, out int integerPart))
+            {
+                throw new ArithmeticException($"Не удалось распарсить числовое представление: {numeric.IntegerPart}");
+            }
+
+            if(!decimal.TryParse(integerPart + "." + Math.Abs(numeric.FractionalPart), out decimal result))
+            {
+                throw new ArithmeticException($"Не удалось преобразовать числовое представление: {integerPart}.{numeric.FractionalPart}");
+            }
+            
+            return decimal.Round(result, NUMERIC_DECIMALS);
+        }
     }
 }

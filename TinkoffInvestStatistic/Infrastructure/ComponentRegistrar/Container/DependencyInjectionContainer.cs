@@ -5,6 +5,7 @@ using Services;
 using System.Collections.Generic;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvest.Mappers;
+using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
 
 namespace Infrastructure.Container
@@ -39,8 +40,8 @@ namespace Infrastructure.Container
         {
             DependencyService.Register<IMapper<TinkoffInvest.Contracts.Accounts.Account, TinkoffInvestStatistic.Contracts.Account>,
                 TinkoffAccountToAccountMapper>();
-            DependencyService.Register<IMapper<PortfolioReponse, IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>>,
-                TinkoffPortfolioToPositionMapper>();
+            DependencyService.Register<IMapper<PortfolioReponse, Portfolio>,
+                TinkoffPortfolioToPortfolioMapper>();
             //DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<CurrencyMoney>>,
             //    TinkoffPortfolioToCurrencyMoneyMapper>();
             //DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<CurrencyMoney>>,

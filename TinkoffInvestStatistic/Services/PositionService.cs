@@ -19,13 +19,12 @@ namespace Services
         public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var positions = (await bankBrokerClient.GetAccountPositionsAsync(accountId)).Where(p => p.Type == positionType);
+            var positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions.Where(p => p.Type == positionType);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
 
             foreach (var position in positions)
             {
-                position.SumInCurrency = position.PositionCount * (position.AveragePositionPrice?.Sum ?? 0) + 
-                                            (position.ExpectedYield?.Sum ?? 0);
+                position.SumInCurrency = position.SumInCurrency;
 
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.AveragePositionPrice?.Currency != Currency.Rub)
@@ -46,18 +45,18 @@ namespace Services
                     }
 
                     position.Sum = position.SumInCurrency * currencySum.Value;
-                    position.DifferenceSum = position.ExpectedYield.Sum * currencySum.Value;
+                    position.DifferenceSum = (position.ExpectedYield?.Sum ?? 0) * currencySum.Value;
                 }
                 else
                 {
                     position.Sum = position.SumInCurrency;
-                    position.DifferenceSum = position.ExpectedYield.Sum;
+                    position.DifferenceSum = position.ExpectedYield?.Sum ?? 0;
                 }
             }
 
             if(positionType == PositionType.Currency)
             {
-                // Добавляем данные про кэш в рублях.
+                // Добавляем данные про фиат в рублях.
                 var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
                 positions = positions.Union(rubles).ToArray();
             }
@@ -95,7 +94,7 @@ namespace Services
         public async Task<decimal> GetPositionsSumAsync(string accountId)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position?> positions = await bankBrokerClient.GetAccountPositionsAsync(accountId);
+            IEnumerable<Position?> positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions;
             positions = positions.Where(p => p.Type != PositionType.Currency);
             var fiatPositions =  await bankBrokerClient.GetFiatPositionsAsync(accountId);
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
@@ -107,7 +106,7 @@ namespace Services
         public async Task<decimal> GetPositionsSumAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position?> positions = await bankBrokerClient.GetAccountPositionsAsync(accountId);
+            IEnumerable<Position?> positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions;
             var currencies = await bankBrokerClient.GetCurrenciesAsync();
             decimal result;
             if(positionType == PositionType.Currency)

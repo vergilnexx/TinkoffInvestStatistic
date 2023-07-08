@@ -14,6 +14,7 @@ using System.Text;
 using Newtonsoft.Json.Converters;
 using TinkoffInvest.Contracts.Accounts;
 using TinkoffInvest.Contracts.Portfolio;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace Clients.TinkoffInvest
 {
@@ -30,8 +31,16 @@ namespace Clients.TinkoffInvest
         /// <summary>
         /// Базовый URL API.
         /// </summary>
-        private static readonly string BaseUrl = "https://invest-public-api.tinkoff.ru/rest/";
-        private static readonly string ApiVersion = "tinkoff.public.invest.api.contract.v1.";
+        private static readonly string BaseUrl = "https://invest-public-api.tinkoff.ru/rest/tinkoff.public.invest.api.contract.v1.";
+
+        /// <summary>
+        /// Список активных типов счетов.
+        /// </summary>
+        public static readonly IReadOnlyCollection<TinkoffContracts.Enums.AccountType> ActiveAccountTypes = new[]
+        {
+            TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF_IIS,
+            TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF
+        };
 
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Account>> GetAccountsAsync()
@@ -39,14 +48,14 @@ namespace Clients.TinkoffInvest
             IReadOnlyCollection<TinkoffContracts.Accounts.Account> accounts;
             using (HttpClient client = new HttpClient())
             {
-                var request = CreateRequest($"{BaseUrl}{ApiVersion}UsersService/GetAccounts");
+                var request = CreateRequest($"{BaseUrl}UsersService/GetAccounts");
                 request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
                 var response = await client.SendAsync(request).ConfigureAwait(continueOnCapturedContext: false);
                 var data = await response.Content.ReadAsStringAsync().ConfigureAwait(continueOnCapturedContext: false);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new ApplicationException(
-                        $"Произошла ошибка(код: {response.StatusCode}) при получение счетов: {JsonConvert.SerializeObject(data)}");
+                        $"Произошла ошибка(код: {response.StatusCode}) при получении счетов: {JsonConvert.SerializeObject(data)}");
                 }
                 else
                 {
@@ -56,24 +65,26 @@ namespace Clients.TinkoffInvest
             }
 
             var mapper = DependencyService.Resolve<IMapper<TinkoffContracts.Accounts.Account, TinkoffInvestStatistic.Contracts.Account>>();
-            var result = accounts.Select(a => mapper.Map(a)).ToArray();
+            var result = accounts.Where(a => ActiveAccountTypes.Contains(a.AccountType)).Select(a => mapper.Map(a)).ToArray();
 
             return result;
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>> GetAccountPositionsAsync(string accountId)
+        public async Task<Portfolio> GetAccountsFullDataAsync(string accountId)
         {
             PortfolioReponse portfolio;
-            using (HttpClient client = new HttpClient() { BaseAddress = new Uri(BaseUrl) })
+            using (HttpClient client = new HttpClient())
             {
-                var request = CreateRequest($"{ApiVersion}OperationsService/GetPortfolio");
+                var request = CreateRequest($"{BaseUrl}OperationsService/GetPortfolio");
+                var @params = JsonConvert.SerializeObject(new { accountId = accountId, currency = Currency.Rub });
+                request.Content = new StringContent(@params, Encoding.UTF8, "application/json");
                 var response = await client.SendAsync(request).ConfigureAwait(continueOnCapturedContext: false);
                 var data = await response.Content.ReadAsStringAsync().ConfigureAwait(continueOnCapturedContext: false);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new ApplicationException(
-                        $"Произошла ошибка(код: {response.StatusCode}) при получение счетов: {JsonConvert.SerializeObject(data)}");
+                        $"Произошла ошибка(код: {response.StatusCode}) при получении данных счета №{accountId}: {JsonConvert.SerializeObject(data)}");
                 }
                 else
                 {
@@ -81,7 +92,7 @@ namespace Clients.TinkoffInvest
                 }
             }
 
-            var mapper = DependencyService.Resolve<IMapper<PortfolioReponse, IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>>>();
+            var mapper = DependencyService.Resolve<IMapper<PortfolioReponse, Portfolio>>();
             var result = mapper.Map(portfolio);
 
             return result;

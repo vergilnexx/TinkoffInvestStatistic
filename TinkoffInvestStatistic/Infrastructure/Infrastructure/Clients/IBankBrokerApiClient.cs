@@ -16,11 +16,11 @@ namespace Infrastructure.Clients
         public Task<IReadOnlyCollection<Account>> GetAccountsAsync();
 
         /// <summary>
-        /// Возвращает позиции по счету.
+        /// Возвращает полные данные по счету.
         /// </summary>
         /// <param name="accountId">Идентификатор счета.</param>
-        /// <returns>Список позиций только для чтения.</returns>
-        public Task<IReadOnlyCollection<Position>> GetAccountPositionsAsync(string accountId);
+        /// <returns>Полные данные по счету.</returns>
+        public Task<Portfolio> GetAccountsFullDataAsync(string accountId);
 
         /// <summary>
         /// Возвращает данные по валютам.

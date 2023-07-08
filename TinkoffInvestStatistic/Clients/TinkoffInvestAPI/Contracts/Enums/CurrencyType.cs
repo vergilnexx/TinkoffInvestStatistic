@@ -18,7 +18,8 @@
         /// <summary>
         /// Еро.
         /// </summary>
-        Eur
+        Eur,
+
         /// <summary>
         /// Гонконгский доллар
         /// </summary>
