@@ -2,7 +2,7 @@
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using Services;
-using System.Collections.Generic;
+using TinkoffInvest.Contracts.Instruments;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvest.Mappers;
 using TinkoffInvestStatistic.Contracts;
@@ -42,12 +42,8 @@ namespace Infrastructure.Container
                 TinkoffAccountToAccountMapper>();
             DependencyService.Register<IMapper<PortfolioReponse, Portfolio>,
                 TinkoffPortfolioToPortfolioMapper>();
-            //DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<CurrencyMoney>>,
-            //    TinkoffPortfolioToCurrencyMoneyMapper>();
-            //DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<CurrencyMoney>>,
-            //    TinkoffPortfolioCurrenciesToCurrencyMoneyMapper>();
-            //DependencyService.Register<IMapper<Tinkoff.Trading.OpenApi.Models.MarketInstrumentList, IReadOnlyCollection<Position>>,
-            //    TinkoffMarketInstrumentListToPositionListMapper>();
+            DependencyService.Register<IMapper<InstrumentResponse, TinkoffInvestStatistic.Contracts.Position>,
+                TinkoffPositionToPositionMapper>();
         }
     }
 }

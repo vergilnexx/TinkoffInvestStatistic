@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace Infrastructure.Clients
 {
@@ -23,23 +24,18 @@ namespace Infrastructure.Clients
         public Task<Portfolio> GetAccountsFullDataAsync(string accountId);
 
         /// <summary>
-        /// Возвращает данные по валютам.
-        /// </summary>
-        /// <returns>Список данных по валютам.</returns>
-        public Task<IReadOnlyCollection<CurrencyMoney>> GetCurrenciesAsync();
-
-        /// <summary>
-        /// Возвращает фиатные позиции по счету.
-        /// </summary>
-        /// <param name="accountId">Номер счета.</param>
-        /// <returns>Список фиатных позиций только для чтения.</returns>
-        public Task<IReadOnlyCollection<CurrencyMoney>> GetFiatPositionsAsync(string accountId);
-
-        /// <summary>
         /// Возвращает позиции по тикеру.
         /// </summary>
         /// <param name="ticker">Тикер.</param>
         /// <returns>Список позиций</returns>
         public Task<IReadOnlyCollection<Position>> FindPositionsAsync(string ticker);
+
+        /// <summary>
+        /// Возвращает позицию по уникальному фин. идентификатору.
+        /// </summary>
+        /// <param name="figi">Уникальный фин.идентификатор.</param>
+        /// <param name="positionType">Тип позиции.</param>
+        /// <returns>Позиция по уникальному фин. идентификатору.</returns>
+        public Task<Position> FindPositionByFigiAsync(string figi, PositionType positionType);
     }
 }

@@ -55,7 +55,7 @@ namespace TinkoffInvestStatistic.Contracts
         /// <summary>
         /// Текущая цена в валюте.
         /// </summary>
-        public CurrencyMoney CurrentPrice { get; set; }
+        public CurrencyMoney? CurrentPrice { get; set; }
 
         /// <summary>
         /// Сумма в рублях.
@@ -76,10 +76,19 @@ namespace TinkoffInvestStatistic.Contracts
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Финансовый идентификатор.</param>
-        /// <param name="type">Тип инструмента.</param>
-        public Position(string figi, PositionType type)
+        public Position(string figi)
         {
             Figi = figi;
+        }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="type">Тип инструмента.</param>
+        public Position(string figi, PositionType type) 
+            : this(figi)
+        {
             Type = type;
         }
 
@@ -92,12 +101,12 @@ namespace TinkoffInvestStatistic.Contracts
         /// <param name="sum">Сумма в валюте.</param>
         /// <param name="currency">Валюта.</param>-
         public Position(string figi, PositionType type, string name, decimal sum, Currency currency)
+            : this(figi, type)
         {
-            Figi = figi;
-            Type = type;
             Name = name;
             Sum = sum;
             SumInCurrency = sum;
+            Currency = currency;
         }
     }
 }

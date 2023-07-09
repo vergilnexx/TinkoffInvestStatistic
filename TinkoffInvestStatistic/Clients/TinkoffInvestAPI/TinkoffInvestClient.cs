@@ -15,6 +15,7 @@ using Newtonsoft.Json.Converters;
 using TinkoffInvest.Contracts.Accounts;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvestStatistic.Contracts.Enums;
+using TinkoffInvest.Contracts.Instruments;
 
 namespace Clients.TinkoffInvest
 {
@@ -99,34 +100,6 @@ namespace Clients.TinkoffInvest
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<CurrencyMoney>> GetCurrenciesAsync()
-        {
-            return Array.Empty<CurrencyMoney>();
-            //using var connection = ConnectionFactory.GetConnection(Token);
-            //var context = connection.Context;
-
-            //var currencies = await context.PortfolioAsync().ConfigureAwait(continueOnCapturedContext: false);
-            //var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.Portfolio, IReadOnlyCollection<CurrencyMoney>>>();
-            //var result = mapper.Map(currencies);
-
-            //return result;
-        }
-
-        /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<CurrencyMoney>> GetFiatPositionsAsync(string accountId)
-        {
-            return Array.Empty<CurrencyMoney>();
-            //using var connection = ConnectionFactory.GetConnection(Token);
-            //var context = connection.Context;
-
-            //var portfolio = await context.PortfolioCurrenciesAsync(accountId).ConfigureAwait(continueOnCapturedContext: false);
-            //var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies, IReadOnlyCollection<CurrencyMoney>>>();
-            //var result = mapper.Map(portfolio);
-
-            //return result;
-        }
-
-        /// <inheritdoc/>
         public async Task<IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>> FindPositionsAsync(string ticker)
         {
             return Array.Empty<TinkoffInvestStatistic.Contracts.Position>();
@@ -138,6 +111,45 @@ namespace Clients.TinkoffInvest
             //var result = mapper.Map(instruments);
 
             //return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<TinkoffInvestStatistic.Contracts.Position> FindPositionByFigiAsync(string figi, PositionType positionType)
+        {
+            InstrumentResponse instrument;
+            using (HttpClient client = new HttpClient())
+            {
+                var request = CreateRequest(GetFindPositionUrl(positionType));
+                var @params = JsonConvert.SerializeObject(new { id = figi, idType = "INSTRUMENT_ID_TYPE_FIGI" });
+                request.Content = new StringContent(@params, Encoding.UTF8, "application/json");
+                var response = await client.SendAsync(request).ConfigureAwait(continueOnCapturedContext: false);
+                var data = await response.Content.ReadAsStringAsync().ConfigureAwait(continueOnCapturedContext: false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new ApplicationException(
+                        $"Произошла ошибка(код: {response.StatusCode}) при получении данных позиции с figi '{figi}' с типом '{positionType}' : {JsonConvert.SerializeObject(data)}");
+                }
+                else
+                {
+                    instrument = JsonConvert.DeserializeObject<InstrumentResponse>(data);
+                }
+            }
+
+            var mapper = DependencyService.Resolve<IMapper<InstrumentResponse, TinkoffInvestStatistic.Contracts.Position>>();
+            var result = mapper.Map(instrument);
+
+            return result;
+        }
+
+        private string GetFindPositionUrl(PositionType positionType)
+        {
+            return positionType switch
+            {
+                PositionType.Stock => $"{BaseUrl}InstrumentsService/ShareBy",
+                PositionType.Bond => $"{BaseUrl}InstrumentsService/BondBy",
+                PositionType.Etf => $"{BaseUrl}InstrumentsService/EtfBy",
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         private static HttpRequestMessage CreateRequest(string url)

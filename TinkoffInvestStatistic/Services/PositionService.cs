@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
+using Infrastructure.Helpers;
 
 namespace Services
 {
@@ -19,46 +20,46 @@ namespace Services
         public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountId, PositionType positionType)
         {
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions.Where(p => p.Type == positionType);
-            var currencies = await bankBrokerClient.GetCurrenciesAsync();
+            var portfolio = await bankBrokerClient.GetAccountsFullDataAsync(accountId);
 
+            // Получаем курсы валют.
+            var currencies = portfolio.Positions
+                                .Where(p => p.Type == PositionType.Currency)
+                                .Select(p => new { Currency = EnumHelper.GetCurrencyByFigi(p.Figi), Sum = p.CurrentPrice.Sum })
+                                .Where(p => p.Currency != Currency.Rub)
+                                .Select(p => KeyValuePair.Create(p.Currency!.Value, p.Sum))
+                                .Union(new[] { KeyValuePair.Create(Currency.Rub, 1m) })
+                                .ToList();
+
+            var positions = portfolio.Positions.Where(p => p.Type == positionType);
             foreach (var position in positions)
             {
+                if (positionType == PositionType.Currency)
+                {
+                    position.Name = (EnumHelper.GetCurrencyByFigi(position.Figi) ?? Currency.Rub).ToString();
+                }
+                else
+                {
+                    var positionData = await bankBrokerClient.FindPositionByFigiAsync(position.Figi, positionType);
+                    position.Name = positionData.Name;
+                    position.Ticker = positionData.Ticker;
+                }
                 position.SumInCurrency = position.SumInCurrency;
 
                 // Если цена не в рублях рассчитываем по текущему курсу.
-                if (position.AveragePositionPrice?.Currency != Currency.Rub)
+                if (position.Currency != Currency.Rub)
                 {
-                    decimal? currencySum;
-                    var currency = currencies.FirstOrDefault(c => position.AveragePositionPrice?.Currency == c.Currency);
-                    if (currency == null)
-                    {
-                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, position.AveragePositionPrice?.Currency);
-                        if (currencySum == null)
-                        {
-                            throw new ApplicationException("Не найдена валюта типа: " + position.AveragePositionPrice?.Currency);
-                        }
-                    }
-                    else
-                    {
-                        currencySum = currency.Sum;
-                    }
+                    var currency = currencies.FirstOrDefault(c => c.Key == position.Currency);
+                    var currencySum = currency.Value;
 
-                    position.Sum = position.SumInCurrency * currencySum.Value;
-                    position.DifferenceSum = (position.ExpectedYield?.Sum ?? 0) * currencySum.Value;
+                    position.Sum = position.SumInCurrency * currencySum;
+                    position.DifferenceSum = (position.ExpectedYield?.Sum ?? 0) * currencySum;
                 }
                 else
                 {
                     position.Sum = position.SumInCurrency;
                     position.DifferenceSum = position.ExpectedYield?.Sum ?? 0;
                 }
-            }
-
-            if(positionType == PositionType.Currency)
-            {
-                // Добавляем данные про фиат в рублях.
-                var rubles = await AddFiatRubles(accountId, bankBrokerClient, positions);
-                positions = positions.Union(rubles).ToArray();
             }
 
             var plannedPositions = await DataStorageService.Instance.GetPlannedPositionsAsync(accountId, positionType);
@@ -71,15 +72,6 @@ namespace Services
             return positions.ToArray();
         }
 
-        private static async Task<IEnumerable<Position>> AddFiatRubles(string accountId, IBankBrokerApiClient bankBrokerClient, IEnumerable<Position> positions)
-        {
-            var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
-            var rubles = fiatPositions
-                .Where(fp => fp.Currency == Currency.Rub)
-                .Select(fp => new Position(string.Empty, PositionType.Currency, "Рубль", fp.Sum, fp.Currency));
-            return rubles;
-        }
-
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Position>> GetPositionByTickerAsync(PositionType positionType, string ticker)
         {
@@ -88,38 +80,6 @@ namespace Services
             return positions
                     .Where(p => p.Type == positionType)
                     .ToArray();
-        }
-
-        /// <inheritdoc/>
-        public async Task<decimal> GetPositionsSumAsync(string accountId)
-        {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position?> positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions;
-            positions = positions.Where(p => p.Type != PositionType.Currency);
-            var fiatPositions =  await bankBrokerClient.GetFiatPositionsAsync(accountId);
-            var currencies = await bankBrokerClient.GetCurrenciesAsync();
-            var result = GetSumByPositions(positions.ToArray(), fiatPositions, currencies);
-            return result ?? 0;
-        }
-
-        /// <inheritdoc/>
-        public async Task<decimal> GetPositionsSumAsync(string accountId, PositionType positionType)
-        {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            IEnumerable<Position?> positions = (await bankBrokerClient.GetAccountsFullDataAsync(accountId)).Positions;
-            var currencies = await bankBrokerClient.GetCurrenciesAsync();
-            decimal result;
-            if(positionType == PositionType.Currency)
-            {
-                var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
-                result = GetSumByPositions(Array.Empty<Position>(), fiatPositions, currencies) ?? 0;
-            }
-            else
-            {
-                positions = positions.Where(p => p.Type == positionType);
-                result = GetSumByPositions(positions.ToArray(), Array.Empty<CurrencyMoney>(), currencies) ?? 0;
-            }
-            return result;
         }
 
         /// <inheritdoc/>

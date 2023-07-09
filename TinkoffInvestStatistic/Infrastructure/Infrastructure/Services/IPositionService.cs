@@ -20,21 +20,6 @@ namespace Infrastructure.Services
         public Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountId, PositionType positionType);
 
         /// <summary>
-        /// Возвращает список позиций по счету.
-        /// </summary>
-        /// <param name="accountId">Идентификатор счета.</param>
-        /// <param name="positionType">Тип инструмента.</param>
-        /// <returns>Группированный список позиций только для чтения.</returns>
-        public Task<decimal> GetPositionsSumAsync(string accountId, PositionType positionType);
-
-        /// <summary>
-        /// Расчитывает сумма по всем позициям на счете.
-        /// </summary>
-        /// <param name="accountId">Номер счета.</param>
-        /// <returns>Сумма.</returns>
-        public Task<decimal> GetPositionsSumAsync(string accountId);
-
-        /// <summary>
         /// Сохранение данных позиций по счету.
         /// </summary>
         /// <param name="accountId">Номер счета.</param>
