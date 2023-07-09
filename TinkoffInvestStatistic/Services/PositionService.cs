@@ -36,7 +36,7 @@ namespace Services
             {
                 if (positionType == PositionType.Currency)
                 {
-                    position.Name = (EnumHelper.GetCurrencyByFigi(position.Figi) ?? Currency.Rub).ToString();
+                    position.Name = EnumHelper.GetCurrencyByFigi(position.Figi).ToString();
                 }
                 else
                 {

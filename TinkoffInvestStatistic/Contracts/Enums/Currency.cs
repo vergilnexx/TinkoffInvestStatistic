@@ -15,6 +15,13 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         Rub,
 
         /// <summary>
+        /// Рубль.
+        /// </summary>
+        [Description("RUB")]
+        [Figi("BBG000VJ5YR4")]
+        Gold,
+
+        /// <summary>
         /// Доллар.
         /// </summary>
         [Description("USD")]
