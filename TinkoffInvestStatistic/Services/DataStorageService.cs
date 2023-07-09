@@ -76,7 +76,7 @@ namespace Services
         {
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             var positions = await dataAccessService.GetPlannedPositionsAsync(accountId, positionType);
-            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default) { Ticker = p.Ticker }).ToArray();
+            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default, Currency.Rub) { Ticker = p.Ticker }).ToArray();
         }
 
         /// <summary>

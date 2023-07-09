@@ -1,7 +1,5 @@
-﻿using System;
-using TinkoffInvest.Contracts.Accounts;
+﻿using TinkoffInvest.Contracts.Accounts;
 using TinkoffInvestStatistic.Contracts;
-using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffContracts = TinkoffInvest.Contracts;
 
 namespace TinkoffInvest.Mappers
@@ -18,20 +16,9 @@ namespace TinkoffInvest.Mappers
             
             result.ID = brokerAccount.Id;
             result.Name = brokerAccount.Name;
-            result.Type = MapType(brokerAccount.AccountType);
+            result.Type = EnumMapper.MapAccountType(brokerAccount.AccountType);
 
             return result;
-        }
-
-        private AccountType MapType(TinkoffContracts.Enums.AccountType brokerAccountType)
-        {
-            return brokerAccountType switch
-            {
-                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF => AccountType.BrokerAccount,
-                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF_IIS => AccountType.Iis,
-                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_INVEST_BOX => AccountType.InvestBox,
-                _ => throw new ArgumentOutOfRangeException(nameof(brokerAccountType)),
-            };
         }
     }
 }

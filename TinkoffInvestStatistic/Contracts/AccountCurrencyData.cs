@@ -18,9 +18,19 @@ namespace TinkoffInvestStatistic.Contracts
         public decimal PlanPercent { get; set; }
 
         /// <summary>
-        /// Сумма.
+        /// Сумма в рублях.
         /// </summary>
         public decimal Sum { get; set; }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="currency">Валюта.</param>
+        /// <param name="sum">Сумма.</param>
+        public AccountCurrencyData(Currency currency, decimal sum)
+            : this(currency, planPercent: 0m, sum)
+        {
+        }
 
         /// <summary>
         /// Конструктор.

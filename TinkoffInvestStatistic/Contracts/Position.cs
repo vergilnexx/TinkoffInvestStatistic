@@ -18,6 +18,11 @@ namespace TinkoffInvestStatistic.Contracts
         public PositionType Type { get; private set; }
 
         /// <summary>
+        /// Валюта.
+        /// </summary>
+        public Currency Currency { get; set; }
+
+        /// <summary>
         /// Тикер.
         /// </summary>
         public string Ticker { get; set; } = string.Empty;
@@ -46,6 +51,11 @@ namespace TinkoffInvestStatistic.Contracts
         /// Цена покупки.
         /// </summary>
         public CurrencyMoney? AveragePositionPrice { get; set; }
+
+        /// <summary>
+        /// Текущая цена в валюте.
+        /// </summary>
+        public CurrencyMoney CurrentPrice { get; set; }
 
         /// <summary>
         /// Сумма в рублях.
@@ -80,7 +90,8 @@ namespace TinkoffInvestStatistic.Contracts
         /// <param name="type">Тип инструмента.</param>
         /// <param name="name">Наименование.</param>
         /// <param name="sum">Сумма в валюте.</param>
-        public Position(string figi, PositionType type, string name, decimal sum)
+        /// <param name="currency">Валюта.</param>-
+        public Position(string figi, PositionType type, string name, decimal sum, Currency currency)
         {
             Figi = figi;
             Type = type;

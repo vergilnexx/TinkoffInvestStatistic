@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using TinkoffInvest.Contracts.Common;
+using TinkoffInvest.Contracts.Enums;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Contracts.Enums;
@@ -33,12 +34,15 @@ namespace TinkoffInvest.Mappers
 
             result.Name = position.Figi;
             result.Ticker = position.Figi;
+            result.Currency = EnumMapper.MapCurrency(position.AveragePositionPrice?.Currency ?? CurrencyType.Rub);
 
             var quantity = position.Quantity.GetValue();
             result.PositionCount = quantity;
+            result.Sum = position.CurrencyCurrentPrice.GetValue() * quantity;
             result.SumInCurrency = position.CurrencyCurrentPrice.GetValue() * quantity;
             result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
             result.ExpectedYield = MapMoney(position.ExpectedYield);
+            result.CurrentPrice = MapMoney(position.CurrencyCurrentPrice);
 
             return result;
         }

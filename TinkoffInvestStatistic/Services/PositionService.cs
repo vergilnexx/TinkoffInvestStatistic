@@ -76,7 +76,7 @@ namespace Services
             var fiatPositions = await bankBrokerClient.GetFiatPositionsAsync(accountId);
             var rubles = fiatPositions
                 .Where(fp => fp.Currency == Currency.Rub)
-                .Select(fp => new Position(string.Empty, PositionType.Currency, "Рубль", fp.Sum));
+                .Select(fp => new Position(string.Empty, PositionType.Currency, "Рубль", fp.Sum, fp.Currency));
             return rubles;
         }
 

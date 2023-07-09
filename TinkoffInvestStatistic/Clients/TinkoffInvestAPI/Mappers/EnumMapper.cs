@@ -1,6 +1,8 @@
 ﻿using System;
 using TinkoffInvest.Contracts.Enums;
 using TinkoffInvestStatistic.Contracts.Enums;
+using AccountType = TinkoffInvestStatistic.Contracts.Enums.AccountType;
+using TinkoffContracts = TinkoffInvest.Contracts;
 
 namespace TinkoffInvest.Mappers
 {
@@ -43,6 +45,23 @@ namespace TinkoffInvest.Mappers
                 InstrumentType.Bond => PositionType.Bond,
                 InstrumentType.Etf => PositionType.Etf,
                 _ => throw new ArgumentOutOfRangeException(nameof(type)),
+            };
+        }
+
+        /// <summary>
+        /// Маппинг типов счетов.
+        /// </summary>
+        /// <param name="brokerAccountType">Входной тип.</param>
+        /// <returns>Тип из контрактов.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Исключение при неизвестном типе.</exception>
+        public static AccountType MapAccountType(TinkoffContracts.Enums.AccountType brokerAccountType)
+        {
+            return brokerAccountType switch
+            {
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF => AccountType.BrokerAccount,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF_IIS => AccountType.Iis,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_INVEST_BOX => AccountType.InvestBox,
+                _ => throw new ArgumentOutOfRangeException(nameof(brokerAccountType)),
             };
         }
     }

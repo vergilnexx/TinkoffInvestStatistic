@@ -22,7 +22,7 @@ namespace TinkoffInvest.Contracts.Portfolio
         public Numeric Quantity { get; set; }
 
         /// <summary>
-        /// Теккущая цена в валюте.
+        /// Текущая цена в валюте.
         /// </summary>
         [JsonProperty(PropertyName = "currentPrice")]
         public CurrencyNumeric CurrencyCurrentPrice { get; set; }
