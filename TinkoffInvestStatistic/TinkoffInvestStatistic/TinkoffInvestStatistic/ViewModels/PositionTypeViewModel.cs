@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
@@ -77,6 +78,7 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 PositionTypes.Clear();
+
                 var service = DependencyService.Get<IInstrumentService>();
                 IEnumerable<Instrument> positionTypes = await service.GetPositionTypes(AccountId);
                 positionTypes = positionTypes.OrderByDescending(t => t.Sum);
@@ -85,7 +87,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 {
                     var model = new PositionTypeModel(item.Type);
                     model.PlanPercent = item.PlanPercent.ToString();
-                    model.CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 2, MidpointRounding.AwayFromZero);
+                    model.CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 
+                                            DecimalHelper.NUMERIC_DECIMALS, MidpointRounding.AwayFromZero);
                     model.CurrentSum = item.Sum;
 
                     PositionTypes.Add(model);
@@ -181,7 +184,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 $"?{nameof(PortfolioViewModel.AccountId)}={AccountId}" +
                 $"&{nameof(PortfolioViewModel.PositionType)}={(int)item.Type}" +
                 $"&{nameof(PortfolioViewModel.GroupPlanPercent)}={item.PlanPercent}" +
-                $"&{nameof(PortfolioViewModel.AccountSum)}={Math.Round(sum, 2, MidpointRounding.ToEven)}";
+                $"&{nameof(PortfolioViewModel.AccountSum)}={Math.Round(sum, DecimalHelper.NUMERIC_DECIMALS, MidpointRounding.ToEven)}";
             await Shell.Current.GoToAsync(url, true);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infrastructure.Helpers;
+using System;
 using TinkoffInvest.Contracts.Common;
 
 namespace TinkoffInvest.Mappers
@@ -8,11 +9,6 @@ namespace TinkoffInvest.Mappers
     /// </summary>
     public static class NumericHelper
     {
-        /// <summary>
-        /// Количество знаков после запятой
-        /// </summary>
-        public static int NUMERIC_DECIMALS = 2;
-
         /// <summary>
         /// Возвращает округленное сформатированное значение числового представления.
         /// </summary>
@@ -30,7 +26,7 @@ namespace TinkoffInvest.Mappers
                 throw new ArithmeticException($"Не удалось преобразовать числовое представление: {integerPart}.{numeric.FractionalPart}");
             }
             
-            return decimal.Round(result, NUMERIC_DECIMALS);
+            return decimal.Round(result, DecimalHelper.NUMERIC_DECIMALS);
         }
     }
 }
