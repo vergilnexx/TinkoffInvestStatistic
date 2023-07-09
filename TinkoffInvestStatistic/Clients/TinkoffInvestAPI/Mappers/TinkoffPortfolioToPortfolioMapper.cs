@@ -20,9 +20,9 @@ namespace TinkoffInvest.Mappers
             var result = new Portfolio(portfolio.AccountId!, MapMoney(portfolio.TotalAmount), positions)
             {
                 TotalAmountStocks = MapMoney(portfolio.TotalAmountShares),
-                TotalAmountBonds = MapMoney(portfolio.TotalAmountShares),
-                TotalAmountEtf = MapMoney(portfolio.TotalAmountShares),
-                TotalAmountCurrencies = MapMoney(portfolio.TotalAmountShares)
+                TotalAmountBonds = MapMoney(portfolio.TotalAmountBonds),
+                TotalAmountEtf = MapMoney(portfolio.TotalAmountEtf),
+                TotalAmountCurrencies = MapMoney(portfolio.TotalAmountCurrencies)
             };
             return result;
         }

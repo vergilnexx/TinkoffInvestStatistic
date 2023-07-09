@@ -1,8 +1,5 @@
-﻿using TinkoffInvestStatistic.Contracts.Enums;
-using Infrastructure.Clients;
-using Infrastructure.Helpers;
+﻿using Infrastructure.Clients;
 using Infrastructure.Services;
-using Services.Workaround;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +18,6 @@ namespace Services
             var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
             var brokerAccounts = await bankBrokerClient.GetAccountsAsync();
 
-            var positionService = DependencyService.Resolve<IPositionService>();
             foreach (var account in brokerAccounts)
             {
                 var data = await bankBrokerClient.GetAccountsFullDataAsync(account.ID);
@@ -31,6 +27,13 @@ namespace Services
             var accounts = await DataStorageService.Instance.MergeAccountData(brokerAccounts);
 
             return accounts.ToArray();
+        }
+        /// <inheritdoc/>
+        public async Task<Portfolio> GetPortfolioAsync(string accountId)
+        {
+            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+
+            return await bankBrokerClient.GetAccountsFullDataAsync(accountId);
         }
 
         /// <inheritdoc/>

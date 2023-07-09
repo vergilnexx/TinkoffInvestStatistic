@@ -16,6 +16,13 @@ namespace Infrastructure.Services
         public Task<IReadOnlyCollection<Account>> GetAccountsAsync();
 
         /// <summary>
+        /// Возвращает данные портфеля.
+        /// </summary>
+        /// <param name="accountId">Идентификатор счета.</param>
+        /// <returns>Данные портфеля.</returns>
+        public Task<Portfolio> GetPortfolioAsync(string accountId);
+
+        /// <summary>
         /// Возвращает данные по счету в разрезе валют.
         /// </summary>
         /// <param name="accountId">Идентификатор счета.</param>

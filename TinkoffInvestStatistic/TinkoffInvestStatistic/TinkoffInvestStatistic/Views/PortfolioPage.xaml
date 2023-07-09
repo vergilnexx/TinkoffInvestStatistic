@@ -122,6 +122,7 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <!--
                 <CollectionView.Footer>
                     <Button Text="Добавить"
                             WidthRequest="60" 
@@ -133,6 +134,7 @@
                             BorderRadius="30" 
                             Command="{Binding AddPositionCommand}"/>
                 </CollectionView.Footer>
+                -->
             </CollectionView>
             <StackLayout Padding="10" Grid.Row="3"
                          IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
