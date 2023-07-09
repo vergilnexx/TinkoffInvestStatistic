@@ -15,9 +15,9 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         Rub,
 
         /// <summary>
-        /// Рубль.
+        /// Золото.
         /// </summary>
-        [Description("RUB")]
+        [Description("Золото")]
         [Figi("BBG000VJ5YR4")]
         Gold,
 
@@ -38,7 +38,7 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         /// <summary>
         /// Гонконгский доллар
         /// </summary>
-        [Description("Гонконгский доллар")]
+        [Description("Гонконг. доллар")]
         [Figi("BBG0013HSW87")]
         Hkd,
 
