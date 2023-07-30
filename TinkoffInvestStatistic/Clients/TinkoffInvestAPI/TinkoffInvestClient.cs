@@ -100,20 +100,6 @@ namespace Clients.TinkoffInvest
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<TinkoffInvestStatistic.Contracts.Position>> FindPositionsAsync(string ticker)
-        {
-            return Array.Empty<TinkoffInvestStatistic.Contracts.Position>();
-            //using var connection = ConnectionFactory.GetConnection(Token);
-            //var context = connection.Context;
-
-            //var instruments = await context.MarketSearchByTickerAsync(ticker).ConfigureAwait(continueOnCapturedContext: false);
-            //var mapper = DependencyService.Resolve<IMapper<Tinkoff.Trading.OpenApi.Models.MarketInstrumentList, IReadOnlyCollection<Position>>>();
-            //var result = mapper.Map(instruments);
-
-            //return result;
-        }
-
-        /// <inheritdoc/>
         public async Task<TinkoffInvestStatistic.Contracts.Position> FindPositionByFigiAsync(string figi, PositionType positionType)
         {
             InstrumentResponse instrument;
