@@ -1,11 +1,11 @@
-﻿using Contracts;
-using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
 
 namespace Services
@@ -76,7 +76,7 @@ namespace Services
         {
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             var positions = await dataAccessService.GetPlannedPositionsAsync(accountId, positionType);
-            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default) { Ticker = p.Ticker }).ToArray();
+            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default, Currency.Rub) { Ticker = p.Ticker }).ToArray();
         }
 
         /// <summary>

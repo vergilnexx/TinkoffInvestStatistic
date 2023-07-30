@@ -1,5 +1,5 @@
-﻿using Contracts.Enums;
-using Infrastructure.Helpers;
+﻿using Infrastructure.Helpers;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
 

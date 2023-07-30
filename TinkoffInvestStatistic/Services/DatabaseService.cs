@@ -1,5 +1,4 @@
-﻿using Contracts;
-using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using SQLite;

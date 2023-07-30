@@ -1,4 +1,4 @@
-﻿namespace Contracts
+﻿namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Сектор.

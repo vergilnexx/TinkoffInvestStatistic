@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Contracts.Enums
+namespace TinkoffInvestStatistic.Contracts.Enums
 {
     /// <summary>
     /// Тип позиции.

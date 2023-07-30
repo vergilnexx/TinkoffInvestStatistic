@@ -1,7 +1,7 @@
-using Contracts;
-using Contracts.Enums;
+using TinkoffInvestStatistic.Contracts.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Tests
 {

@@ -1,7 +1,6 @@
-﻿using Contracts.Enums;
-using System;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 
-namespace Contracts
+namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Счет.
@@ -12,6 +11,11 @@ namespace Contracts
         /// Идентификатор счета.
         /// </summary>
         public string ID { get; set; }
+
+        /// <summary>
+        /// Наименование счета.
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Тип счета.

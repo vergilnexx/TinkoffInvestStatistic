@@ -1,4 +1,4 @@
-﻿using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 using Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;

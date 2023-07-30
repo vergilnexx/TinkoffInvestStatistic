@@ -5,11 +5,9 @@ using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
-using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
@@ -62,7 +60,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var accounts = await service.GetAccountsAsync();
                 foreach (var item in accounts)
                 {
-                    var model = new AccountModel(item.ID, item.Type.GetDescription(), item.Sum);
+                    var model = new AccountModel(item.ID, item.Name, item.Type.GetDescription(), item.Sum);
 
                     Accounts.Add(model);
                 }
