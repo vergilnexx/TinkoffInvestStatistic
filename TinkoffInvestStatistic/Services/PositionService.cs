@@ -73,16 +73,6 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<Position>> GetPositionByTickerAsync(PositionType positionType, string ticker)
-        {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var positions = await bankBrokerClient.FindPositionsAsync(ticker);
-            return positions
-                    .Where(p => p.Type == positionType)
-                    .ToArray();
-        }
-
-        /// <inheritdoc/>
         public Task SavePlanPercents(string accountId, PositionType positionType, PositionData[] data)
         {
             return DataStorageService.Instance.SavePositionDataAsync(accountId, positionType, data);

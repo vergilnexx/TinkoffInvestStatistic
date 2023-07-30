@@ -69,12 +69,15 @@ namespace Services
                                         .ToArray();
 
             // Объединяем все рассчитанное.
-            return cashInRoubles
-                        .Union(instrumentsInRoubles)
-                        .GroupBy(p => p.Key)
-                        .ToDictionary(p => p.Key, p => p.Sum(s => s.Value))
-                        .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, currencyGroup.Value))
-                        .ToArray();
+            var dataByClient = cashInRoubles
+                                .Union(instrumentsInRoubles)
+                                .GroupBy(p => p.Key)
+                                .ToDictionary(p => p.Key, p => p.Sum(s => s.Value))
+                                .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, currencyGroup.Value))
+                                .ToArray();
+
+            var mergedWithPlanned = await DataStorageService.Instance.MergeCurrenciesData(accountId, dataByClient);
+            return mergedWithPlanned;
         }
     }
 }

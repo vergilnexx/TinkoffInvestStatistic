@@ -6,6 +6,7 @@
              xmlns:model="clr-namespace:TinkoffInvestStatistic.Models" 
              xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
              xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
+             xmlns:effects="clr-namespace:TinkoffInvestStatistic.Effects"
              Title="{Binding Title}">
 
     <!--
@@ -33,10 +34,24 @@
                             <Label 
                                 Text="{Binding Name}" 
                                 LineBreakMode="WordWrap"
-                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                TextColor="{Binding NameColor}"
                                 FontSize="13" 
                                 FontAttributes="Bold"
-                                Padding="0,10,0,0"/>
+                                Padding="0,10,0,0"
+                                IsVisible="{Binding IsBlocked, Converter={Helpers:InverseBoolConverter}}">
+                            </Label>
+                            <Label 
+                                Text="{Binding Name}" 
+                                LineBreakMode="WordWrap"
+                                TextColor="{Binding NameColor}"
+                                FontSize="13" 
+                                FontAttributes="Bold"
+                                Padding="0,10,0,0"
+                                IsVisible="{Binding IsBlocked}">
+                                <Label.Effects>
+                                    <effects:StrikethroughEntryEffect />
+                                </Label.Effects>
+                            </Label>
                             <Label 
                                 Grid.Column="1"
                                 Text="{Binding SumInCurrencyText}" 
@@ -122,19 +137,6 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                <!--
-                <CollectionView.Footer>
-                    <Button Text="Добавить"
-                            WidthRequest="60" 
-                            HorizontalOptions="Center" 
-                            HeightRequest="60" 
-                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}" 
-                            BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}" 
-                            BorderWidth="1"
-                            BorderRadius="30" 
-                            Command="{Binding AddPositionCommand}"/>
-                </CollectionView.Footer>
-                -->
             </CollectionView>
             <StackLayout Padding="10" Grid.Row="3"
                          IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">

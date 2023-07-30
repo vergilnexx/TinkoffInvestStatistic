@@ -19,6 +19,12 @@ namespace TinkoffInvestStatistic.Utility
                 case Currency.Eur:
                     culture.NumberFormat.CurrencySymbol = "€";
                     break;
+                case Currency.Hkd:
+                    culture.NumberFormat.CurrencySymbol = "HK$";
+                    break;
+                case Currency.Cny:
+                    culture.NumberFormat.CurrencySymbol = "¥";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(currency));
             }

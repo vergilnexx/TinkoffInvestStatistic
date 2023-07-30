@@ -111,6 +111,16 @@ namespace TinkoffInvestStatistic.Models
         public string SumInCurrencyText => CurrencyUtility.ToCurrencyString(SumInCurrency, Currency);
 
         /// <summary>
+        /// Признак, что позиция заблокирована.
+        /// </summary>
+        public bool IsBlocked { get; set; }
+
+        /// <summary>
+        /// Цвет процента.
+        /// </summary>
+        public Color NameColor => IsBlocked ? Color.Red : Color.WhiteSmoke;
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Финансовый идентификатор.</param>

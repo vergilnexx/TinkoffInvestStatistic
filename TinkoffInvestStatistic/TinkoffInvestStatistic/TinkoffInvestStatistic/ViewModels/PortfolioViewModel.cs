@@ -45,13 +45,11 @@ namespace TinkoffInvestStatistic.ViewModels
         public ObservableCollection<GroupedPositionsModel> GroupedPositions { get; }
         public PieChart StatisticChart { get; private set; }
         public ICommand LoadGroupedPositionsCommand { get; }
-        public ICommand AddPositionCommand { get; }
 
         public PortfolioViewModel()
         {
             GroupedPositions = new ObservableCollection<GroupedPositionsModel>();
             LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync());
-            AddPositionCommand = new Command(async () => await GoToAddPositionAsync());
             StatisticChart = GetChart();
         }
 
@@ -190,7 +188,8 @@ namespace TinkoffInvestStatistic.ViewModels
                         SumInCurrency = p.SumInCurrency,
                         DifferenceSum = p.DifferenceSum,
                         DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
-                        DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red
+                        DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
+                        IsBlocked = p.IsBlocked
                     })
                     .OrderByDescending(p => p.CurrentPercent)
                     .ToList();
@@ -219,14 +218,6 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 IsBusy = false;
             }
-        }
-
-        private async Task GoToAddPositionAsync()
-        {
-            var url = $"{nameof(AddPositionPage)}" +
-                $"?{nameof(AddPositionViewModel.AccountId)}={AccountId}" +
-                $"&{nameof(AddPositionViewModel.PositionType)}={(int)_positionType}";
-            await Shell.Current.GoToAsync(url, true);
         }
 
         private PieChart GetChart()

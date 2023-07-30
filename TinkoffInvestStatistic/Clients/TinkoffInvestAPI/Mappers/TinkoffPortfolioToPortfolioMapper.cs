@@ -43,6 +43,7 @@ namespace TinkoffInvest.Mappers
             result.AveragePositionPrice = MapMoney(position.AveragePositionPrice);
             result.ExpectedYield = MapMoney(position.ExpectedYield);
             result.CurrentPrice = MapMoney(position.CurrencyCurrentPrice);
+            result.IsBlocked = position.IsBlocked;
 
             return result;
         }
