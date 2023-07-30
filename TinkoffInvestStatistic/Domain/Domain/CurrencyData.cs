@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
-using SQLite;
+﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace Domain
 {

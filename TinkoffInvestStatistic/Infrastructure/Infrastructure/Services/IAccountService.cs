@@ -1,6 +1,6 @@
-﻿using Contracts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Infrastructure.Services
 {
@@ -14,6 +14,13 @@ namespace Infrastructure.Services
         /// </summary>
         /// <returns>Список счетов только для чтения.</returns>
         public Task<IReadOnlyCollection<Account>> GetAccountsAsync();
+
+        /// <summary>
+        /// Возвращает данные портфеля.
+        /// </summary>
+        /// <param name="accountId">Идентификатор счета.</param>
+        /// <returns>Данные портфеля.</returns>
+        public Task<Portfolio> GetPortfolioAsync(string accountId);
 
         /// <summary>
         /// Возвращает данные по счету в разрезе валют.

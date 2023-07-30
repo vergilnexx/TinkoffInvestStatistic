@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
-using Infrastructure.Helpers;
+﻿using Infrastructure.Helpers;
 using System.Collections.Generic;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvestStatistic.Models
 {

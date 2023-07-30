@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Contracts.Attributes
+namespace TinkoffInvestStatistic.Contracts.Attributes
 {
     /// <summary>
     /// Атрибут по финансовому идентификатору.
     /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Field, Inherited=false)]
+    [AttributeUsage(AttributeTargets.Field, Inherited = false)]
     public class FigiAttribute : Attribute
     {
         public string Value { get; private set; }

@@ -1,6 +1,8 @@
-﻿using Contracts.Enums;
-using System;
-using Tinkoff.Trading.OpenApi.Models;
+﻿using System;
+using TinkoffInvest.Contracts.Enums;
+using TinkoffInvestStatistic.Contracts.Enums;
+using AccountType = TinkoffInvestStatistic.Contracts.Enums.AccountType;
+using TinkoffContracts = TinkoffInvest.Contracts;
 
 namespace TinkoffInvest.Mappers
 {
@@ -9,32 +11,57 @@ namespace TinkoffInvest.Mappers
     /// </summary>
     internal static class EnumMapper
     {
-        public static Contracts.Enums.Currency MapCurrency(Tinkoff.Trading.OpenApi.Models.Currency currency)
+        /// <summary>
+        /// Маппинг валют.
+        /// </summary>
+        /// <param name="currency">Входная валюта.</param>
+        /// <returns>Валюта из контрактов.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Исключение при неизвестной валюте.</exception>
+        public static TinkoffInvestStatistic.Contracts.Enums.Currency MapCurrency(CurrencyType currency)
         {
             return currency switch
             {
-                Tinkoff.Trading.OpenApi.Models.Currency.Rub => Contracts.Enums.Currency.Rub,
-                Tinkoff.Trading.OpenApi.Models.Currency.Usd => Contracts.Enums.Currency.Usd,
-                Tinkoff.Trading.OpenApi.Models.Currency.Eur => Contracts.Enums.Currency.Eur,
-                Tinkoff.Trading.OpenApi.Models.Currency.Gbp => Contracts.Enums.Currency.Gbp,
-                Tinkoff.Trading.OpenApi.Models.Currency.Hkd => Contracts.Enums.Currency.Hkd,
-                Tinkoff.Trading.OpenApi.Models.Currency.Chf => Contracts.Enums.Currency.Chf,
-                Tinkoff.Trading.OpenApi.Models.Currency.Jpy => Contracts.Enums.Currency.Jpy,
-                Tinkoff.Trading.OpenApi.Models.Currency.Cny => Contracts.Enums.Currency.Cny,
-                Tinkoff.Trading.OpenApi.Models.Currency.Try => Contracts.Enums.Currency.Try,
+                CurrencyType.Rub => TinkoffInvestStatistic.Contracts.Enums.Currency.Rub,
+                CurrencyType.Usd => TinkoffInvestStatistic.Contracts.Enums.Currency.Usd,
+                CurrencyType.Eur => TinkoffInvestStatistic.Contracts.Enums.Currency.Eur,
+                CurrencyType.Hkd => TinkoffInvestStatistic.Contracts.Enums.Currency.Hkd,
+                CurrencyType.Cny => TinkoffInvestStatistic.Contracts.Enums.Currency.Cny,
                 _ => throw new ArgumentOutOfRangeException(nameof(currency)),
             };
         }
 
-        public static PositionType MapType(InstrumentType type)
+        /// <summary>
+        /// Маппинг инструментов.
+        /// </summary>
+        /// <param name="type">Входной тип.</param>
+        /// <returns>Тип из контрактов.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Исключение при неизвестном типе.</exception>
+        public static PositionType MapInstruments(InstrumentType type)
         {
             return type switch
             {
-                InstrumentType.Stock => PositionType.Stock,
+                InstrumentType.Share => PositionType.Stock,
                 InstrumentType.Currency => PositionType.Currency,
                 InstrumentType.Bond => PositionType.Bond,
                 InstrumentType.Etf => PositionType.Etf,
                 _ => throw new ArgumentOutOfRangeException(nameof(type)),
+            };
+        }
+
+        /// <summary>
+        /// Маппинг типов счетов.
+        /// </summary>
+        /// <param name="brokerAccountType">Входной тип.</param>
+        /// <returns>Тип из контрактов.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Исключение при неизвестном типе.</exception>
+        public static AccountType MapAccountType(TinkoffContracts.Enums.AccountType brokerAccountType)
+        {
+            return brokerAccountType switch
+            {
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF => AccountType.BrokerAccount,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_TINKOFF_IIS => AccountType.Iis,
+                TinkoffContracts.Enums.AccountType.ACCOUNT_TYPE_INVEST_BOX => AccountType.InvestBox,
+                _ => throw new ArgumentOutOfRangeException(nameof(brokerAccountType)),
             };
         }
     }

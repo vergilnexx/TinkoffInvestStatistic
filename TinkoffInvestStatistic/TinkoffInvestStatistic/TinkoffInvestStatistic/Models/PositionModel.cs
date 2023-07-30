@@ -1,5 +1,5 @@
-﻿using Contracts.Enums;
-using Infrastructure.Helpers;
+﻿using Infrastructure.Helpers;
+using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
 
@@ -39,11 +39,6 @@ namespace TinkoffInvestStatistic.Models
         /// Баланс.
         /// </summary>
         public decimal PositionCount { get; set; }
-
-        /// <summary>
-        /// Заблокировано.
-        /// </summary>
-        public decimal Blocked { get; set; }
 
         /// <summary>
         /// Валюта.

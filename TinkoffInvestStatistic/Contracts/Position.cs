@@ -1,6 +1,6 @@
-﻿using Contracts.Enums;
+﻿using TinkoffInvestStatistic.Contracts.Enums;
 
-namespace Contracts
+namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Позиция.
@@ -18,6 +18,11 @@ namespace Contracts
         public PositionType Type { get; private set; }
 
         /// <summary>
+        /// Валюта.
+        /// </summary>
+        public Currency Currency { get; set; }
+
+        /// <summary>
         /// Тикер.
         /// </summary>
         public string Ticker { get; set; } = string.Empty;
@@ -31,11 +36,6 @@ namespace Contracts
         /// Количество позиций.
         /// </summary>
         public decimal PositionCount { get; set; }
-
-        /// <summary>
-        /// Заблокировано.
-        /// </summary>
-        public decimal Blocked { get; set; }
 
         /// <summary>
         /// Планируемый процент.
@@ -53,12 +53,12 @@ namespace Contracts
         public CurrencyMoney? AveragePositionPrice { get; set; }
 
         /// <summary>
-        /// Цена покупки без налогов.
+        /// Текущая цена в валюте.
         /// </summary>
-        public CurrencyMoney? AveragePositionPriceNoNkd { get; set; }
+        public CurrencyMoney? CurrentPrice { get; set; }
 
         /// <summary>
-        /// Сумма в валюте.
+        /// Сумма в рублях.
         /// </summary>
         public decimal Sum { get; set; }
 
@@ -76,10 +76,19 @@ namespace Contracts
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Финансовый идентификатор.</param>
-        /// <param name="type">Тип инструмента.</param>
-        public Position(string figi, PositionType type)
+        public Position(string figi)
         {
             Figi = figi;
+        }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="figi">Финансовый идентификатор.</param>
+        /// <param name="type">Тип инструмента.</param>
+        public Position(string figi, PositionType type) 
+            : this(figi)
+        {
             Type = type;
         }
 
@@ -90,13 +99,14 @@ namespace Contracts
         /// <param name="type">Тип инструмента.</param>
         /// <param name="name">Наименование.</param>
         /// <param name="sum">Сумма в валюте.</param>
-        public Position(string figi, PositionType type, string name, decimal sum)
+        /// <param name="currency">Валюта.</param>-
+        public Position(string figi, PositionType type, string name, decimal sum, Currency currency)
+            : this(figi, type)
         {
-            Figi = figi;
-            Type = type;
             Name = name;
-            Sum = 
-                SumInCurrency = sum;
+            Sum = sum;
+            SumInCurrency = sum;
+            Currency = currency;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Contracts.Attributes;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using TinkoffInvestStatistic.Contracts.Attributes;
 
-namespace Contracts.Enums
+namespace TinkoffInvestStatistic.Contracts.Enums
 {
     /// <summary>
     /// Валюты.
@@ -13,6 +13,13 @@ namespace Contracts.Enums
         /// </summary>
         [Description("RUB")]
         Rub,
+
+        /// <summary>
+        /// Золото.
+        /// </summary>
+        [Description("Золото")]
+        [Figi("BBG000VJ5YR4")]
+        Gold,
 
         /// <summary>
         /// Доллар.
@@ -29,45 +36,17 @@ namespace Contracts.Enums
         Eur,
 
         /// <summary>
-        /// Фунт стерлингов
-        /// </summary>
-        [Description("Фунт стерлингов")]
-        [Figi("BBG0013HQ5F0")]
-        Gbp,
-
-        /// <summary>
         /// Гонконгский доллар
         /// </summary>
-        [Description("Гонконгский доллар")]
+        [Description("Гонконг. доллар")]
         [Figi("BBG0013HSW87")]
         Hkd,
-
-        /// <summary>
-        /// Швейцарский франк
-        /// </summary>
-        [Description("Швейцарский франк")]
-        [Figi("BBG0013HQ5K4")]
-        Chf,
-
-        /// <summary>
-        /// Иена
-        /// </summary>
-        [Description("Японская иена")]
-        [Figi("BBG0013HQ524")]
-        Jpy,
 
         /// <summary>
         /// Китайский юань
         /// </summary>
         [Description("Китайский юань")]
         [Figi("BBG0013HRTL0")]
-        Cny,
-
-        /// <summary>
-        /// Турецкая лира
-        /// </summary>
-        [Description("Турецкая лира")]
-        [Figi("BBG0013J12N1")]
-        Try
+        Cny
     }
 }

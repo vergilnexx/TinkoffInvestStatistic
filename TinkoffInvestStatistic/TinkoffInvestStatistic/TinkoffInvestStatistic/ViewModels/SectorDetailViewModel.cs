@@ -1,8 +1,8 @@
-﻿using Contracts;
-using Infrastructure.Services;
+﻿using Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels

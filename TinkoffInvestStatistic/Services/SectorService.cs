@@ -1,7 +1,7 @@
-﻿using Contracts;
-using Infrastructure.Services;
+﻿using Infrastructure.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Services
 {

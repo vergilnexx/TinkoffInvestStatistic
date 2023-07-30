@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Servic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{D09F0D0D-6B63-4E36-BCF6-806E53D1D35E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{6CA119C3-31D4-4C38-8770-1D04634EA5B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinkoffInvestStatistic.Contracts", "Contracts\TinkoffInvestStatistic.Contracts.csproj", "{6CA119C3-31D4-4C38-8770-1D04634EA5B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{8E1B293D-F9CF-4F1B-8A14-6EE2725E4FB8}"
 EndProject
