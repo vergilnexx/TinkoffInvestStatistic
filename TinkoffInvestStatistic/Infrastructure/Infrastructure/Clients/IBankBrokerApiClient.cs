@@ -24,13 +24,6 @@ namespace Infrastructure.Clients
         public Task<Portfolio> GetAccountsFullDataAsync(string accountId);
 
         /// <summary>
-        /// Возвращает позиции по тикеру.
-        /// </summary>
-        /// <param name="ticker">Тикер.</param>
-        /// <returns>Список позиций</returns>
-        public Task<IReadOnlyCollection<Position>> FindPositionsAsync(string ticker);
-
-        /// <summary>
         /// Возвращает позицию по уникальному фин. идентификатору.
         /// </summary>
         /// <param name="figi">Уникальный фин.идентификатор.</param>

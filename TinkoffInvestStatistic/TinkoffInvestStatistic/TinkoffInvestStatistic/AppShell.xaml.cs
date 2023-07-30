@@ -12,7 +12,6 @@ namespace TinkoffInvestStatistic
             Routing.RegisterRoute(nameof(AccountStatisticPage), typeof(AccountStatisticPage));
             Routing.RegisterRoute(nameof(PositionTypesPage), typeof(PositionTypesPage));
             Routing.RegisterRoute(nameof(PortfolioPage), typeof(PortfolioPage));
-            Routing.RegisterRoute(nameof(AddPositionPage), typeof(AddPositionPage));
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)
