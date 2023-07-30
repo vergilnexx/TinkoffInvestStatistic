@@ -188,7 +188,8 @@ namespace TinkoffInvestStatistic.ViewModels
                         SumInCurrency = p.SumInCurrency,
                         DifferenceSum = p.DifferenceSum,
                         DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
-                        DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red
+                        DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
+                        IsBlocked = p.IsBlocked
                     })
                     .OrderByDescending(p => p.CurrentPercent)
                     .ToList();

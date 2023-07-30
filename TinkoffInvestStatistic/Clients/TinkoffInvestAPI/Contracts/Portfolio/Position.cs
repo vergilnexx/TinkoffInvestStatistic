@@ -40,8 +40,15 @@ namespace TinkoffInvest.Contracts.Portfolio
         public CurrencyNumeric AveragePositionPrice { get; set; }
 
         /// <summary>
+        /// Признак, что позиция заблокирована.
+        /// </summary>
+        [JsonProperty(PropertyName = "blocked")]
+        public bool IsBlocked { get; set; }
+
+        /// <summary>
         /// Текущая рассчитанная доходность позиции.
         /// </summary>
+        [JsonProperty(PropertyName = "expectedYield")]
         public Numeric ExpectedYield { get; set; }
     }
 }

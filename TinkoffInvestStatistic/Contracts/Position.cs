@@ -73,6 +73,11 @@ namespace TinkoffInvestStatistic.Contracts
         public decimal DifferenceSum { get; set; }
 
         /// <summary>
+        /// Признак, что позиция заблокирована.
+        /// </summary>
+        public bool IsBlocked { get; set; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Финансовый идентификатор.</param>
