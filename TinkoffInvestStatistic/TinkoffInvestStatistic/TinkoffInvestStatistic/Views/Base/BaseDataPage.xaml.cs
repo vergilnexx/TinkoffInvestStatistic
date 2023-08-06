@@ -20,6 +20,11 @@ namespace TinkoffInvestStatistic.Views.Base
             Init();
         }
 
+        /// <summary>
+        /// Обновление данных.
+        /// </summary>
+        public abstract void RefreshView();
+
         private void Init()
         {
             var toolbarItem = new ToolbarItem() { IconImageSource = _hideShowMoneyService.GetIconFileName(), Priority = 0, Order = ToolbarItemOrder.Primary };
@@ -35,6 +40,8 @@ namespace TinkoffInvestStatistic.Views.Base
             _hideShowMoneyService.SetShow(!isShow);
             var icon = _hideShowMoneyService.GetIconFileName();
             item.IconImageSource = icon;
+
+            RefreshView();
         }
     }
 }

@@ -20,6 +20,12 @@ namespace TinkoffInvestStatistic.Views
             BindingContext = _viewModel;
         }
 
+        /// <inheritdoc/>
+        public override void RefreshView()
+        {
+            _viewModel.IsRefreshing = true;
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

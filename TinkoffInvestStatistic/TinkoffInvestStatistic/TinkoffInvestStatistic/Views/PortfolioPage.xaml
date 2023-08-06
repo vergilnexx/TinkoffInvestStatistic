@@ -18,10 +18,10 @@
                  RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
                  x:DataType="local:PortfolioViewModel" 
                  Command="{Binding LoadGroupedPositionsCommand}" 
-                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
         <Grid RowDefinitions="150, 1, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
             <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="150"
-                             IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
+                             IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
             <BoxView HeightRequest="1" Grid.Row="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
             <CollectionView Grid.Row="2"
@@ -140,7 +140,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <StackLayout Padding="10" Grid.Row="3"
-                         IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
+                         IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
                 <BoxView HeightRequest="1" 
                          Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
                 <Grid ColumnDefinitions="80, Auto, *">

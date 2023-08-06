@@ -73,7 +73,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public void OnAppearing()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             SelectedItem = null;
         }
 
@@ -104,7 +104,7 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task ExecuteLoadAccountsCommandAsync()
         {
             Sum = string.Empty;
-            IsBusy = true;
+            IsRefreshing = true;
 
             try
             {
@@ -134,7 +134,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             finally
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
 

@@ -22,12 +22,12 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async Task CheckAuthorizationAsync()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             var availability = await CrossFingerprint.Current.IsAvailableAsync();
 
             if (!availability)
             {
-                IsBusy = false;
+                IsRefreshing = false;
                 return;
             }
 
@@ -40,7 +40,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             else
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
     }

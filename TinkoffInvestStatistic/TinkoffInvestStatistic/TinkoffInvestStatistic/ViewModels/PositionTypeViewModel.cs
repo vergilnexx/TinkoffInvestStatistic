@@ -74,7 +74,7 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             Sum = SumPercent = string.Empty;
             SumPercentColor = Color.Default;
-            IsBusy = true;
+            IsRefreshing = true;
 
             try
             {
@@ -115,7 +115,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             finally
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
 
@@ -159,7 +159,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public void OnAppearing()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             SelectedItem = null;
             Title = "Инструменты";
         }

@@ -25,7 +25,7 @@ namespace TinkoffInvestStatistic.ViewModels.Base
         /// Признак, что приложение занято обновлением данных.
         /// </summary>
         private bool isBusy = false;
-        public bool IsBusy
+        public bool IsRefreshing
         {
             get { return isBusy; }
             set { SetProperty(ref isBusy, value); }

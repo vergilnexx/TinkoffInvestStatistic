@@ -1,5 +1,7 @@
-﻿using TinkoffInvestStatistic.ViewModels;
+﻿using System.ComponentModel;
+using TinkoffInvestStatistic.ViewModels;
 using TinkoffInvestStatistic.Views.Base;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TinkoffInvestStatistic.Views
@@ -14,6 +16,15 @@ namespace TinkoffInvestStatistic.Views
             InitializeComponent();
 
             BindingContext = _viewModel;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <inheritdoc/>
+        public override void RefreshView()
+        {
+            var currentTab = CurrentPage as BaseDataPage;
+            currentTab?.RefreshView();
         }
     }
 }
