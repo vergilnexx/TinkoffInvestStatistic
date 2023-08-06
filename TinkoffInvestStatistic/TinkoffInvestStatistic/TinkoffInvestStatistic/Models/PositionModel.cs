@@ -58,7 +58,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст разницы в валюте.
         /// </summary>
-        public string DifferenceSumInCurrencyText => CurrencyUtility.ToCurrencyString(DifferenceSumInCurrency, Currency);
+        public string DifferenceSumInCurrencyText { get; set; }
 
         /// <summary>
         /// Разница.
@@ -68,7 +68,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст разницы.
         /// </summary>
-        public string DifferenceSumText => Currency != Currency.Rub ? $" / {CurrencyUtility.ToCurrencyString(DifferenceSum, Currency.Rub)}" : string.Empty;
+        public string DifferenceSumText { get; set; }
 
         /// <summary>
         /// Цвет текста разницы в валюте.
@@ -83,7 +83,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст суммы.
         /// </summary>
-        public string SumText => Currency != Currency.Rub ? $" / {CurrencyUtility.ToCurrencyString(Sum, Currency.Rub)}" : string.Empty;
+        public string SumText { get; set; }
 
         /// <summary>
         /// Сумма в валюте.
@@ -108,7 +108,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текст суммы в валюте.
         /// </summary>
-        public string SumInCurrencyText => CurrencyUtility.ToCurrencyString(SumInCurrency, Currency);
+        public string SumInCurrencyText { get; set; }
 
         /// <summary>
         /// Признак, что позиция заблокирована.

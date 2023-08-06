@@ -48,7 +48,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текущая сумма по счету.
         /// </summary>
-        public string CurrentSumText => CurrencyUtility.ToCurrencyString(CurrentSum, Currency.Rub);
+        public string CurrentSumText { get; set; }
 
         /// <summary>
         /// Конструктор.

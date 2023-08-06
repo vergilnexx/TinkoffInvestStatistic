@@ -11,7 +11,7 @@
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                  RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
                  x:DataType="local:LoginViewModel" 
-                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
         <StackLayout Padding="10,0,10,0" VerticalOptions="Center" >
             <Button VerticalOptions="Center" Text="Вход" Command="{Binding LoginCommand}"/>
         </StackLayout>
