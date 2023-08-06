@@ -16,18 +16,6 @@ namespace TinkoffInvestStatistic.ViewModels
 {
     public class AccountsViewModel : BaseViewModel
     {
-        private AccountModel _selectedItem;
-
-        /// <summary>
-        /// Сумма по всем инструментам.
-        /// </summary>
-        public string Sum { get; private set; }
-
-        public ObservableCollection<AccountModel> Accounts { get; }
-        public Chart StatisticChart { get; private set; }
-        public Command LoadAccountsCommand { get; }
-        public Command<AccountModel> ItemTapped { get; }
-
         public AccountsViewModel()
         {
             Title = "Счета";
@@ -35,6 +23,65 @@ namespace TinkoffInvestStatistic.ViewModels
             StatisticChart = GetChart();
             LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
             ItemTapped = new Command<AccountModel>(OnAccountSelected);
+        }
+
+        private AccountModel _selectedItem;
+
+        /// <summary>
+        /// Сумма по всем инструментам.
+        /// </summary>
+        public string Sum { get; private set; }
+
+        /// <summary>
+        /// Счета.
+        /// </summary>
+        public ObservableCollection<AccountModel> Accounts { get; }
+
+        /// <summary>
+        /// Диаграммы статистики.
+        /// </summary>
+        public Chart StatisticChart { get; private set; }
+
+        /// <summary>
+        /// Команда на загрузку данных о счетах.
+        /// </summary>
+        public Command LoadAccountsCommand { get; }
+
+        /// <summary>
+        /// Команда выбора счета.
+        /// </summary>
+        public Command<AccountModel> ItemTapped { get; }
+
+        /// <summary>
+        /// Выбранный счет.
+        /// </summary>
+        public AccountModel SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                SetProperty(ref _selectedItem, value);
+                OnAccountSelected(value);
+            }
+        }
+
+        /// <summary>
+        /// Событие появления.
+        /// </summary>
+        public void OnAppearing()
+        {
+            IsBusy = true;
+            SelectedItem = null;
+        }
+
+        /// <summary>
+        /// Загрузка диаграммы статустики
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadStatisticChartAsync()
+        {
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
+            OnPropertyChanged(nameof(StatisticChart));
         }
 
         private static PieChart GetChart()
@@ -48,6 +95,9 @@ namespace TinkoffInvestStatistic.ViewModels
             };
         }
 
+        /// <summary>
+        /// Выполнение команды загрузки информации о счетах.
+        /// </summary>
         private async Task ExecuteLoadAccountsCommand()
         {
             Sum = string.Empty;
@@ -83,37 +133,20 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
-        public async Task LoadStatisticChartAsync()
-        {
-            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
-            OnPropertyChanged(nameof(StatisticChart));
-        }
-
-        public void OnAppearing()
-        {
-            IsBusy = true;
-            SelectedItem = null;
-        }
-
-        public AccountModel SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnAccountSelected(value);
-            }
-        }
-
-        async void OnAccountSelected(AccountModel item)
+        /// <summary>
+        /// Событие выбора счета.
+        /// </summary>
+        /// <param name="item">Данные выбранного счета</param>
+        private async void OnAccountSelected(AccountModel item)
         {
             if (item == null)
             {
                 return;
             }
-
-            await Shell.Current.GoToAsync($"{nameof(AccountStatisticPage)}" +
-                $"?{nameof(AccountStatisticViewModel.AccountId)}={item.AccountId}", true);
+            var url = $"{nameof(AccountStatisticPage)}" +
+                        $"?{nameof(AccountStatisticViewModel.AccountId)}={item.AccountId}" +
+                        $"&{nameof(AccountStatisticViewModel.AccountName)}={item.Name}";
+            await Shell.Current.GoToAsync(url, animate: true);
         }
     }
 }
