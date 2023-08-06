@@ -13,7 +13,6 @@ using System.Windows.Input;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
-using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
@@ -24,8 +23,12 @@ namespace TinkoffInvestStatistic.ViewModels
     [QueryProperty(nameof(AccountSum), nameof(AccountSum))]
     public class PortfolioViewModel : BaseViewModel
     {
-        private string _accountId;
-        private PositionType _positionType;
+        public PortfolioViewModel()
+        {
+            GroupedPositions = new ObservableCollection<GroupedPositionsModel>();
+            LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync());
+            StatisticChart = GetChart();
+        }
 
         /// <summary>
         /// Сумма по всем инструментам.
@@ -42,35 +45,40 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public Color SumPercentColor { get; private set; }
 
+        /// <summary>
+        /// Данные сгруппированных позиций.
+        /// </summary>
         public ObservableCollection<GroupedPositionsModel> GroupedPositions { get; }
-        public PieChart StatisticChart { get; private set; }
-        public ICommand LoadGroupedPositionsCommand { get; }
 
-        public PortfolioViewModel()
-        {
-            GroupedPositions = new ObservableCollection<GroupedPositionsModel>();
-            LoadGroupedPositionsCommand = new Command(async () => await LoadGroupedPositionsByAccountIdAsync());
-            StatisticChart = GetChart();
-        }
+        /// <summary>
+        /// Диаграмма статистики.
+        /// </summary>
+        public PieChart StatisticChart { get; private set; }
+
+        /// <summary>
+        /// Команда на загрузку сгруппированных позиций.
+        /// </summary>
+        public ICommand LoadGroupedPositionsCommand { get; }
 
         /// <summary>
         /// Номер счета.
         /// </summary>
-        public string AccountId
-        {
-            get
-            {
-                return _accountId;
-            }
-            set
-            {
-                _accountId = value;
-            }
-        }
+        public string AccountId { get; set; }
+
+        /// <summary>
+        /// Планируемый процент.
+        /// </summary>
+        public decimal GroupPlanPercent { get; set; }
+
+        /// <summary>
+        /// Сумма счета.
+        /// </summary>
+        public decimal AccountSum { get; set; }
 
         /// <summary>
         /// Тип инструментов.
         /// </summary>
+        private PositionType _positionType;
         public int PositionType
         {
             get
@@ -85,38 +93,6 @@ namespace TinkoffInvestStatistic.ViewModels
         }
 
         /// <summary>
-        /// Планируемый процент по группе.
-        /// </summary>
-        private decimal _groupPlanPercent;
-        public decimal GroupPlanPercent
-        {
-            get
-            {
-                return _groupPlanPercent;
-            }
-            set
-            {
-                _groupPlanPercent = value;
-            }
-        }
-
-        /// <summary>
-        /// Сумма по счету.
-        /// </summary>
-        private decimal _accountSum;
-        public decimal AccountSum
-        {
-            get
-            {
-                return _accountSum;
-            }
-            set
-            {
-                _accountSum = value;
-            }
-        }
-
-        /// <summary>
         /// Сохранение данных.
         /// </summary>
         public async Task SavePlanPercent()
@@ -125,7 +101,7 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 var service = DependencyService.Get<IPositionService>();
                 var data = new List<PositionData>();
-                var group = GroupedPositions.FirstOrDefault();
+                var group = GroupedPositions.FirstOrDefault() ?? new GroupedPositionsModel(_positionType, new List<PositionModel>());
                 foreach (var position in group)
                 {
                     var item = new PositionData(AccountId, position.Figi, position.Type);
@@ -149,17 +125,24 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
+        /// <summary>
+        /// Событие появления.
+        /// </summary>
+        public void OnAppearing()
+        {
+            IsBusy = true;
+        }
+
+        /// <summary>
+        /// Загрузка диаграммы статистики.
+        /// </summary>
+        /// <returns></returns>
         public async Task LoadStatisticChartAsync()
         {
             var entries = await ChartUtility.Instance.GetChartAsync(this);
             StatisticChart.Entries = entries;
             StatisticChart.LabelMode = entries.Length > 5 ? LabelMode.None : LabelMode.RightOnly;
             OnPropertyChanged(nameof(StatisticChart));
-        }
-
-        public void OnAppearing()
-        {
-            IsBusy = true;
         }
 
         private async Task LoadGroupedPositionsByAccountIdAsync()
@@ -171,33 +154,12 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 GroupedPositions.Clear();
-                var service = DependencyService.Get<IPositionService>();
-                var data = await service.GetPositionsByTypeAsync(AccountId, _positionType);
-
-                var sum = AccountSum;
-                var models = data
-                    .Select(p => new PositionModel(p.Figi, p.Type)
-                    {
-                        Name = p.Name,
-                        PositionCount = p.PositionCount,
-                        Ticker = p.Ticker,
-                        Currency = p.AveragePositionPrice?.Currency ?? Currency.Rub,
-                        PlanPercent = p.PlanPercent.ToString(),
-                        CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
-                        Sum = p.Sum,
-                        SumInCurrency = p.SumInCurrency,
-                        DifferenceSum = p.DifferenceSum,
-                        DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
-                        DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
-                        IsBlocked = p.IsBlocked
-                    })
-                    .OrderByDescending(p => p.CurrentPercent)
-                    .ToList();
+                List<PositionModel> models = await GetPositionDataAsync();
                 var model = new GroupedPositionsModel(_positionType, models);
 
                 GroupedPositions.Add(model);
 
-                Sum = CurrencyUtility.ToCurrencyString(data.Sum(p => p.Sum), Currency.Rub);
+                Sum = CurrencyUtility.ToCurrencyString(models.Sum(p => p.Sum), Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
                 var sumPercent = models.Sum(t => t.PlanPercentValue);
@@ -218,6 +180,33 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        private async Task<List<PositionModel>> GetPositionDataAsync()
+        {
+            var service = DependencyService.Get<IPositionService>();
+            var data = await service.GetPositionsByTypeAsync(AccountId, _positionType);
+
+            var sum = AccountSum;
+            var models = data
+                .Select(p => new PositionModel(p.Figi, p.Type)
+                {
+                    Name = p.Name,
+                    PositionCount = p.PositionCount,
+                    Ticker = p.Ticker,
+                    Currency = p.AveragePositionPrice?.Currency ?? Currency.Rub,
+                    PlanPercent = p.PlanPercent.ToString(),
+                    CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
+                    Sum = p.Sum,
+                    SumInCurrency = p.SumInCurrency,
+                    DifferenceSum = p.DifferenceSum,
+                    DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
+                    DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
+                    IsBlocked = p.IsBlocked
+                })
+                .OrderByDescending(p => p.CurrentPercent)
+                .ToList();
+            return models;
         }
 
         private PieChart GetChart()

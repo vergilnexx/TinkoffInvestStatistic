@@ -55,7 +55,7 @@ namespace Services
             // Получаем курсы валют.
             var currencies = portfolio.Positions
                                 .Where(p => p.Type == PositionType.Currency)
-                                .Select(p => new { Currency = EnumHelper.GetCurrencyByFigi(p.Figi), Sum = p.CurrentPrice.Sum })
+                                .Select(p => new { Currency = EnumHelper.GetCurrencyByFigi(p.Figi), Sum = p.CurrentPrice?.Sum ??0m })
                                 .Where(p => p.Currency != Currency.Rub)
                                 .Select(p => KeyValuePair.Create(p.Currency!.Value, p.Sum))
                                 .Union(new[] { KeyValuePair.Create(Currency.Rub, 1m) })
@@ -65,7 +65,7 @@ namespace Services
             var instrumentsInRoubles = portfolio.Positions
                                         .Where(p => p.Type != PositionType.Currency)
                                         .GroupBy(p => p.Currency)
-                                        .Select(g => KeyValuePair.Create(g.Key, g.Sum(i => i.SumInCurrency) * currencies.FirstOrDefault(c => c.Key == g.Key).Value))
+                                        .Select(g => KeyValuePair.Create(g.Key, g.Sum(i => i.SumInCurrency) * currencies.Find(c => c.Key == g.Key).Value))
                                         .ToArray();
 
             // Объединяем все рассчитанное.

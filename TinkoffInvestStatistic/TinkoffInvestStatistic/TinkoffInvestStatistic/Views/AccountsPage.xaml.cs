@@ -3,6 +3,9 @@ using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Views
 {
+    /// <summary>
+    /// Страница счетов.
+    /// </summary>
     public partial class AccountsPage : ContentPage
     {
         AccountsViewModel _viewModel = new AccountsViewModel();
@@ -18,11 +21,6 @@ namespace TinkoffInvestStatistic.Views
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
         }
     }
 }
