@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Service
 {
@@ -24,5 +25,11 @@ namespace TinkoffInvestStatistic.Service
         /// </summary>
         /// <param name="isShow">Признак видимости данных.</param>
         void SetShow(bool isShow);
+
+        /// <summary>
+        /// Возвращает возможность отобразить данные.
+        /// </summary>
+        /// <returns>Возможность отобразить данные.</returns>
+        Task<bool> IsAvailableShowAsync();
     }
 }

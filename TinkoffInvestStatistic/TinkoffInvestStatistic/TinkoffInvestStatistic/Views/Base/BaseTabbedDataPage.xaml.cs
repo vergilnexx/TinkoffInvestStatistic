@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Plugin.Fingerprint;
+using System;
+using System.Threading.Tasks;
 using TinkoffInvestStatistic.Service;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -33,11 +35,16 @@ namespace TinkoffInvestStatistic.Views.Base
             this.ToolbarItems.Add(toolbarItem);
         }
 
-        private void OnShowHideMoneyClicked(object sender, EventArgs e)
+        private async void OnShowHideMoneyClicked(object sender, EventArgs e)
         {
+            var isShow = _hideShowMoneyService.IsShow();
+            if (!isShow && !(await _hideShowMoneyService.IsAvailableShowAsync()))
+            {
+                return;
+            }
+
             ToolbarItem item = (ToolbarItem)sender;
 
-            var isShow = _hideShowMoneyService.IsShow();
             _hideShowMoneyService.SetShow(!isShow);
             var icon = _hideShowMoneyService.GetIconFileName();
             item.IconImageSource = icon;

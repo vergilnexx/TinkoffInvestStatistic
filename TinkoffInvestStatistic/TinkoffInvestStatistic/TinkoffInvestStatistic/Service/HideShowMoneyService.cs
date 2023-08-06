@@ -1,4 +1,8 @@
-﻿namespace TinkoffInvestStatistic.Service
+﻿using Plugin.Fingerprint;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+namespace TinkoffInvestStatistic.Service
 {
     /// <inheritdoc/>
     public class HideShowMoneyService : IHideShowMoneyService
@@ -29,6 +33,24 @@
         public void SetShow(bool isShow)
         {
             IsShowMoney = isShow;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsAvailableShowAsync()
+        {
+            var availability = await CrossFingerprint.Current.IsAvailableAsync();
+            if (!availability)
+            {
+                return false;
+            }
+
+            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
+                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Отображение денег", string.Empty)));
+            if (authResult.Authenticated)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
