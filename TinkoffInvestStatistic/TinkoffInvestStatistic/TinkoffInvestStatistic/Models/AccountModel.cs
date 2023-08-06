@@ -1,6 +1,4 @@
-﻿using TinkoffInvestStatistic.Utility;
-
-namespace TinkoffInvestStatistic.Models
+﻿namespace TinkoffInvestStatistic.Models
 {
     /// <summary>
     /// Модель счета.
@@ -30,7 +28,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Текущая сумма по счету.
         /// </summary>
-        public string CurrentSumText => CurrencyUtility.ToCurrencyString(CurrentSum, Contracts.Enums.Currency.Rub);
+        public string CurrentSumText { get; set; }
 
         /// <summary>
         /// Конструктор.

@@ -8,6 +8,6 @@
         /// <summary>
         /// Количество знаков после запятой
         /// </summary>
-        public static int NUMERIC_DECIMALS = 2;
+        public readonly static int NUMERIC_DECIMALS = 2;
     }
 }

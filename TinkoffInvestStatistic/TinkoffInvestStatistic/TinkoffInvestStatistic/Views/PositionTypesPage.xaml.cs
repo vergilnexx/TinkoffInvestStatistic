@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
+using TinkoffInvestStatistic.Views.Base;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TinkoffInvestStatistic.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PositionTypesPage : ContentPage
+    public partial class PositionTypesPage : BaseDataPage
     {
         PositionTypeViewModel _viewModel;
 
@@ -22,16 +23,11 @@ namespace TinkoffInvestStatistic.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            var t = Application.Current.MainPage;
-            var page = t.Navigation.NavigationStack.Last();
-            var mainPage = page.BindingContext as AccountStatisticViewModel;
-            _viewModel.AccountId = mainPage.AccountId;
+            var mainPage = Application.Current.MainPage;
+            var page = mainPage.Navigation.NavigationStack.Last();
+            var model = page.BindingContext as AccountStatisticViewModel;
+            _viewModel.AccountId = model.AccountId;
             _viewModel.OnAppearing();
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
         }
 
         private void PlanPercent_Completed(object sender, System.EventArgs e)

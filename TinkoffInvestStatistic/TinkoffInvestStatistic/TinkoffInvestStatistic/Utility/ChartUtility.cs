@@ -16,7 +16,7 @@ namespace TinkoffInvestStatistic.Utility
         {
             if (Instance != null)
             {
-                throw new Exception("Only one instance of ChartUtility is allowed!");
+                throw new InvalidOperationException("Only one instance of ChartUtility is allowed!");
             }
             else
             {
@@ -59,6 +59,16 @@ namespace TinkoffInvestStatistic.Utility
             return GetCurrenciesEntriesAsync(vm);
         }
 
+        private Task<ChartEntry[]> GetEntriesAsync(PositionTypeViewModel vm)
+        {
+            return GetPositionTypeEntriesAsync(vm);
+        }
+
+        private Task<ChartEntry[]> GetEntriesAsync(PortfolioViewModel vm)
+        {
+            return GetPositionEntriesAsync(vm);
+        }
+
         private Task<ChartEntry[]> GetAccountEntriesAsync(AccountsViewModel vm)
         {
             var result = vm.Accounts
@@ -70,7 +80,7 @@ namespace TinkoffInvestStatistic.Utility
         private Task<ChartEntry[]> GetCurrenciesEntriesAsync(CurrencyViewModel vm)
         {
             var result = vm.CurrencyTypes
-                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.Name, (a.CurrentPercent / 100).ToString("P")))
+                            .Select(a => EntryUtility.GetEntry((float)a.CurrentSum, GetColor(), a.Name, a.CurrentPercent.ToPercentageString()))
                             .ToArray();
             return Task.FromResult(result);
         }
@@ -79,21 +89,16 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.CurrencyTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.Name, (t.PlanPercentValue / 100).ToString("P")))
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.Name, t.PlanPercentValue.ToPercentageString()))
                             .ToArray();
             return Task.FromResult(result);
         }
 
-        private Task<ChartEntry[]> GetEntriesAsync(PositionTypeViewModel vm)
-        {
-            return GetPositiionTypeEntriesAsync(vm);
-        }
-
-        private Task<ChartEntry[]> GetPositiionTypeEntriesAsync(PositionTypeViewModel vm)
+        private Task<ChartEntry[]> GetPositionTypeEntriesAsync(PositionTypeViewModel vm)
         {
             var result = vm.PositionTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.CurrentPercent, GetColor(), t.TypeName, (t.CurrentPercent / 100).ToString("P")))
+                            .Select(t => EntryUtility.GetEntry((float)t.CurrentPercent, GetColor(), t.TypeName, t.CurrentPercent.ToPercentageString()))
                             .ToArray();
             return Task.FromResult(result);
         }
@@ -102,22 +107,16 @@ namespace TinkoffInvestStatistic.Utility
         {
             var result = vm.PositionTypes
                             .OrderByDescending(t => t.CurrentSum)
-                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.TypeName, (t.PlanPercentValue / 100).ToString("P")))
+                            .Select(t => EntryUtility.GetEntry((float)t.PlanPercentValue, GetColor(), t.TypeName, t.PlanPercentValue.ToPercentageString()))
                             .ToArray();
             return Task.FromResult(result);
-        }
-
-        private Task<ChartEntry[]> GetEntriesAsync(PortfolioViewModel vm)
-        {
-            return GetPositionEntriesAsync(vm);
         }
 
         private Task<ChartEntry[]> GetPositionEntriesAsync(PortfolioViewModel vm)
         {
             var result = vm.GroupedPositions
-                            .Where(g => g.Type == (PositionType)vm.PositionType)
-                            .FirstOrDefault()
-                            .Select(p => EntryUtility.GetEntry((float)p.Sum, GetColor(), p.Name, CurrencyUtility.ToCurrencyString(p.Sum, Currency.Rub)))
+                            .FirstOrDefault(g => g.Type == (PositionType)vm.PositionType)
+                            .Select(p => EntryUtility.GetEntry((float)p.Sum, GetColor(), p.Name, NumericUtility.ToCurrencyString(p.Sum, Currency.Rub)))
                             .OrderByDescending(p => p.Value)
                             .ToArray();
             return Task.FromResult(result);

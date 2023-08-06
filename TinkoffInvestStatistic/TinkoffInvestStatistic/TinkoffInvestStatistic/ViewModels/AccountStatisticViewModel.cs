@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TinkoffInvestStatistic.Contracts.Enums;
+﻿using TinkoffInvestStatistic.ViewModels.Base;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels

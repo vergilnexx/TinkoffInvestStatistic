@@ -13,6 +13,7 @@ using System.Windows.Input;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
+using TinkoffInvestStatistic.ViewModels.Base;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
@@ -110,7 +111,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 }
 
                 var sumPercent = group.Sum(t => t.PlanPercentValue);
-                SumPercent = (sumPercent / 100).ToString("P");
+                SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
                 SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
@@ -159,11 +160,11 @@ namespace TinkoffInvestStatistic.ViewModels
 
                 GroupedPositions.Add(model);
 
-                Sum = CurrencyUtility.ToCurrencyString(models.Sum(p => p.Sum), Currency.Rub);
+                Sum = GetViewMoney(() => NumericUtility.ToCurrencyString(models.Sum(p => p.Sum), Currency.Rub));
                 OnPropertyChanged(nameof(Sum));
 
                 var sumPercent = models.Sum(t => t.PlanPercentValue);
-                SumPercent = (sumPercent / 100).ToString("P");
+                SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
                 SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
@@ -196,13 +197,17 @@ namespace TinkoffInvestStatistic.ViewModels
                     Ticker = p.Ticker,
                     Currency = p.AveragePositionPrice?.Currency ?? Currency.Rub,
                     PlanPercent = p.PlanPercent.ToString(),
-                    CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * p.Sum / sum, 2, MidpointRounding.AwayFromZero),
+                    CurrentPercent = NumericUtility.ToPercentage(sum, p.Sum),
                     Sum = p.Sum,
                     SumInCurrency = p.SumInCurrency,
                     DifferenceSum = p.DifferenceSum,
                     DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
                     DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
-                    IsBlocked = p.IsBlocked
+                    IsBlocked = p.IsBlocked,
+                    SumText = GetViewMoney(() => p.Currency != Currency.Rub ? $" / {NumericUtility.ToCurrencyString(p.Sum, Currency.Rub)}" : string.Empty),
+                    SumInCurrencyText = GetViewMoney(() => NumericUtility.ToCurrencyString(p.SumInCurrency, p.Currency)),
+                    DifferenceSumText = GetViewMoney(() => p.Currency != Currency.Rub ? $" / {NumericUtility.ToCurrencyString(p.DifferenceSum, Currency.Rub)}" : string.Empty),
+                    DifferenceSumInCurrencyText = GetViewMoney(() => NumericUtility.ToCurrencyString(p.ExpectedYield?.Sum ?? 0, p.Currency)),
                 })
                 .OrderByDescending(p => p.CurrentPercent)
                 .ToList();

@@ -5,11 +5,12 @@ using System.Runtime.CompilerServices;
 using TinkoffInvestStatistic.Service;
 using Xamarin.Forms;
 
-namespace TinkoffInvestStatistic.ViewModels
+namespace TinkoffInvestStatistic.ViewModels.Base
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
         protected readonly IMessageService _messageService;
+        private readonly IHideShowMoneyService _hideShowMoneyService;
 
         bool isBusy = false;
         public bool IsBusy
@@ -19,10 +20,12 @@ namespace TinkoffInvestStatistic.ViewModels
         }
 
         string title = string.Empty;
+        protected readonly static string HidedValue = "***";
 
         public BaseViewModel()
         {
             _messageService = DependencyService.Get<IMessageService>();
+            _hideShowMoneyService = DependencyService.Get<IHideShowMoneyService>();
         }
 
         public string Title
@@ -44,7 +47,27 @@ namespace TinkoffInvestStatistic.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Возвращает признак видимости данных.
+        /// </summary>
+        /// <returns>Признак видимости данных.</returns>
+        public bool IsShowMoney()
+        {
+            return _hideShowMoneyService.IsShow();
+        }
+
+        public string GetViewMoney(Func<string> action)
+        {
+            if (!IsShowMoney())
+            {
+                return HidedValue;
+            }
+
+            return action();
+        }
+
         #region INotifyPropertyChanged
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -54,6 +77,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         #endregion
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
+using TinkoffInvestStatistic.Views.Base;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Views
 {
-    public partial class PortfolioPage : ContentPage
+    public partial class PortfolioPage : BaseDataPage
     {
         PortfolioViewModel _viewModel = new PortfolioViewModel();
 
@@ -19,11 +20,6 @@ namespace TinkoffInvestStatistic.Views
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
         }
 
         private void PlanPercent_Completed(object sender, System.EventArgs e)

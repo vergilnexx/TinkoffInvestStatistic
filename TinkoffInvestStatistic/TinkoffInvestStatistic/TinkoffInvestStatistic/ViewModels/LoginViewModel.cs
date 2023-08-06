@@ -1,5 +1,6 @@
 ﻿using Plugin.Fingerprint;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
