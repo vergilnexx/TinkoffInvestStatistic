@@ -52,7 +52,7 @@ namespace TinkoffInvestStatistic.ViewModels
         public PositionTypeViewModel()
         {
             PositionTypes = new ObservableCollection<PositionTypeModel>();
-            LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommand());
+            LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommandAsync());
             ItemTapped = new Command<PositionTypeModel>(OnPositionTypeSelected);
             StatisticChart = GetChart();
             PlannedStatisticChart = GetChart();
@@ -70,7 +70,7 @@ namespace TinkoffInvestStatistic.ViewModels
             };
         }
 
-        private async Task ExecuteLoadPositionTypesCommand()
+        private async Task ExecuteLoadPositionTypesCommandAsync()
         {
             Sum = SumPercent = string.Empty;
             SumPercentColor = Color.Default;
@@ -122,7 +122,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Сохранение данных.
         /// </summary>
-        public async Task SavePlanPercent()
+        public async Task SavePlanPercentAsync()
         {
             try
             {

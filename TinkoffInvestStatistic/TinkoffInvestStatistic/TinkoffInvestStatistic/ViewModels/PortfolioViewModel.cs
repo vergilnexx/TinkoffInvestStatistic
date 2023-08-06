@@ -96,7 +96,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Сохранение данных.
         /// </summary>
-        public async Task SavePlanPercent()
+        public async Task SavePlanPercentAsync()
         {
             try
             {

@@ -24,7 +24,7 @@ namespace TinkoffInvestStatistic.ViewModels
             Title = "Счета";
             Accounts = new ObservableCollection<AccountModel>();
             StatisticChart = GetChart();
-            LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
+            LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommandAsync());
             ItemTapped = new Command<AccountModel>(OnAccountSelected);
         }
 
@@ -101,7 +101,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Выполнение команды загрузки информации о счетах.
         /// </summary>
-        private async Task ExecuteLoadAccountsCommand()
+        private async Task ExecuteLoadAccountsCommandAsync()
         {
             Sum = string.Empty;
             IsBusy = true;

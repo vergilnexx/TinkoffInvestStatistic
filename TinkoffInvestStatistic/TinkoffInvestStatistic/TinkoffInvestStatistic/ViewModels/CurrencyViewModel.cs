@@ -47,7 +47,7 @@ namespace TinkoffInvestStatistic.ViewModels
         public CurrencyViewModel()
         {
             CurrencyTypes = new ObservableCollection<CurrencyTypeModel>();
-            LoadCurrenciesCommand = new Command(async () => await ExecuteLoadCurrenciesCommand());
+            LoadCurrenciesCommand = new Command(async () => await ExecuteLoadCurrenciesCommandAsync());
             StatisticChart = GetChart();
             PlannedStatisticChart = GetChart();
         }
@@ -64,7 +64,7 @@ namespace TinkoffInvestStatistic.ViewModels
             };
         }
 
-        private async Task ExecuteLoadCurrenciesCommand()
+        private async Task ExecuteLoadCurrenciesCommandAsync()
         {
             Sum = SumPercent = string.Empty;
             SumPercentColor = Color.Default;
@@ -125,7 +125,7 @@ namespace TinkoffInvestStatistic.ViewModels
             IsBusy = true;
         }
 
-        public async Task SavePlanPercent()
+        public async Task SavePlanPercentAsync()
         {
             try
             {

@@ -24,11 +24,11 @@ namespace TinkoffInvestStatistic.Views.Base
         {
 
             var toolbarItem = new ToolbarItem() { IconImageSource = _hideShowMoneyService.GetIconFileName(), Priority = 0, Order = ToolbarItemOrder.Primary };
-            toolbarItem.Clicked += OnItemClicked;
+            toolbarItem.Clicked += OnShowHideMoneyClicked;
             this.ToolbarItems.Add(toolbarItem);
         }
 
-        private void OnItemClicked(object sender, EventArgs e)
+        private void OnShowHideMoneyClicked(object sender, EventArgs e)
         {
             ToolbarItem item = (ToolbarItem)sender;
 

@@ -24,7 +24,7 @@ namespace TinkoffInvestStatistic.Views
 
         private void PlanPercent_Completed(object sender, System.EventArgs e)
         {
-            Task.Run(() => _viewModel.SavePlanPercent());
+            Task.Run(() => _viewModel.SavePlanPercentAsync());
         }
     }
 }

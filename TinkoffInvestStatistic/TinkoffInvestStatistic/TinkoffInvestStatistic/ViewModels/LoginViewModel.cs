@@ -12,15 +12,15 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(async () => await CheckAuthorization());
+            LoginCommand = new Command(async () => await CheckAuthorizationAsync());
         }
 
         public async Task OnAppearing()
         {
-            await CheckAuthorization();
+            await CheckAuthorizationAsync();
         }
 
-        private async Task CheckAuthorization()
+        private async Task CheckAuthorizationAsync()
         {
             IsBusy = true;
             var availability = await CrossFingerprint.Current.IsAvailableAsync();
