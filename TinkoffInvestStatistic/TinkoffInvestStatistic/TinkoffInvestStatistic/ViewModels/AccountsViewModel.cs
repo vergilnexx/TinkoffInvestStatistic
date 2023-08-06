@@ -3,12 +3,15 @@ using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
+using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -21,7 +24,7 @@ namespace TinkoffInvestStatistic.ViewModels
             Title = "Счета";
             Accounts = new ObservableCollection<AccountModel>();
             StatisticChart = GetChart();
-            LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommand());
+            LoadAccountsCommand = new Command(async () => await ExecuteLoadAccountsCommandAsync());
             ItemTapped = new Command<AccountModel>(OnAccountSelected);
         }
 
@@ -70,7 +73,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public void OnAppearing()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             SelectedItem = null;
         }
 
@@ -98,25 +101,27 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Выполнение команды загрузки информации о счетах.
         /// </summary>
-        private async Task ExecuteLoadAccountsCommand()
+        private async Task ExecuteLoadAccountsCommandAsync()
         {
             Sum = string.Empty;
-            IsBusy = true;
+            IsRefreshing = true;
 
             try
             {
                 Accounts.Clear();
                 var service = DependencyService.Get<IAccountService>();
                 var accounts = await service.GetAccountsAsync();
+                var sum = accounts.Sum(a => a.Sum);
                 foreach (var item in accounts)
                 {
                     var model = new AccountModel(item.ID, item.Name, item.Type.GetDescription(), item.Sum);
-
+                    model.CurrentSumText = IsShowMoney()
+                                                ? NumericUtility.ToCurrencyString(item.Sum, Contracts.Enums.Currency.Rub)
+                                                : NumericUtility.ToPercentageString(sum, item.Sum);
                     Accounts.Add(model);
                 }
-
-                var sum = accounts.Sum(t => t.Sum);
-                Sum = CurrencyUtility.ToCurrencyString(sum, Contracts.Enums.Currency.Rub);
+                
+                Sum = GetViewMoney(() => NumericUtility.ToCurrencyString(accounts.Sum(t => t.Sum), Contracts.Enums.Currency.Rub));
                 OnPropertyChanged(nameof(Sum));
 
                 await LoadStatisticChartAsync();
@@ -129,7 +134,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             finally
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
 

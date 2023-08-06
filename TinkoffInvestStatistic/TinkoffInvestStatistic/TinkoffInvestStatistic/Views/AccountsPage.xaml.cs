@@ -1,12 +1,12 @@
 ﻿using TinkoffInvestStatistic.ViewModels;
-using Xamarin.Forms;
+using TinkoffInvestStatistic.Views.Base;
 
 namespace TinkoffInvestStatistic.Views
 {
     /// <summary>
     /// Страница счетов.
     /// </summary>
-    public partial class AccountsPage : ContentPage
+    public partial class AccountsPage : BaseDataPage
     {
         AccountsViewModel _viewModel = new AccountsViewModel();
 
@@ -17,6 +17,13 @@ namespace TinkoffInvestStatistic.Views
             BindingContext = _viewModel;
         }
 
+        /// <inheritdoc/>
+        public override void RefreshView()
+        {
+            _viewModel.IsRefreshing = true;
+        }
+
+        /// <inheritdoc/>
         protected override void OnAppearing()
         {
             base.OnAppearing();

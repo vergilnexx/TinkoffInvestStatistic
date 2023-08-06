@@ -24,6 +24,7 @@ namespace TinkoffInvestStatistic
         private static void ConfigureUtility()
         {
             DependencyService.Register<IMessageService, MessageService>();
+            DependencyService.RegisterSingleton<IHideShowMoneyService>(new HideShowMoneyService());
 
             DependencyService.RegisterSingleton(new ChartUtility());
             DependencyService.RegisterSingleton(new ChartColorsUtility());
@@ -31,19 +32,8 @@ namespace TinkoffInvestStatistic
             DependencyService.RegisterSingleton(new DataStorageService());
         }
 
-        protected override void OnStart()
-        {
-            base.OnStart();
-        }
-
         protected override void OnSleep()
         {
-
-        }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
         }
     }
 }
