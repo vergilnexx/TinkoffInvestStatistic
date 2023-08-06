@@ -1,5 +1,6 @@
 ﻿using Plugin.Fingerprint;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -11,22 +12,22 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(async () => await CheckAuthorization());
+            LoginCommand = new Command(async () => await CheckAuthorizationAsync());
         }
 
         public async Task OnAppearing()
         {
-            await CheckAuthorization();
+            await CheckAuthorizationAsync();
         }
 
-        private async Task CheckAuthorization()
+        private async Task CheckAuthorizationAsync()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             var availability = await CrossFingerprint.Current.IsAvailableAsync();
 
             if (!availability)
             {
-                IsBusy = false;
+                IsRefreshing = false;
                 return;
             }
 
@@ -39,7 +40,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             else
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
     }

@@ -13,6 +13,7 @@ using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
+using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
@@ -51,7 +52,7 @@ namespace TinkoffInvestStatistic.ViewModels
         public PositionTypeViewModel()
         {
             PositionTypes = new ObservableCollection<PositionTypeModel>();
-            LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommand());
+            LoadPositionTypesCommand = new Command(async () => await ExecuteLoadPositionTypesCommandAsync());
             ItemTapped = new Command<PositionTypeModel>(OnPositionTypeSelected);
             StatisticChart = GetChart();
             PlannedStatisticChart = GetChart();
@@ -69,11 +70,11 @@ namespace TinkoffInvestStatistic.ViewModels
             };
         }
 
-        private async Task ExecuteLoadPositionTypesCommand()
+        private async Task ExecuteLoadPositionTypesCommandAsync()
         {
             Sum = SumPercent = string.Empty;
             SumPercentColor = Color.Default;
-            IsBusy = true;
+            IsRefreshing = true;
 
             try
             {
@@ -87,17 +88,18 @@ namespace TinkoffInvestStatistic.ViewModels
                 {
                     var model = new PositionTypeModel(item.Type);
                     model.PlanPercent = item.PlanPercent.ToString();
-                    model.CurrentPercent = Math.Round(sum == 0 ? 0 : 100 * item.Sum / sum, 
-                                            DecimalHelper.NUMERIC_DECIMALS, MidpointRounding.AwayFromZero);
+                    model.CurrentPercent = NumericUtility.ToPercentage(sum, item.Sum);
                     model.CurrentSum = item.Sum;
+                    model.CurrentSumText = GetViewMoney(() => NumericUtility.ToCurrencyString(item.Sum, Currency.Rub));
 
                     PositionTypes.Add(model);
                 }
-                Sum = CurrencyUtility.ToCurrencyString(sum, Currency.Rub);
+                
+                Sum = GetViewMoney(() => NumericUtility.ToCurrencyString(sum, Currency.Rub));
                 OnPropertyChanged(nameof(Sum));
 
                 var sumPercent = positionTypes.Sum(t => t.PlanPercent);
-                SumPercent = (sumPercent / 100).ToString("P");
+                SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
                 SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
@@ -113,14 +115,14 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             finally
             {
-                IsBusy = false;
+                IsRefreshing = false;
             }
         }
 
         /// <summary>
         /// Сохранение данных.
         /// </summary>
-        public async Task SavePlanPercent()
+        public async Task SavePlanPercentAsync()
         {
             try
             {
@@ -128,7 +130,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var data = PositionTypes.Select(pt => new PositionTypeData(AccountId, pt.Type, pt.PlanPercentValue));
 
                 var sumPercent = PositionTypes.Sum(t => t.PlanPercentValue);
-                SumPercent = (sumPercent / 100).ToString("P");
+                SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
                 SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, 100);
@@ -157,7 +159,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public void OnAppearing()
         {
-            IsBusy = true;
+            IsRefreshing = true;
             SelectedItem = null;
             Title = "Инструменты";
         }
@@ -172,7 +174,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
-        async void OnPositionTypeSelected(PositionTypeModel item)
+        private async void OnPositionTypeSelected(PositionTypeModel item)
         {
             if (item == null)
             {

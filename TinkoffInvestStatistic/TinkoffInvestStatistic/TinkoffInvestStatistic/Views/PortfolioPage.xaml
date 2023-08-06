@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<tis:BaseDataPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:tis="clr-namespace:TinkoffInvestStatistic.Views.Base;assembly=TinkoffInvestStatistic"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TinkoffInvestStatistic.Views.PortfolioPage"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"  
@@ -17,10 +18,10 @@
                  RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
                  x:DataType="local:PortfolioViewModel" 
                  Command="{Binding LoadGroupedPositionsCommand}" 
-                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
         <Grid RowDefinitions="150, 1, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
             <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="150"
-                             IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
+                             IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
             </forms:ChartView>
             <BoxView HeightRequest="1" Grid.Row="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
             <CollectionView Grid.Row="2"
@@ -139,7 +140,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <StackLayout Padding="10" Grid.Row="3"
-                         IsVisible="{Binding IsBusy, Converter={Helpers:InverseBoolConverter}}">
+                         IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
                 <BoxView HeightRequest="1" 
                          Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
                 <Grid ColumnDefinitions="80, Auto, *">
@@ -169,4 +170,4 @@
             </StackLayout>
         </Grid>
     </RefreshView>
-</ContentPage>
+</tis:BaseDataPage>

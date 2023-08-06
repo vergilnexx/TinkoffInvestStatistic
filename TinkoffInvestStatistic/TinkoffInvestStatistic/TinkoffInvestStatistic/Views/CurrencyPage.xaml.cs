@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
+using TinkoffInvestStatistic.Views.Base;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TinkoffInvestStatistic.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CurrencyPage : ContentPage
+    public partial class CurrencyPage : BaseDataPage
     {
         CurrencyViewModel _viewModel;
 
@@ -19,6 +20,13 @@ namespace TinkoffInvestStatistic.Views
             BindingContext = _viewModel;
         }
 
+        /// <inheritdoc/>
+        public override void RefreshView()
+        {
+            _viewModel.IsRefreshing = true;
+        }
+
+        /// <inheritdoc/>
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -29,14 +37,9 @@ namespace TinkoffInvestStatistic.Views
             _viewModel.OnAppearing();
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-        }
-
         private void PlanPercent_Completed(object sender, System.EventArgs e)
         {
-            Task.Run(() => _viewModel.SavePlanPercent());
+            Task.Run(() => _viewModel.SavePlanPercentAsync());
         }
     }
 }
