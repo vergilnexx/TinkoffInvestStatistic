@@ -8,7 +8,7 @@
              xmlns:model="clr-namespace:TinkoffInvestStatistic.Models"
              x:Class="TinkoffInvestStatistic.Views.CurrencyPage">
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
-                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                  x:DataType="local:CurrencyViewModel" Command="{Binding LoadCurrenciesCommand}" 
                  IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
         <Grid RowDefinitions="1, 15, 130, 1, *, Auto" 

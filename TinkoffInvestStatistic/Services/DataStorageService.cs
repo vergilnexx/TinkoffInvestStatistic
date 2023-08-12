@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
+using System.Threading;
 
 namespace Services
 {
@@ -326,6 +327,35 @@ namespace Services
 
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             return dataAccessService.SavePositionsDataAsync(accountNumber, data);
+        }
+
+        /// <summary>
+        /// Возвращает настройки.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Настройки.</returns>
+        internal async Task<IReadOnlyCollection<Option>> GetOptionsAsync(CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetOptionsAsync(cancellation);
+            return data.Select(d => new Option(d.Type, d.Value)).ToArray();
+        }
+
+        /// <summary>
+        /// Обновляет данные настройки.
+        /// </summary>
+        /// <param name="type">Тип настройки.</param>
+        /// <param name="value">Значение.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        internal Task UpdateOptionAsync(OptionType type, string value, CancellationToken cancellation)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException(nameof(value), "Значение настройки не может быть пусстым.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.UpdateOptionAsync(type, value, cancellation);
         }
     }
 }
