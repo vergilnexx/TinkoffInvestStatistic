@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
+using System.Threading;
 
 namespace Services
 {
@@ -27,6 +29,7 @@ namespace Services
             _database.CreateTableAsync<PositionData>().Wait();
             _database.CreateTableAsync<SectorData>().Wait();
             _database.CreateTableAsync<PlannedPositionData>().Wait();
+            _database.CreateTableAsync<OptionData>().Wait();
         }
 
         ///<inheritdoc/>
@@ -322,6 +325,73 @@ namespace Services
                         await _database.InsertAsync(positionTypeData);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<OptionData>> GetOptionsAsync(CancellationToken cancellation)
+        {
+            try
+            {
+                var options = await _database
+                                        .Table<OptionData>()
+                                        .ToArrayAsync()
+                                        .ConfigureAwait(false);
+                return options;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task UpdateOptionAsync(OptionType type, string value, CancellationToken cancellation)
+        {
+            try
+            {
+                var option = await _database
+                                        .Table<OptionData>()
+                                        .FirstOrDefaultAsync(od => od.Type == type)
+                                        .ConfigureAwait(false);
+                if (option != null)
+                {
+                    option.Value = value;
+                    await _database.UpdateAsync(option);
+                }
+                else
+                {
+                    option = new OptionData
+                    {
+                        Type = type,
+                        Value = value
+                    };
+                    await _database.InsertAsync(option);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation)
+        {
+            try
+            {
+                var option = await _database
+                                        .Table<OptionData>()
+                                        .FirstOrDefaultAsync(o => o.Type == optionType)
+                                        .ConfigureAwait(false);
+                return option?.Value;
             }
             catch (Exception ex)
             {

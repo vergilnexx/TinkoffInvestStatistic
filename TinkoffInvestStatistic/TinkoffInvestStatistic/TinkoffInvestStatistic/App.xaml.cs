@@ -1,5 +1,8 @@
 ﻿using Infrastructure.Container;
+using Infrastructure.Services;
 using Services;
+using System.Threading.Tasks;
+using System.Threading;
 using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
 using Xamarin.Forms;
@@ -32,8 +35,32 @@ namespace TinkoffInvestStatistic
             DependencyService.RegisterSingleton(new DataStorageService());
         }
 
-        protected override void OnSleep()
+        protected override void OnStart()
         {
+            InitSettings();
+        }
+
+        protected override void OnResume()
+        {
+            InitSettings();
+        }
+
+        private void InitSettings()
+        {
+            var service = DependencyService.Get<ISettingService>();
+
+            using var cancelTokenSource = new CancellationTokenSource();
+            var cancellation = cancelTokenSource.Token;
+            var isHideMoneyString = Task
+                                    .Run(() => service.GetAsync(Contracts.Enums.OptionType.IsHideMoney, cancellation))
+                                    .GetAwaiter()
+                                    .GetResult();
+
+            var hideShowMoneyService = DependencyService.Get<IHideShowMoneyService>();
+            if (bool.TryParse(isHideMoneyString, out var isHideMoney))
+            {
+                hideShowMoneyService.SetShow(!isHideMoney);
+            }
         }
     }
 }

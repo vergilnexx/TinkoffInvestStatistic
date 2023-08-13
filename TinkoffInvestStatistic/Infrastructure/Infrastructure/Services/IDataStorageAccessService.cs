@@ -2,6 +2,8 @@
 using Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
+using System.Threading;
 
 namespace Infrastructure.Services
 {
@@ -107,5 +109,28 @@ namespace Infrastructure.Services
         /// <param name="name">Наименование</param>
         /// <param name="ticker">Тикер</param>
         Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker);
+
+        /// <summary>
+        /// Возвращает настройки.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Настройки.</returns>
+        Task<IReadOnlyCollection<OptionData>> GetOptionsAsync(CancellationToken cancellation);
+
+        /// <summary>
+        /// Обновляет данные настройки.
+        /// </summary>
+        /// <param name="type">Тип настройки.</param>
+        /// <param name="value">Значение.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task UpdateOptionAsync(OptionType type, string value, CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает значение настройки.
+        /// </summary>
+        /// <param name="optionType">Тип настройки.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список настроек.</returns>
+        Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation);
     }
 }

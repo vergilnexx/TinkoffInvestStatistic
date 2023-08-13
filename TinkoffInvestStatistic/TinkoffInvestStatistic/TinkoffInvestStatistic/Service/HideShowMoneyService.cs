@@ -1,4 +1,6 @@
-﻿using Plugin.Fingerprint;
+﻿using Infrastructure.Services;
+using Plugin.Fingerprint;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -10,7 +12,7 @@ namespace TinkoffInvestStatistic.Service
         /// <summary>
         /// Признак, что можно показывать суммы.
         /// </summary>
-        private static bool IsShowMoney { get; set; } = true;
+        private static bool IsShowMoney { get; set; } = false;
 
         private readonly static string IconHideFileName = "icon_hide.png";
         private readonly static string IconShowFileName = "icon_show.png";
