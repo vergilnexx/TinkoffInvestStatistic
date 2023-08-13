@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels" 
+             x:Class="TinkoffInvestStatistic.Views.SettingPage"
+             Title="{Binding Title}">
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
+                    x:DataType="local:SettingViewModel" Command="{Binding LoadOptionsCommand}" 
+                    IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+        <Grid RowDefinitions="20, 20, Auto" 
+                ColumnDefinitions="Auto, *"
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <Label Text="Скрывать данные при входе:"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                    VerticalOptions="Center" />
+            <CheckBox 
+                    IsChecked="{Binding IsHideMoney}"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    CheckedChanged="OnShowHideMoneyCheckedChanged"
+                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
+        </Grid>
+    </RefreshView>
+</ContentPage>

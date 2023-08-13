@@ -2,7 +2,6 @@
 using Domain;
 using Infrastructure.Clients;
 using Infrastructure.Services;
-using Services.Workaround;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,11 +99,7 @@ namespace Services
                     var currency = currencies.FirstOrDefault(c => group.Key == c.Currency);
                     if (currency == null)
                     {
-                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, group.Key);
-                        if (currencySum == null)
-                        {
-                            throw new ApplicationException("Не найдена валюта типа: " + group.Key);
-                        }
+                        throw new ApplicationException("Не найдена валюта типа: " + group.Key);
                     }
                     else
                     {
@@ -125,11 +120,7 @@ namespace Services
                     var currency = currencies.FirstOrDefault(c => fiatPosition.Currency == c.Currency);
                     if (currency == null)
                     {
-                        currencySum = WorkaroundUtils.GetCurrencySumInRubbles(currencies, fiatPosition.Currency);
-                        if (currencySum == null)
-                        {
-                            throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
-                        }
+                        throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
                     }
                     else
                     {

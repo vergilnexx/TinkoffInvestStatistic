@@ -15,7 +15,7 @@
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
-                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                  x:DataType="local:PortfolioViewModel" 
                  Command="{Binding LoadGroupedPositionsCommand}" 
                  IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">

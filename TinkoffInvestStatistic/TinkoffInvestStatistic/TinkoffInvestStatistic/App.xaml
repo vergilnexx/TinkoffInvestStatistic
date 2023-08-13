@@ -11,11 +11,13 @@
             <Color x:Key="LightPrimaryColor">WhiteSmoke</Color>
             <Color x:Key="LightSecondaryColor">Black</Color>
             <Color x:Key="LighTextColor">Black</Color>
+            <Color x:Key="LightInnerColor">#2196F3</Color>
 
             <!-- Dark colors -->
             <Color x:Key="DarkPrimaryColor">#2B373D</Color>
             <Color x:Key="DarkSecondaryColor">WhiteSmoke</Color>
             <Color x:Key="DarkTextColor">WhiteSmoke</Color>
+            <Color x:Key="DarkInnerColor">#FFD450</Color>
 
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>

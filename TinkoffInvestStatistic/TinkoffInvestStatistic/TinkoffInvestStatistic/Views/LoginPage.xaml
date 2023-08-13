@@ -9,7 +9,7 @@
              Shell.NavBarIsVisible="False">
 
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
-                 RefreshColor="{AppThemeBinding Light=#2196F3, Dark=#FFD450}"
+                 RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                  x:DataType="local:LoginViewModel" 
                  IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
         <StackLayout Padding="10,0,10,0" VerticalOptions="Center" >
