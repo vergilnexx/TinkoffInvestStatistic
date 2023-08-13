@@ -23,18 +23,6 @@
                     Grid.Row="0"
                     CheckedChanged="OnShowHideMoneyCheckedChanged"
                     Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
-
-            <Label Text="Отображать заблокированные позиции:"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
-                    VerticalOptions="Center" />
-            <CheckBox 
-                    IsChecked="{Binding IsShowBlockedPositions}"
-                    Grid.Column="1"
-                    Grid.Row="1"
-                    CheckedChanged="OnShowBlockedInstrumentsCheckedChanged" 
-                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
         </Grid>
     </RefreshView>
 </ContentPage>

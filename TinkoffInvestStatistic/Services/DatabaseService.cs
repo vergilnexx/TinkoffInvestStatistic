@@ -381,5 +381,23 @@ namespace Services
                 throw;
             }
         }
+
+        ///<inheritdoc/>
+        public async Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation)
+        {
+            try
+            {
+                var option = await _database
+                                        .Table<OptionData>()
+                                        .FirstOrDefaultAsync(o => o.Type == optionType)
+                                        .ConfigureAwait(false);
+                return option?.Value;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

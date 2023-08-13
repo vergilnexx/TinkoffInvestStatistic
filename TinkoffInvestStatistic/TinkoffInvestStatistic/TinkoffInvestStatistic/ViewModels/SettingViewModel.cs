@@ -34,11 +34,6 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public bool IsHideMoney { get; set; }
 
-        /// <summary>
-        /// Отображать заблокированные позиции.
-        /// </summary>
-        public bool IsShowBlockedPositions { get; set; }
-
         public void OnAppearing()
         {
             IsRefreshing = true;
@@ -59,8 +54,6 @@ namespace TinkoffInvestStatistic.ViewModels
 
                 IsHideMoney = options.FirstOrDefault(o => o.Type == OptionType.IsHideMoney)?.ToBoolean() ?? true;
                 OnPropertyChanged(nameof(IsHideMoney));
-                IsShowBlockedPositions = options.FirstOrDefault(o => o.Type == OptionType.IsShowBlockedPositions)?.ToBoolean() ?? false;
-                OnPropertyChanged(nameof(IsShowBlockedPositions));
             }
             catch (Exception ex)
             {

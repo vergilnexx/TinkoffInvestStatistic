@@ -124,5 +124,13 @@ namespace Infrastructure.Services
         /// <param name="value">Значение.</param>
         /// <param name="cancellation">Токен отмены.</param>
         Task UpdateOptionAsync(OptionType type, string value, CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает значение настройки.
+        /// </summary>
+        /// <param name="optionType">Тип настройки.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список настроек.</returns>
+        Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation);
     }
 }

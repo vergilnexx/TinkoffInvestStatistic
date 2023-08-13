@@ -357,5 +357,17 @@ namespace Services
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             return dataAccessService.UpdateOptionAsync(type, value, cancellation);
         }
+
+        /// <summary>
+        /// Возвращает значение настройки.
+        /// </summary>
+        /// <param name="optionType">Тип настройки.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список настроек.</returns>
+        internal Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.GetOptionAsync(optionType, cancellation);
+        }
     }
 }

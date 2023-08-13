@@ -14,11 +14,21 @@ namespace Services
         /// <summary>
         /// Значения настроек по-умолчанию.
         /// </summary>
-        private readonly IDictionary<OptionType, string> DefaultValues = new Dictionary<OptionType, string>()
+        private static readonly IDictionary<OptionType, string> DefaultValues = new Dictionary<OptionType, string>()
         {
             { OptionType.IsHideMoney, true.ToString() },
-            { OptionType.IsShowBlockedPositions, true.ToString() },
         };
+
+        /// <inheritdoc/>
+        public async Task<string> GetAsync(OptionType optionType, CancellationToken cancellation)
+        {
+            var value = await DataStorageService.Instance.GetOptionAsync(optionType, cancellation);
+            if (string.IsNullOrEmpty(value))
+            {
+                return DefaultValues.FirstOrDefault(dv => dv.Key == optionType).Value;
+            }
+            return value!;
+        }
 
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Option>> GetListAsync(CancellationToken cancellation)

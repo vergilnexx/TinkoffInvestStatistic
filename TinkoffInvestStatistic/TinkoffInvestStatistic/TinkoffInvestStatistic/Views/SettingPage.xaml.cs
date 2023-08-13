@@ -32,13 +32,5 @@ namespace TinkoffInvestStatistic.Views
         {
             await Task.Run(() => _viewModel.SaveOptionAsync(Contracts.Enums.OptionType.IsHideMoney, e.Value.ToString()));
         }
-
-        /// <summary>
-        /// Событие нажатия на настройку: Отображать заблокированные позиции.
-        /// </summary>
-        public async void OnShowBlockedInstrumentsCheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-            await Task.Run(() => _viewModel.SaveOptionAsync(Contracts.Enums.OptionType.IsShowBlockedPositions, e.Value.ToString()));
-        }
     }
 }

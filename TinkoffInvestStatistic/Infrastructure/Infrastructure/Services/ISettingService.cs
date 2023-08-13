@@ -11,6 +11,13 @@ namespace Infrastructure.Services
     /// </summary>
     public interface ISettingService
     {
+        /// <summary>
+        /// Возвращает значение настройки.
+        /// </summary>
+        /// <param name="optionType">Тип настройки.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список настроек.</returns>
+        Task<string> GetAsync(OptionType optionType, CancellationToken cancellation);
 
         /// <summary>
         /// Возвращает список настроек.

@@ -17,11 +17,5 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         /// </summary>
         [Description("Скрывать данные при входе")]
         IsHideMoney = 1,
-
-        /// <summary>
-        /// Отображать заблокированные позиции.
-        /// </summary>
-        [Description("Отображать заблокированные позиции")]
-        IsShowBlockedPositions = 2,
     }
 }
