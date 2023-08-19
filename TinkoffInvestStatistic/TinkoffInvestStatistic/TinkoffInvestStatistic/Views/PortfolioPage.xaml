@@ -18,7 +18,7 @@
                  RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                  x:DataType="local:PortfolioViewModel" 
                  Command="{Binding LoadGroupedPositionsCommand}" 
-                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"> 
         <Grid RowDefinitions="150, 1, *, Auto" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
             <forms:ChartView Chart="{Binding StatisticChart}" HeightRequest="150"
                              IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
