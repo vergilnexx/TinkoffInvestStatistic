@@ -27,13 +27,13 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task ExportAsync(ExportCategories categories, CancellationToken cancellation)
+        public async Task ExportAsync(ExportCategories categories, string folder, CancellationToken cancellation)
         {
-            await SaveSettingsAsync(categories, cancellation);
-            await SaveDataAsync(categories, cancellation);
+            await SaveSettingsAsync(categories, folder, cancellation);
+            await SaveDataAsync(categories, folder, cancellation);
         }
 
-        private async Task SaveSettingsAsync(ExportCategories category, CancellationToken cancellation)
+        private async Task SaveSettingsAsync(ExportCategories category, string folder, CancellationToken cancellation)
         {
             if (!category.HasFlag(ExportCategories.Settings))
             {
@@ -47,10 +47,10 @@ namespace Services
             using MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, optionExportData);
 
-            await SaveFileAsync(ExportCategories.Settings, stream, cancellation);
+            await SaveFileAsync(ExportCategories.Settings, stream, folder, cancellation);
         }
 
-        private async Task SaveDataAsync(ExportCategories category, CancellationToken cancellation)
+        private async Task SaveDataAsync(ExportCategories category, string folder, CancellationToken cancellation)
         {
             if (!category.HasFlag(ExportCategories.Data))
             {
@@ -63,13 +63,12 @@ namespace Services
             using MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, data);
 
-            await SaveFileAsync(ExportCategories.Data, stream, cancellation);
+            await SaveFileAsync(ExportCategories.Data, stream, folder, cancellation);
         }
 
-        private async Task SaveFileAsync(ExportCategories category, MemoryStream stream, CancellationToken cancellation)
+        private async Task SaveFileAsync(ExportCategories category, MemoryStream stream, string folder, CancellationToken cancellation)
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                            $"exported_{category}_{_dateTimeProvider.UtcNow:dd.MM.yyyy hh_mm_ss}.xml");
+            var path = Path.Combine(folder, $"exported_{category}_{_dateTimeProvider.UtcNow:dd.MM.yyyy}.xml");
             await _fileservice.SaveFileAsync(stream, path, cancellation);
         }
     }

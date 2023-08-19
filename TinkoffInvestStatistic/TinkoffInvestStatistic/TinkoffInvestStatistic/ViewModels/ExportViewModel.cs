@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TinkoffInvestStatistic.Contracts.Enums;
+using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.ViewModels.Base;
 using Xamarin.Forms;
 
@@ -31,10 +32,12 @@ namespace TinkoffInvestStatistic.ViewModels
         public ICommand ExportCommand { get; set; }
 
         private readonly IExportService _exportService;
+        private readonly IFileSystemService _fileSystem;
 
         public ExportViewModel()
         {
             _exportService = DependencyService.Get<IExportService>();
+            _fileSystem = DependencyService.Get<IFileSystemService>();
             ExportCommand = new Command(async() => await ExportAsync());
         }
 
@@ -61,7 +64,8 @@ namespace TinkoffInvestStatistic.ViewModels
 
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
-                await _exportService.ExportAsync(exportCategories, cancellation);
+                var folder = _fileSystem.GetExternalStorage();
+                await _exportService.ExportAsync(exportCategories, folder, cancellation);
                 await _messageService.ShowAsync("Операция выполнена успешно");
             }
             catch (Exception ex)
