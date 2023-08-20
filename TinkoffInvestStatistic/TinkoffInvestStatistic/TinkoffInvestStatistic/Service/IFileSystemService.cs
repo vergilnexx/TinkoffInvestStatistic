@@ -8,7 +8,8 @@
         /// <summary>
         /// Возвращает путь до внешнего источника.
         /// </summary>
+        /// <param name="folderName">Название папки.</param>
         /// <returns>Путь до внешнего источника.</returns>
-        public string GetExternalStorage();
+        public string GetExternalStorage(string folderName);
     }
 }

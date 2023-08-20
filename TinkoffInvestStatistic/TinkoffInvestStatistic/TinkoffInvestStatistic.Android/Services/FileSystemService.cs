@@ -1,4 +1,7 @@
-﻿using TinkoffInvestStatistic.Droid.Services;
+﻿using Android.Content;
+using System;
+using System.IO;
+using TinkoffInvestStatistic.Droid.Services;
 using TinkoffInvestStatistic.Service;
 using Xamarin.Forms;
 
@@ -9,11 +12,15 @@ namespace TinkoffInvestStatistic.Droid.Services
     public class FileSystemService : IFileSystemService
     {
         /// <inheritdoc/>
-        public string GetExternalStorage()
+        public string GetExternalStorage(string folderName)
         {
-            var context = Android.App.Application.Context;
-            var filePath = context.GetExternalFilesDir(string.Empty);
-            return filePath.Path;
+            string externalStorageDirectory = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+            string documentsDirectory = Path.Combine(externalStorageDirectory, folderName);
+            if (!File.Exists(documentsDirectory))
+            {
+                Directory.CreateDirectory(documentsDirectory);
+            }
+            return documentsDirectory;
         }
     }
 }

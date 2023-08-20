@@ -64,9 +64,10 @@ namespace TinkoffInvestStatistic.ViewModels
 
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
-                var folder = _fileSystem.GetExternalStorage();
+                const string folderName = "Documents/tinkoffinveststatistic";
+                var folder = _fileSystem.GetExternalStorage(folderName);
                 await _exportService.ExportAsync(exportCategories, folder, cancellation);
-                await _messageService.ShowAsync("Операция выполнена успешно");
+                await _messageService.ShowAsync("Файлы успешно сохранены в папке " + folderName);
             }
             catch (Exception ex)
             {
