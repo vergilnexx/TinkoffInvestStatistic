@@ -51,6 +51,11 @@ namespace TinkoffInvestStatistic
 
             using var cancelTokenSource = new CancellationTokenSource();
             var cancellation = cancelTokenSource.Token;
+            InitShowHideMoneySetting(service, cancellation);
+        }
+
+        private static void InitShowHideMoneySetting(ISettingService service, CancellationToken cancellation)
+        {
             var isHideMoneyString = Task
                                     .Run(() => service.GetAsync(Contracts.Enums.OptionType.IsHideMoney, cancellation))
                                     .GetAwaiter()

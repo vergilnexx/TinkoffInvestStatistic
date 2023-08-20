@@ -5,6 +5,7 @@ using Android.OS;
 using Plugin.Fingerprint;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.IO;
 
 namespace TinkoffInvestStatistic.Droid
 {
@@ -20,6 +21,7 @@ namespace TinkoffInvestStatistic.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             CrossFingerprint.SetCurrentActivityResolver(() => Xamarin.Essentials.Platform.CurrentActivity);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

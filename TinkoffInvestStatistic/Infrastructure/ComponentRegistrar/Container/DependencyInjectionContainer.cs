@@ -30,6 +30,9 @@ namespace Infrastructure.Container
             DependencyService.Register<IDataStorageAccessService, DatabaseService>();
             DependencyService.Register<ISectorService, SectorService>();
             DependencyService.Register<ISettingService, SettingService>();
+            DependencyService.Register<IFileService, FileService>();
+            DependencyService.Register<IExportService, ExportService>();
+            DependencyService.Register<IDateTimeProvider, DateTimeProvider>();
         }
 
         private static void ConfigureClients()
