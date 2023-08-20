@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels" 
+             x:Class="TinkoffInvestStatistic.Views.ExportPage"
+             Title="{Binding Title}">
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
+                    x:DataType="local:ExportViewModel"
+                    IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+        <Grid RowDefinitions="20, 20, *, Auto" 
+                ColumnDefinitions="Auto, *"
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <Label Text="Экспорт настроек:"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                    VerticalOptions="Center" />
+            <CheckBox 
+                    IsChecked="{Binding IsSettingsExport}"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
+
+            <Label Text="Экспорт данных:"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                    VerticalOptions="Center" />
+            <CheckBox 
+                    IsChecked="{Binding IsDataExport}"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
+
+            <Button Text="Экспортировать"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    WidthRequest="250" 
+                    HorizontalOptions="Center" 
+                    HeightRequest="60" 
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}" 
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}" 
+                    BorderWidth="1"
+                    CornerRadius="30"
+                    Command="{Binding ExportCommand}"/>
+        </Grid>
+    </RefreshView>
+</ContentPage>

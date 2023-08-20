@@ -13,6 +13,7 @@ namespace TinkoffInvestStatistic
             Routing.RegisterRoute(nameof(PositionTypesPage), typeof(PositionTypesPage));
             Routing.RegisterRoute(nameof(PortfolioPage), typeof(PortfolioPage));
             Routing.RegisterRoute(nameof(SettingPage), typeof(SettingPage));
+            Routing.RegisterRoute(nameof(ExportPage), typeof(ExportPage));
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)

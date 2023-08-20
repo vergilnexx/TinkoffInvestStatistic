@@ -46,6 +46,10 @@
         <ShellContent
             StyleClass="MenuItemLayoutStyle" Route="SettingPage" ContentTemplate="{DataTemplate local:SettingPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Экспорт">
+        <ShellContent
+            StyleClass="MenuItemLayoutStyle" Route="ExportPage" ContentTemplate="{DataTemplate local:ExportPage}" />
+    </FlyoutItem>
 
     <!-- When the Flyout is visible this will be a menu item you can tie a click behavior to  -->
     <MenuItem Text="Выход" StyleClass="MenuItemLayoutStyle" Clicked="OnMenuItemClicked">
