@@ -28,7 +28,7 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// <summary>
         /// Идентификатор счета.
         /// </summary>
-        public string? AccountId { get; }
+        public string? AccountId { get; set; }
 
         /// <summary>
         /// Данные типов позиций для экспорта.

@@ -1,4 +1,5 @@
-﻿using TinkoffInvestStatistic.Contracts.Enums;
+﻿using System;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvestStatistic.Contracts.Export
 {
@@ -18,7 +19,7 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// Конструктор.
         /// </summary>
         /// <param name="currency">Валюта.</param>
-        public CurrencyExportData(Currency currency)
+        public CurrencyExportData(Currency currency) : this()
         {
             Currency = currency;
         }
@@ -26,7 +27,7 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// <summary>
         /// Валюта.
         /// </summary>
-        public Currency Currency { get; }
+        public Currency Currency { get; set; }
 
         /// <summary>
         /// Планируемый процент.

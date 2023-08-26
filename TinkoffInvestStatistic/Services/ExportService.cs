@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Services;
-using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -43,11 +42,7 @@ namespace Services
             var settings = await _settingService.GetListAsync(cancellation);
             var optionExportData = settings.Select(s => new OptionExportData(s.Type, s.Value)).ToArray();
 
-            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(optionExportData.GetType());
-            using MemoryStream stream = new MemoryStream();
-            serializer.Serialize(stream, optionExportData);
-
-            await SaveFileAsync(ExportCategories.Settings, stream, folder, cancellation);
+            await SaveFileAsync(ExportCategories.Settings, optionExportData, folder, cancellation);
         }
 
         private async Task SaveDataAsync(ExportCategories category, string folder, CancellationToken cancellation)
@@ -59,17 +54,13 @@ namespace Services
 
             var data = await DataStorageService.Instance.GetAccountExportDataAsync(cancellation);
 
-            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(data.GetType());
-            using MemoryStream stream = new MemoryStream();
-            serializer.Serialize(stream, data);
-
-            await SaveFileAsync(ExportCategories.Data, stream, folder, cancellation);
+            await SaveFileAsync(ExportCategories.Data, data, folder, cancellation);
         }
 
-        private async Task SaveFileAsync(ExportCategories category, MemoryStream stream, string folder, CancellationToken cancellation)
+        private async Task SaveFileAsync(ExportCategories category, object data, string folder, CancellationToken cancellation)
         {
-            var path = Path.Combine(folder, $"exported_{category}_{_dateTimeProvider.UtcNow:dd.MM.yyyy}.xml");
-            await _fileservice.SaveFileAsync(stream, path, cancellation);
+            var path = Path.Combine(folder, $"exported_{category}_{_dateTimeProvider.UtcNow:dd.MM.yyyy}.txt");
+            await _fileservice.SaveFileAsync(data,  path, cancellation);
         }
     }
 }
