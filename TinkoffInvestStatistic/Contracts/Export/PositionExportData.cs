@@ -1,4 +1,6 @@
-﻿namespace TinkoffInvestStatistic.Contracts.Export
+﻿using System;
+
+namespace TinkoffInvestStatistic.Contracts.Export
 {
     /// <summary>
     /// Даннае для экспорта позиций.
@@ -16,7 +18,7 @@
         /// Конструктор.
         /// </summary>
         /// <param name="figi">Глобальный идентификатор финансового инструмента.</param>
-        public PositionExportData(string figi)
+        public PositionExportData(string figi) : this()
         {
             Figi = figi;
         }
@@ -24,7 +26,7 @@
         /// <summary>
         /// Глобальный идентификатор финансового инструмента
         /// </summary>
-        public string? Figi { get; }
+        public string? Figi { get; set; }
 
         /// <summary>
         /// Планируемый процент.
