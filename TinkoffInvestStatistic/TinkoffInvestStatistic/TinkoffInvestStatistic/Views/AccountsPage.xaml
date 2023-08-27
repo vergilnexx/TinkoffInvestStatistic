@@ -31,7 +31,7 @@
                             ItemsSource="{Binding Accounts}"
                             SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <ContentView>
+                    <ContentView IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
                         <StackLayout HorizontalOptions="CenterAndExpand"
                                      VerticalOptions="CenterAndExpand">
                             <Label Text="Нет элементов для отображения"
