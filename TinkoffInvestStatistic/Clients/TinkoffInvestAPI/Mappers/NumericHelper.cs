@@ -21,11 +21,7 @@ namespace TinkoffInvest.Mappers
                 throw new ArithmeticException($"Не удалось распарсить числовое представление: {numeric.IntegerPart}");
             }
 
-            if(!decimal.TryParse(integerPart + "." + Math.Abs(numeric.FractionalPart), out decimal result))
-            {
-                throw new ArithmeticException($"Не удалось преобразовать числовое представление: {integerPart}.{numeric.FractionalPart}");
-            }
-            
+            decimal result = integerPart + (decimal)Math.Abs(numeric.FractionalPart) / 1000000000;
             return decimal.Round(result, DecimalHelper.NUMERIC_DECIMALS);
         }
     }

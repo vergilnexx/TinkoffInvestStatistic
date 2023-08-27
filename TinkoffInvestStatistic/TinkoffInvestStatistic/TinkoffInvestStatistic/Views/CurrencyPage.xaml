@@ -77,6 +77,20 @@
                 </Grid>
             </StackLayout>
             <CollectionView Grid.Row="5" Grid.ColumnSpan="2" ItemsSource="{Binding CurrencyTypes}">
+                <CollectionView.EmptyView>
+                    <ContentView IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
+                        <StackLayout HorizontalOptions="CenterAndExpand"
+                                     VerticalOptions="CenterAndExpand">
+                            <Label Text="Нет элементов для отображения"
+                                   Margin="10,25,10,10"
+                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   HorizontalOptions="Fill"
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10,0,10,0" x:DataType="model:CurrencyTypeModel">

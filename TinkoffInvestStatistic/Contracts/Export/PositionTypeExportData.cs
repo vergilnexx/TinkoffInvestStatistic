@@ -29,7 +29,7 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// <summary>
         /// Тип инструмента.
         /// </summary>
-        public PositionType Type { get; }
+        public PositionType Type { get; set; }
 
         /// <summary>
         /// Планируемый процент.

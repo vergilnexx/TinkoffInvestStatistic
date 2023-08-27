@@ -55,12 +55,12 @@ namespace Services
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             var accounts = await dataAccessService.GetAccountDataAsync();
             var result = (accounts ?? Array.Empty<AccountData>()).ToList();
-            foreach (var externalAccount in externalAccounts)
+            foreach (var externalAccountId in externalAccounts.Select(a => a.ID))
             {
-                var account = result.FirstOrDefault(x => x.Number == externalAccount.ID);
-                if(account == null)
+                var account = result.Find(x => x.Number == externalAccountId);
+                if (account == null)
                 {
-                    account = new AccountData(externalAccount.ID);
+                    account = new AccountData(externalAccountId);
                     result.Add(account);
                 }
             }
@@ -97,9 +97,9 @@ namespace Services
                 throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (positionTypes == null)
+            if (positionTypes == null || !positionTypes.Any())
             {
-                throw new ArgumentNullException(nameof(positionTypes), "Полученные данные не могут быть неопределенными.");
+                return Array.Empty<Instrument>();
             }
 
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
@@ -109,14 +109,14 @@ namespace Services
             foreach (var type in positionTypes)
             {
                 var instrumentEntity = instrumentEntities.FirstOrDefault(i => i.Type == type);
-                if(instrumentEntity == null)
+                if (instrumentEntity == null)
                 {
                     instrumentEntity = new PositionTypeData(type);
                 }
 
                 result.Add(new Instrument(type, instrumentEntity?.PlanPercent ?? 0));
             }
-            
+
             return result.ToArray();
         }
 
@@ -135,9 +135,9 @@ namespace Services
                 throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (currencies == null)
+            if (currencies == null || !currencies.Any())
             {
-                throw new ArgumentNullException(nameof(currencies), "Полученные данные не могут быть неопределенными.");
+                return Array.Empty<AccountCurrencyData>();
             }
 
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
@@ -186,9 +186,9 @@ namespace Services
                 throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
             }
 
-            if (positions == null || positions.Count() == 0)
+            if (positions == null || !positions.Any())
             {
-                throw new ArgumentNullException(nameof(positions), "Полученные данные не могут быть неопределенными.");
+                return Enumerable.Empty<Position>();
             }
 
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
@@ -399,7 +399,7 @@ namespace Services
             return accountExportDataList.ToArray();
         }
 
-        private static async Task<PositionTypeExportData[]> GetPositionTypesAsync(IDataStorageAccessService dataAccessService, 
+        private static async Task<PositionTypeExportData[]> GetPositionTypesAsync(IDataStorageAccessService dataAccessService,
             string accountNumber, PositionType[] positionTypeEnums)
         {
             var positionTypes = await dataAccessService.GetPositionTypesAsync(accountNumber, positionTypeEnums);
@@ -412,7 +412,7 @@ namespace Services
                 {
                     PlanPercent = positionType?.PlanPercent ?? 0
                 };
-                positionTypeExportData.Positions = 
+                positionTypeExportData.Positions =
                     await GetPositionsAsync(dataAccessService, accountNumber, positionTypeEnum);
 
                 positionTypeExportDataList.Add(positionTypeExportData);
@@ -421,7 +421,7 @@ namespace Services
             return positionTypeExportDataList.ToArray();
         }
 
-        private static async Task<PositionExportData[]> GetPositionsAsync(IDataStorageAccessService dataAccessService, 
+        private static async Task<PositionExportData[]> GetPositionsAsync(IDataStorageAccessService dataAccessService,
             string accountNumber, PositionType positionTypeEnum)
         {
             var positions = await dataAccessService.GetPositionsAsync(accountNumber, positionTypeEnum);
@@ -431,7 +431,7 @@ namespace Services
             }).ToArray();
         }
 
-        private async Task<CurrencyExportData[]> GetCurrenciesAsync(IDataStorageAccessService dataAccessService, 
+        private async Task<CurrencyExportData[]> GetCurrenciesAsync(IDataStorageAccessService dataAccessService,
             string accountNumber)
         {
             var currencies = await dataAccessService.GetCurrenciesDataAsync(accountNumber);

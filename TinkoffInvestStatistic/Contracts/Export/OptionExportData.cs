@@ -1,9 +1,10 @@
-﻿using TinkoffInvestStatistic.Contracts.Enums;
+﻿using System;
+using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvestStatistic.Contracts.Export
 {
     /// <summary>
-    /// Данные экспорта настроек.
+    /// Данные экспорта настройки.
     /// </summary>
     public class OptionExportData
     {
@@ -19,7 +20,7 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// </summary>
         /// <param name="type">Тип настройки.</param>
         /// <param name="value">Значение.</param>
-        public OptionExportData(OptionType type, string value)
+        public OptionExportData(OptionType type, string value) : this()
         {
             Type = type;
             Value = value;
@@ -28,12 +29,12 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// <summary>
         /// Тип настройки.
         /// </summary>
-        public OptionType Type { get; }
+        public OptionType Type { get; set; }
 
         /// <summary>
         /// Значение.
         /// </summary>
-        public string? Value { get; }
+        public string? Value { get; set; }
 
     }
 }
