@@ -80,12 +80,10 @@ namespace TinkoffInvestStatistic.ViewModels
         /// Тип инструментов.
         /// </summary>
         private PositionType _positionType;
+
         public int PositionType
         {
-            get
-            {
-                return (int)_positionType;
-            }
+            get => (int)_positionType;
             set
             {
                 _positionType = (PositionType)value;
@@ -102,7 +100,8 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 var service = DependencyService.Get<IPositionService>();
                 var data = new List<PositionData>();
-                var group = GroupedPositions.FirstOrDefault() ?? new GroupedPositionsModel(_positionType, new List<PositionModel>());
+                var group = GroupedPositions.FirstOrDefault() ??
+                            new GroupedPositionsModel(_positionType, new List<PositionModel>());
                 foreach (var position in group)
                 {
                     var item = new PositionData(AccountId, position.Figi, position.Type);
@@ -114,7 +113,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
+                SumPercentColor =
+                    DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await service.SavePlanPercents(AccountId, _positionType, data.ToArray());
@@ -138,7 +138,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// Загрузка диаграммы статистики.
         /// </summary>
         /// <returns></returns>
-        public async Task LoadStatisticChartAsync()
+        private async Task LoadStatisticChartAsync()
         {
             var entries = await ChartUtility.Instance.GetChartAsync(this);
             StatisticChart.Entries = entries;
@@ -155,19 +155,20 @@ namespace TinkoffInvestStatistic.ViewModels
             try
             {
                 GroupedPositions.Clear();
-                List<PositionModel> models = await GetPositionDataAsync();
+                var models = await GetPositionDataAsync();
                 var model = new GroupedPositionsModel(_positionType, models);
 
                 GroupedPositions.Add(model);
 
-                Sum = GetViewMoney(() => NumericUtility.ToCurrencyString(models.Sum(p => p.Sum), Currency.Rub));
+                Sum = GetViewMoney(() => models.Sum(p => p.Sum).ToCurrencyString(Currency.Rub));
                 OnPropertyChanged(nameof(Sum));
 
                 var sumPercent = models.Sum(t => t.PlanPercentValue);
                 SumPercent = sumPercent.ToPercentageString();
                 OnPropertyChanged(nameof(SumPercent));
 
-                SumPercentColor = DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
+                SumPercentColor =
+                    DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
                 await LoadStatisticChartAsync();
@@ -204,17 +205,25 @@ namespace TinkoffInvestStatistic.ViewModels
                     DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
                     DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
                     IsBlocked = p.IsBlocked,
-                    SumText = GetViewMoney(() => p.Currency != Currency.Rub ? $" / {NumericUtility.ToCurrencyString(p.Sum, Currency.Rub)}" : string.Empty),
-                    SumInCurrencyText = GetViewMoney(() => NumericUtility.ToCurrencyString(p.SumInCurrency, p.Currency)),
-                    DifferenceSumText = GetViewMoney(() => p.Currency != Currency.Rub ? $" / {NumericUtility.ToCurrencyString(p.DifferenceSum, Currency.Rub)}" : string.Empty),
-                    DifferenceSumInCurrencyText = GetViewMoney(() => NumericUtility.ToCurrencyString(p.ExpectedYield?.Sum ?? 0, p.Currency)),
+                    SumText = GetViewMoney(() =>
+                        p.Currency != Currency.Rub
+                            ? $" / {p.Sum.ToCurrencyString(Currency.Rub)}"
+                            : string.Empty),
+                    SumInCurrencyText =
+                        GetViewMoney(() => p.SumInCurrency.ToCurrencyString(p.Currency)),
+                    DifferenceSumText = GetViewMoney(() =>
+                        p.Currency != Currency.Rub
+                            ? $" / {p.DifferenceSum.ToCurrencyString(Currency.Rub)}"
+                            : string.Empty),
+                    DifferenceSumInCurrencyText = GetViewMoney(() =>
+                        (p.ExpectedYield?.Sum ?? 0).ToCurrencyString(p.Currency)),
                 })
                 .OrderByDescending(p => p.CurrentPercent)
                 .ToList();
             return models;
         }
 
-        private PieChart GetChart()
+        private static PieChart GetChart()
         {
             return new PieChart()
             {
