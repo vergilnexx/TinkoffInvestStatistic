@@ -78,7 +78,7 @@
             </StackLayout>
             <CollectionView Grid.Row="5" Grid.ColumnSpan="2" ItemsSource="{Binding CurrencyTypes}">
                 <CollectionView.EmptyView>
-                    <ContentView>
+                    <ContentView IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
                         <StackLayout HorizontalOptions="CenterAndExpand"
                                      VerticalOptions="CenterAndExpand">
                             <Label Text="Нет элементов для отображения"
