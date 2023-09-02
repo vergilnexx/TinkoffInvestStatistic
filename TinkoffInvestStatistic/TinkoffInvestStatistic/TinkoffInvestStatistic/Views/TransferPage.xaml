@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit"
+             x:Class="TinkoffInvestStatistic.Views.TransferPage"
+             Title="{Binding Title}">
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
+                    Command="{Binding LoadCommand}" 
+                    IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+        <Grid RowDefinitions="*, Auto" 
+                ColumnDefinitions="*"
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <ScrollView>
+                <StackLayout BindableLayout.ItemsSource="{Binding Brokers}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <xct:Expander IsExpanded="True">
+                                <xct:Expander.Header>
+                                    <Label Text="{Binding BrokerName}"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                                </xct:Expander.Header>
+                                <Grid Margin="20"
+                                        RowDefinitions="Auto, *" 
+                                        ColumnDefinitions="100, *, 10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+                                    <Label Grid.Row="0"
+                                        Grid.Column="0"
+                                        Text="Зачислено"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                                    <Label Grid.Row="0"
+                                        Grid.Column="1"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Sum}"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                                    <Label Grid.Row="0"
+                                        Grid.Column="2"
+                                        Text="₽"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+
+                                    <Label Grid.Row="1"
+                                        Grid.Column="0"
+                                        Padding="0, 10, 0, 0"
+                                        Text="Зачислить"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                                    <Entry Keyboard="Numeric" 
+                                        HorizontalOptions="End" 
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Amount}" 
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        WidthRequest="150">
+                                    </Entry>
+                                    <Label Grid.Row="1"
+                                        Grid.Column="2"
+                                        Padding="0, 12, 0, 0"
+                                        Text="₽"
+                                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                                </Grid>
+                            </xct:Expander>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <Button Text="Сохранить"
+                    Grid.Row="1"
+                    WidthRequest="250" 
+                    HorizontalOptions="Center" 
+                    HeightRequest="50" 
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}" 
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}" 
+                    BorderWidth="1"
+                    CornerRadius="30"
+                    Command="{Binding SaveCommand}"/>
+        </Grid>
+    </RefreshView>
+</ContentPage>

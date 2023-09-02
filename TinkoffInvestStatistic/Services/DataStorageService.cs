@@ -9,7 +9,6 @@ using TinkoffInvestStatistic.Contracts;
 using Xamarin.Forms;
 using System.Threading;
 using TinkoffInvestStatistic.Contracts.Export;
-using System.Collections.ObjectModel;
 
 namespace Services
 {
@@ -397,6 +396,28 @@ namespace Services
             }
 
             return accountExportDataList.ToArray();
+        }
+
+        /// <summary>
+        /// Возвращает список зачислений по брокерам.
+        /// </summary>
+        /// <returns>Список зачислений по брокерам.</returns>
+        internal async Task<IReadOnlyCollection<TransferBroker>> GetTransfersAsync(CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetTransfersAsync(cancellation);
+            return data.Select(d => new TransferBroker(d.BrokerName) { Sum = d.Sum }).ToArray();
+        }
+
+        /// <summary>
+        /// Сохраняет зачисления по брокеру.
+        /// </summary>
+        internal async Task SaveTransfersAsync(string brokerName, decimal amount, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetTransferAsync(brokerName, cancellation);
+            var sum = data.Sum + amount;
+            await dataAccessService.SaveTransferAsync(brokerName, sum, cancellation);
         }
 
         private static async Task<PositionTypeExportData[]> GetPositionTypesAsync(IDataStorageAccessService dataAccessService,

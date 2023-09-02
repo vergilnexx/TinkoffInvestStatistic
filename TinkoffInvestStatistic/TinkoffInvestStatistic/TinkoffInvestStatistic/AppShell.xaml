@@ -42,6 +42,10 @@
         <ShellContent
             StyleClass="MenuItemLayoutStyle" Route="AccountsPage" ContentTemplate="{DataTemplate local:AccountsPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Зачисления">
+        <ShellContent
+            StyleClass="MenuItemLayoutStyle" Route="TransferPage" ContentTemplate="{DataTemplate local:TransferPage}" />
+    </FlyoutItem>
     <FlyoutItem Title="Настройки">
         <ShellContent
             StyleClass="MenuItemLayoutStyle" Route="SettingPage" ContentTemplate="{DataTemplate local:SettingPage}" />
