@@ -30,6 +30,26 @@ namespace Services
             _database.CreateTableAsync<SectorData>().Wait();
             _database.CreateTableAsync<PlannedPositionData>().Wait();
             _database.CreateTableAsync<OptionData>().Wait();
+            _database.CreateTableAsync<TransferBrokerData>().Wait();
+
+            InitDefaultDataAsync().Wait();
+        }
+
+        private async Task InitDefaultDataAsync()
+        {
+            await InitTransferBrokersDefaultDataAsync();
+        }
+
+        private async Task InitTransferBrokersDefaultDataAsync()
+        {
+            foreach(var brokerName in TransferService.BrokersName)
+            {
+                var row = await _database.FindAsync<TransferBrokerData>(d => d.BrokerName == brokerName);
+                if (row == null)
+                {
+                    await _database.InsertAsync(new TransferBrokerData() { BrokerName = brokerName, Sum = 0m });
+                }
+            }
         }
 
         ///<inheritdoc/>
@@ -392,6 +412,73 @@ namespace Services
                                         .FirstOrDefaultAsync(o => o.Type == optionType)
                                         .ConfigureAwait(false);
                 return option?.Value;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<TransferBrokerData>> GetTransfersAsync(CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                    .Table<TransferBrokerData>()
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+                return data ?? Array.Empty<TransferBrokerData>();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task<TransferBrokerData> GetTransferAsync(string brokerName, CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                    .Table<TransferBrokerData>()
+                                    .FirstOrDefaultAsync(tbd => tbd.BrokerName == brokerName)
+                                    .ConfigureAwait(false);
+                return data ?? throw new ApplicationException($"Не удалось найти данные по брокеру '{brokerName}'");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task SaveTransferAsync(string brokerName, decimal sum, CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                        .Table<TransferBrokerData>()
+                                        .FirstOrDefaultAsync(tbd => tbd.BrokerName == brokerName)
+                                        .ConfigureAwait(false);
+                if (data != null)
+                {
+                    data.Sum = sum;
+                    await _database.UpdateAsync(data);
+                }
+                else
+                {
+                    data = new TransferBrokerData
+                    {
+                        BrokerName = brokerName,
+                        Sum = sum
+                    };
+                    await _database.InsertAsync(data);
+                }
             }
             catch (Exception ex)
             {

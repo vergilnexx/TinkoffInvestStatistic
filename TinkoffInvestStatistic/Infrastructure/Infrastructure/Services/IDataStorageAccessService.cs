@@ -132,5 +132,27 @@ namespace Infrastructure.Services
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Список настроек.</returns>
         Task<string?> GetOptionAsync(OptionType optionType, CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает список зачислений по брокерам.
+        /// </summary>
+        /// <returns>Список зачислений по брокерам.</returns>
+        Task<IReadOnlyCollection<TransferBrokerData>> GetTransfersAsync(CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает данные зачислений по брокеру.
+        /// </summary>
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Зачисления.</returns>
+        Task<TransferBrokerData> GetTransferAsync(string brokerName, CancellationToken cancellation);
+
+        /// <summary>
+        /// Сохраняет данные зачислений по брокеру.
+        /// </summary>
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="sum">Сумма.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task SaveTransferAsync(string brokerName, decimal sum, CancellationToken cancellation);
     }
 }
