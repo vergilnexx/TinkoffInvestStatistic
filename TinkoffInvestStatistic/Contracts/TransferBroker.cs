@@ -1,4 +1,7 @@
-﻿namespace TinkoffInvestStatistic.Contracts
+﻿using System;
+using System.Collections.Generic;
+
+namespace TinkoffInvestStatistic.Contracts
 {
     /// <summary>
     /// Данные зачислений по брокерам.
@@ -20,8 +23,8 @@
         public string BrokerName { get; }
 
         /// <summary>
-        /// Сумма зачислений.
+        /// Данные счета.
         /// </summary>
-        public decimal Sum { get; set; }
+        public IReadOnlyCollection<TransferBrokerAccount> AccountData { get; set; } = Array.Empty<TransferBrokerAccount>();
     }
 }

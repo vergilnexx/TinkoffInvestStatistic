@@ -1,4 +1,7 @@
-﻿namespace TinkoffInvestStatistic.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace TinkoffInvestStatistic.Models
 {
     /// <summary>
     /// Модель данных зачислений по брокеру.
@@ -9,10 +12,9 @@
         /// Конструктор.
         /// </summary>
         /// <param name="brokerName">Наименование брокера.</param>
-        public TransferBrokerModel(string brokerName, decimal sum)
+        public TransferBrokerModel(string brokerName)
         {
             BrokerName = brokerName ?? string.Empty;
-            Sum = sum;
         }
 
         /// <summary>
@@ -21,13 +23,13 @@
         public string BrokerName { get; }
 
         /// <summary>
-        /// Сумма зачислений.
+        /// Текстовое представление суммы.
         /// </summary>
-        public decimal Sum { get; set; }
+        public string SumText { get; set; }
 
         /// <summary>
-        /// Зачислить.
+        /// Данные по счетам.
         /// </summary>
-        public decimal Amount { get; set; }
+        public IReadOnlyCollection<TransferBrokerAccountModel> AccountData { get; set; } = Array.Empty<TransferBrokerAccountModel>();
     }
 }

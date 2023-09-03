@@ -20,8 +20,16 @@ namespace Infrastructure.Services
         /// Сохранение данных 
         /// </summary>
         /// <param name="brokerName">Наименование брокера.</param>
-        /// <param name="amount">Сумма.</param>
+        /// <param name="amounts">Данные зачислений по счетам.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        public Task SaveAsync(string brokerName, decimal amount, CancellationToken cancellation);
+        public Task SaveAsync(string brokerName, IReadOnlyCollection<TransferBrokerAccount> amounts, CancellationToken cancellation);
+
+        /// <summary>
+        /// Добавление счета брокеру.
+        /// </summary>
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="name">Наименование счета.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task AddTransferBrokerAccountAsync(string brokerName, string name, CancellationToken cancellation);
     }
 }

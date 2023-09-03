@@ -24,6 +24,7 @@ namespace TinkoffInvestStatistic.Utility
             switch (currency)
             {
                 case Currency.Rub:
+                    culture.NumberFormat.CurrencySymbol = "₽";
                     break;
                 case Currency.Usd:
                     culture.NumberFormat.CurrencySymbol = "$";

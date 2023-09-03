@@ -151,8 +151,31 @@ namespace Infrastructure.Services
         /// Сохраняет данные зачислений по брокеру.
         /// </summary>
         /// <param name="brokerName">Наименование брокера.</param>
-        /// <param name="sum">Сумма.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        Task SaveTransferAsync(string brokerName, decimal sum, CancellationToken cancellation);
+        Task SaveTransferAsync(string brokerName, CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает данные зачислений по счетам брокера.
+        /// </summary>
+        /// <param name="brokerId">Идентификатор брокера.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Данные зачислений по счетам брокера.</returns>
+        Task<IReadOnlyCollection<TransferBrokerAccountData>> GetTransfersBrokerAccountsAsync(int brokerId, CancellationToken cancellation);
+
+        /// <summary>
+        /// Добавление счета брокеру.
+        /// </summary>
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="name">Наименование счета.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task AddTransferBrokerAccountAsync(string brokerName, string name, CancellationToken cancellation);
+
+        /// <summary>
+        /// Сохраняет данные зачислений по счету брокера.
+        /// </summary>
+        /// <param name="brokerAccountId"></param>
+        /// <param name="sum">Сумма зачислений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task SaveTransferBrokerAccountAsync(int brokerAccountId, decimal sum, CancellationToken cancellation);
     }
 }
