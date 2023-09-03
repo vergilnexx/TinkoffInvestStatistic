@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Services;
-using Plugin.Fingerprint;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -7,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
@@ -48,7 +48,8 @@ namespace TinkoffInvestStatistic.ViewModels
             Title = "Зачисления";
             Brokers.Clear();
 
-            var isAuthenticated = await AuthenticateAsync();
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
             if (!isAuthenticated)
             {
                 IsRefreshing = false;
@@ -57,24 +58,6 @@ namespace TinkoffInvestStatistic.ViewModels
             }
 
             IsRefreshing = true;
-        }
-
-        private async Task<bool> AuthenticateAsync()
-        {
-            var availability = await CrossFingerprint.Current.IsAvailableAsync();
-            if (!availability)
-            {
-                return false;
-            }
-
-            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
-                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Увидеть зачисления", string.Empty)));
-            if (!authResult.Authenticated)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private async Task SaveAsync()

@@ -1,5 +1,5 @@
-﻿using Plugin.Fingerprint;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
@@ -23,24 +23,13 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task AuthenticateAsync()
         {
             IsRefreshing = true;
-            var availability = await CrossFingerprint.Current.IsAvailableAsync();
-            if (!availability)
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Вход");
+            if (isAuthenticated)
             {
-                IsRefreshing = false;
-                return;
-            }
-
-            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
-                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Вход", string.Empty)));
-            if(authResult.Authenticated)
-            {
-                // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
                 await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
             }
-            else
-            {
-                IsRefreshing = false;
-            }
+            IsRefreshing = false;
         }
     }
 }
