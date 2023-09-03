@@ -19,10 +19,5 @@ namespace Domain
         /// Наименование брокера.
         /// </summary>
         public string BrokerName { get; set; }
-
-        /// <summary>
-        /// Сумма зачислений.
-        /// </summary>
-        public decimal Sum { get; set; }
     }
 }

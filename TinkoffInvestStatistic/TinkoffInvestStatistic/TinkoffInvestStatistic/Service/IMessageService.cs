@@ -12,5 +12,11 @@ namespace TinkoffInvestStatistic.Service
         /// </summary>
         /// <param name="message">Сообщение.</param>
         Task ShowAsync(string message);
+
+        /// <summary>
+        /// Показывает диалог на экране с возможностью ввода текста.
+        /// </summary>
+        /// <param name="message">Сообщение.</param>
+        Task<string> ShowPromptAsync(string message);
     }
 }

@@ -404,20 +404,55 @@ namespace Services
         /// <returns>Список зачислений по брокерам.</returns>
         internal async Task<IReadOnlyCollection<TransferBroker>> GetTransfersAsync(CancellationToken cancellation)
         {
+            var result = new List<TransferBroker>();
+
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
-            var data = await dataAccessService.GetTransfersAsync(cancellation);
-            return data.Select(d => new TransferBroker(d.BrokerName) { Sum = d.Sum }).ToArray();
+            var brokers = await dataAccessService.GetTransfersAsync(cancellation);
+            foreach (var broker in brokers) 
+            {
+                var dto = new TransferBroker(broker.BrokerName);
+                var accountDatas = await dataAccessService.GetTransfersBrokerAccountsAsync(broker.Id, cancellation);
+                dto.AccountData = accountDatas.Select(ad => new TransferBrokerAccount(ad.Name, ad.Sum)).ToArray();
+                result.Add(dto);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Добавление счета брокеру.
+        /// </summary>
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="name">Наименование счета.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        public async Task AddTransferBrokerAccountAsync(string brokerName, string name, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.AddTransferBrokerAccountAsync(brokerName, name, cancellation);
         }
 
         /// <summary>
         /// Сохраняет зачисления по брокеру.
         /// </summary>
-        internal async Task SaveTransfersAsync(string brokerName, decimal amount, CancellationToken cancellation)
+        /// <param name="brokerName">Наименование брокера.</param>
+        /// <param name="amounts">Зачисления по счетам.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        internal async Task SaveTransfersAsync(string brokerName, IReadOnlyCollection<TransferBrokerAccount> amounts, CancellationToken cancellation)
         {
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
-            var data = await dataAccessService.GetTransferAsync(brokerName, cancellation);
-            var sum = data.Sum + amount;
-            await dataAccessService.SaveTransferAsync(brokerName, sum, cancellation);
+            var broker = await dataAccessService.GetTransferAsync(brokerName, cancellation);
+            if (broker == null)
+            {
+                await dataAccessService.SaveTransferAsync(brokerName, cancellation);
+                broker = await dataAccessService.GetTransferAsync(brokerName, cancellation);
+            }
+
+            var accountDatas = await dataAccessService.GetTransfersBrokerAccountsAsync(broker.Id, cancellation);
+            foreach(var account in accountDatas)
+            {
+                var amount = amounts.FirstOrDefault(a => a.Name == account.Name);
+                var sum = account.Sum + (amount?.Sum ?? 0m);
+                await dataAccessService.SaveTransferBrokerAccountAsync(account.Id, sum, cancellation);
+            }
         }
 
         private static async Task<PositionTypeExportData[]> GetPositionTypesAsync(IDataStorageAccessService dataAccessService,

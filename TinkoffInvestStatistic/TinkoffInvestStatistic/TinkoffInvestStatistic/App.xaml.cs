@@ -28,6 +28,7 @@ namespace TinkoffInvestStatistic
         {
             DependencyService.Register<IMessageService, MessageService>();
             DependencyService.RegisterSingleton<IHideShowMoneyService>(new HideShowMoneyService());
+            DependencyService.RegisterSingleton<IAuthenticateService>(new AuthenticateService());
 
             DependencyService.RegisterSingleton(new ChartUtility());
             DependencyService.RegisterSingleton(new ChartColorsUtility());

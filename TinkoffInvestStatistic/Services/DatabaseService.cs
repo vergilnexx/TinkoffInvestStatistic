@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TinkoffInvestStatistic.Contracts;
 using System.Threading;
 
 namespace Services
@@ -31,6 +30,7 @@ namespace Services
             _database.CreateTableAsync<PlannedPositionData>().Wait();
             _database.CreateTableAsync<OptionData>().Wait();
             _database.CreateTableAsync<TransferBrokerData>().Wait();
+            _database.CreateTableAsync<TransferBrokerAccountData>().Wait();
 
             InitDefaultDataAsync().Wait();
         }
@@ -47,7 +47,7 @@ namespace Services
                 var row = await _database.FindAsync<TransferBrokerData>(d => d.BrokerName == brokerName);
                 if (row == null)
                 {
-                    await _database.InsertAsync(new TransferBrokerData() { BrokerName = brokerName, Sum = 0m });
+                    await _database.InsertAsync(new TransferBrokerData() { BrokerName = brokerName });
                 }
             }
         }
@@ -457,7 +457,25 @@ namespace Services
         }
 
         ///<inheritdoc/>
-        public async Task SaveTransferAsync(string brokerName, decimal sum, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<TransferBrokerAccountData>> GetTransfersBrokerAccountsAsync(int brokerId, CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                    .Table<TransferBrokerAccountData>()
+                                    .Where(tbd => tbd.BrokerId == brokerId)
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+                return data ?? throw new ApplicationException($"Не удалось найти данные зачислений по счетам брокера №'{brokerId}'");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+        ///<inheritdoc/>
+        public async Task SaveTransferAsync(string brokerName, CancellationToken cancellation)
         {
             try
             {
@@ -465,20 +483,60 @@ namespace Services
                                         .Table<TransferBrokerData>()
                                         .FirstOrDefaultAsync(tbd => tbd.BrokerName == brokerName)
                                         .ConfigureAwait(false);
-                if (data != null)
-                {
-                    data.Sum = sum;
-                    await _database.UpdateAsync(data);
-                }
-                else
+                if (data == null)
                 {
                     data = new TransferBrokerData
                     {
                         BrokerName = brokerName,
-                        Sum = sum
                     };
                     await _database.InsertAsync(data);
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task AddTransferBrokerAccountAsync(string brokerName, string name, CancellationToken cancellation)
+        {
+            try
+            {
+                var broker = await _database
+                                        .Table<TransferBrokerData>()
+                                        .FirstOrDefaultAsync(tbd => tbd.BrokerName == brokerName)
+                                        .ConfigureAwait(false)
+                                        ?? throw new ApplicationException($"Не удалось найти брокера по названию: '{brokerName}'");
+                var data = new TransferBrokerAccountData
+                {
+                    BrokerId = broker.Id,
+                    Name = name,
+                    Sum = 0m
+                };
+                await _database.InsertAsync(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        ///<inheritdoc/>
+        public async Task SaveTransferBrokerAccountAsync(int brokerAccountId, decimal sum, CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                        .Table<TransferBrokerAccountData>()
+                                        .FirstOrDefaultAsync(tbad => tbad.Id == brokerAccountId)
+                                        .ConfigureAwait(false)
+                                        ?? throw new ApplicationException("Не удалось найти счет №" + brokerAccountId);
+
+                data.Sum = sum;
+                await _database.UpdateAsync(data);
             }
             catch (Exception ex)
             {

@@ -26,9 +26,15 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Task SaveAsync(string brokerName, decimal amount, CancellationToken cancellation)
+        public Task SaveAsync(string brokerName, IReadOnlyCollection<TransferBrokerAccount> amounts, CancellationToken cancellation)
         {
-            return DataStorageService.Instance.SaveTransfersAsync(brokerName, amount, cancellation);
+            return DataStorageService.Instance.SaveTransfersAsync(brokerName, amounts, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public Task AddTransferBrokerAccountAsync(string brokerName, string name, CancellationToken cancellation)
+        {
+            return DataStorageService.Instance.AddTransferBrokerAccountAsync(brokerName, name, cancellation);
         }
     }
 }

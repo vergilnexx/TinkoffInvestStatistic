@@ -1,7 +1,4 @@
-﻿using Infrastructure.Services;
-using Plugin.Fingerprint;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Service
@@ -40,19 +37,9 @@ namespace TinkoffInvestStatistic.Service
         /// <inheritdoc/>
         public async Task<bool> IsAvailableShowAsync()
         {
-            var availability = await CrossFingerprint.Current.IsAvailableAsync();
-            if (!availability)
-            {
-                return false;
-            }
-
-            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
-                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Отображение денег", string.Empty)));
-            if (authResult.Authenticated)
-            {
-                return true;
-            }
-            return false;
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Отображение денег");
+            return isAuthenticated;
         }
     }
 }

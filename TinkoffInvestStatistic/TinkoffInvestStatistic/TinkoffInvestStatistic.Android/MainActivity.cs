@@ -3,9 +3,6 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 using Plugin.Fingerprint;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.IO;
 
 namespace TinkoffInvestStatistic.Droid
 {

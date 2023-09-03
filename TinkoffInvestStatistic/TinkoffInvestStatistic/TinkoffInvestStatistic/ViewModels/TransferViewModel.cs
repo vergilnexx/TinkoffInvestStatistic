@@ -1,12 +1,15 @@
 ﻿using Infrastructure.Services;
-using Plugin.Fingerprint;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Models;
+using TinkoffInvestStatistic.Service;
+using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
@@ -26,6 +29,7 @@ namespace TinkoffInvestStatistic.ViewModels
             Brokers = new ObservableCollection<TransferBrokerModel>();
             LoadCommand = new Command(async () => await LoadAsync());
             SaveCommand = new Command(async() => await SaveAsync());
+            AddBrokerAccountCommand = new Command<TransferBrokerModel>(AddBrokerAccountAsync);
         }
 
         /// <summary>
@@ -36,19 +40,25 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Команда на сохранение.
         /// </summary>
-        public ICommand SaveCommand { get; private set; }
+        public ICommand SaveCommand { get; }
 
         /// <summary>
         /// Команда на загрузку.
         /// </summary>
-        public ICommand LoadCommand { get; private set; }
+        public ICommand LoadCommand { get; }
+
+        /// <summary>
+        /// Команда на добавление брокерского счета.
+        /// </summary>
+        public Command<TransferBrokerModel> AddBrokerAccountCommand { get; }
 
         public async Task OnAppearing()
         {
             Title = "Зачисления";
             Brokers.Clear();
 
-            var isAuthenticated = await AuthenticateAsync();
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
             if (!isAuthenticated)
             {
                 IsRefreshing = false;
@@ -57,24 +67,6 @@ namespace TinkoffInvestStatistic.ViewModels
             }
 
             IsRefreshing = true;
-        }
-
-        private async Task<bool> AuthenticateAsync()
-        {
-            var availability = await CrossFingerprint.Current.IsAvailableAsync();
-            if (!availability)
-            {
-                return false;
-            }
-
-            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
-                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Увидеть зачисления", string.Empty)));
-            if (!authResult.Authenticated)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private async Task SaveAsync()
@@ -87,7 +79,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 var cancellation = cancelTokenSource.Token;
                 foreach (var broker in Brokers)
                 {
-                    await service.SaveAsync(broker.BrokerName, broker.Amount, cancellation);
+                    var amounts = broker.AccountData.Select(ad => new TransferBrokerAccount(ad.Name, ad.Amount)).ToArray();
+                    await service.SaveAsync(broker.BrokerName, amounts, cancellation);
                 }
             }
             catch (Exception ex)
@@ -97,7 +90,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
 
             // Перезагружаем данные.
-            await LoadAsync();
+            IsRefreshing = true;
         }
 
         private async Task LoadAsync()
@@ -114,7 +107,11 @@ namespace TinkoffInvestStatistic.ViewModels
                 var brokers = await service.GetListAsync(cancellation);
                 foreach (var broker in brokers)
                 {
-                    Brokers.Add(new TransferBrokerModel(broker.BrokerName, broker.Sum));
+                    var data = new TransferBrokerModel(broker.BrokerName);
+                    var sum = broker.AccountData.Sum(ad => ad.Sum);
+                    data.SumText = NumericUtility.ToCurrencyString(sum, Contracts.Enums.Currency.Rub);
+                    data.AccountData = broker.AccountData.Select(ad => new TransferBrokerAccountModel(ad.Name, ad.Sum)).ToArray();
+                    Brokers.Add(data);
                 }
             }
             catch (Exception ex)
@@ -126,6 +123,31 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 IsRefreshing = false;
             }
+        }
+
+        private async void AddBrokerAccountAsync(TransferBrokerModel data)
+        {
+            var name = await _messageService.ShowPromptAsync("Добавление счета");
+            if (name == null)
+            {
+                return;
+            }
+
+            if (name.Length > 200)
+            {
+                await _messageService.ShowAsync("Название счета не должно быть больше 200 символов.");
+                return;
+            }
+
+            string brokerName = data.BrokerName;
+
+            var service = DependencyService.Get<ITransferService>();
+            using var cancelTokenSource = new CancellationTokenSource();
+            var cancellation = cancelTokenSource.Token;
+            await service.AddTransferBrokerAccountAsync(brokerName, name, cancellation);
+
+            // Перезагружаем данные.
+            IsRefreshing = true;
         }
     }
 }
