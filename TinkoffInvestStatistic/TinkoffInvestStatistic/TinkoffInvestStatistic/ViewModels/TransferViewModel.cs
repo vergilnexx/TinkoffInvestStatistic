@@ -127,7 +127,9 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async void AddBrokerAccountAsync(TransferBrokerModel data)
         {
-            var name = await _messageService.ShowPromptAsync("Добавление счета");
+            string brokerName = data.BrokerName;
+
+            var name = await _messageService.ShowPromptAsync("Добавление счета", "Брокер: " + brokerName);
             if (name == null)
             {
                 return;
@@ -139,7 +141,6 @@ namespace TinkoffInvestStatistic.ViewModels
                 return;
             }
 
-            string brokerName = data.BrokerName;
 
             var service = DependencyService.Get<ITransferService>();
             using var cancelTokenSource = new CancellationTokenSource();
