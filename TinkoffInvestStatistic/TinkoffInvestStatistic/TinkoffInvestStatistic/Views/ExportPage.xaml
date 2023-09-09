@@ -8,7 +8,7 @@
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     x:DataType="local:ExportViewModel"
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="20, 20, *, Auto" 
+        <Grid RowDefinitions="20, 20, 20, *, Auto" 
                 ColumnDefinitions="Auto, *"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
@@ -34,8 +34,19 @@
                     Grid.Row="1"
                     Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
 
+            <Label Text="Экспорт зачислений:"
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                    VerticalOptions="Center" />
+            <CheckBox 
+                    IsChecked="{Binding IsTransfersExport}"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
+
             <Button Text="Экспортировать"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.ColumnSpan="2"
                     WidthRequest="250" 
                     HorizontalOptions="Center" 

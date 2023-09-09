@@ -7,6 +7,7 @@ using System.Windows.Input;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.ViewModels.Base;
+using TinkoffInvestStatistic.Views;
 using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.ViewModels
@@ -25,6 +26,11 @@ namespace TinkoffInvestStatistic.ViewModels
         /// Признак, что надо экспортировать данные.
         /// </summary>
         public bool IsDataExport { get; set; }
+
+        /// <summary>
+        /// Признак, что надо экспортировать зачисления.
+        /// </summary>
+        public bool IsTransfersExport { get; set; }
 
         /// <summary>
         /// Команда на экспорт.
@@ -55,7 +61,7 @@ namespace TinkoffInvestStatistic.ViewModels
 
             try
             {
-                var exportCategories = GetExportCategories();
+                var exportCategories = await GetExportCategoriesAsync();
                 if (exportCategories == ExportCategories.None)
                 {
                     await _messageService.ShowAsync("Необходимо выбрать хотя бы один источник для экспорта.");
@@ -80,7 +86,7 @@ namespace TinkoffInvestStatistic.ViewModels
             }
         }
 
-        private ExportCategories GetExportCategories()
+        private async Task<ExportCategories> GetExportCategoriesAsync()
         {
             var result = ExportCategories.None;
             if (IsSettingsExport)
@@ -91,6 +97,18 @@ namespace TinkoffInvestStatistic.ViewModels
             if (IsDataExport)
             {
                 result |= ExportCategories.Data;
+            }
+
+            if (IsTransfersExport)
+            {
+                var service = DependencyService.Get<IAuthenticateService>();
+                var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
+                if (!isAuthenticated)
+                {
+                    throw new ApplicationException("Нет прав на экспорт зачислений.");
+                }
+
+                result |= ExportCategories.Transfers;
             }
 
             return result;
