@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Services;
+using Microcharts;
+using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TinkoffInvest.Contracts.Accounts;
 using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Service;
@@ -30,7 +33,13 @@ namespace TinkoffInvestStatistic.ViewModels
             LoadCommand = new Command(async () => await LoadAsync());
             SaveCommand = new Command(async() => await SaveAsync());
             AddBrokerAccountCommand = new Command<TransferBrokerModel>(AddBrokerAccountAsync);
+            StatisticChart = GetChart();
         }
+
+        /// <summary>
+        /// Диаграммы статистики.
+        /// </summary>
+        public Chart StatisticChart { get; private set; }
 
         /// <summary>
         /// Данные о зачислениях по брокерам.
@@ -52,10 +61,14 @@ namespace TinkoffInvestStatistic.ViewModels
         /// </summary>
         public Command<TransferBrokerModel> AddBrokerAccountCommand { get; }
 
+        /// <summary>
+        /// Сумма по всем счетам и брокерам.
+        /// </summary>
+        public string Sum { get; private set; }
+
         public async Task OnAppearing()
         {
             Title = "Зачисления";
-            Brokers.Clear();
 
             var service = DependencyService.Get<IAuthenticateService>();
             var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
@@ -67,6 +80,33 @@ namespace TinkoffInvestStatistic.ViewModels
             }
 
             IsRefreshing = true;
+        }
+
+        public void OnDisappearing()
+        {
+            Brokers.Clear();
+            StatisticChart.Entries = Array.Empty<ChartEntry>();
+        }
+
+        /// <summary>
+        /// Загрузка диаграммы статустики
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadStatisticChartAsync()
+        {
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
+            OnPropertyChanged(nameof(StatisticChart));
+        }
+
+        private static PieChart GetChart()
+        {
+            return new PieChart()
+            {
+                HoleRadius = 0.6f,
+                LabelTextSize = 30f,
+                BackgroundColor = SKColor.Parse("#2B373D"),
+                LabelColor = new SKColor(255, 255, 255),
+            };
         }
 
         private async Task SaveAsync()
@@ -108,11 +148,16 @@ namespace TinkoffInvestStatistic.ViewModels
                 foreach (var broker in brokers)
                 {
                     var data = new TransferBrokerModel(broker.BrokerName);
-                    var sum = broker.AccountData.Sum(ad => ad.Sum);
-                    data.SumText = NumericUtility.ToCurrencyString(sum, Contracts.Enums.Currency.Rub);
+                    data.Sum = broker.AccountData.Sum(ad => ad.Sum);
+                    data.SumText = NumericUtility.ToCurrencyString(data.Sum, Contracts.Enums.Currency.Rub);
                     data.AccountData = broker.AccountData.Select(ad => new TransferBrokerAccountModel(ad.Name, ad.Sum)).ToArray();
                     Brokers.Add(data);
                 }
+
+                Sum = NumericUtility.ToCurrencyString(Brokers.Sum(b => b.Sum), Contracts.Enums.Currency.Rub);
+                OnPropertyChanged(nameof(Sum));
+
+                await LoadStatisticChartAsync();
             }
             catch (Exception ex)
             {
@@ -127,7 +172,9 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async void AddBrokerAccountAsync(TransferBrokerModel data)
         {
-            var name = await _messageService.ShowPromptAsync("Добавление счета");
+            string brokerName = data.BrokerName;
+
+            var name = await _messageService.ShowPromptAsync("Добавление счета", "Брокер: " + brokerName);
             if (name == null)
             {
                 return;
@@ -139,7 +186,6 @@ namespace TinkoffInvestStatistic.ViewModels
                 return;
             }
 
-            string brokerName = data.BrokerName;
 
             var service = DependencyService.Get<ITransferService>();
             using var cancelTokenSource = new CancellationTokenSource();

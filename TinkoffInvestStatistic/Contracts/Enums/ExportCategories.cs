@@ -22,5 +22,10 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         /// Данные.
         /// </summary>
         Data = 2,
+
+        /// <summary>
+        /// Зачисления.
+        /// </summary>
+        Transfers = 3,
     }
 }

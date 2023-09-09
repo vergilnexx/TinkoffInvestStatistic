@@ -4,15 +4,24 @@
              xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"  
              x:Class="TinkoffInvestStatistic.Views.TransferPage"
+             xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
              Title="{Binding Title}">
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     Command="{Binding LoadCommand}" 
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="*, Auto" ColumnDefinitions="*"
+        <Grid RowDefinitions="Auto, *, Auto, Auto" ColumnDefinitions="*"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
-            <ScrollView>
+            <forms:ChartView Chart="{Binding StatisticChart}" 
+                             HeightRequest="150"
+                             Grid.Row="0"
+                             BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                             IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
+            </forms:ChartView>
+
+            <ScrollView Grid.Row="1">
                 <StackLayout BindableLayout.ItemsSource="{Binding Brokers}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -43,7 +52,7 @@
                                 <StackLayout Margin="20, 0, 0, 0" BindableLayout.ItemsSource="{Binding AccountData}">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid RowDefinitions="*" ColumnDefinitions="100, 100, 15, *, 15">
+                                            <Grid RowDefinitions="*" ColumnDefinitions="*, Auto, 15, 100, 15">
                                                 <Label Grid.Column="0"
                                                         Padding="0, 12, 0, 0"
                                                         Text="{Binding Name}"
@@ -80,8 +89,31 @@
                 </StackLayout>
             </ScrollView>
 
+            <StackLayout Padding="10" 
+                         Grid.Row="2"
+                         IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
+                <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
+                <Grid ColumnDefinitions="80, *">
+                    <Label Text="Всего:" 
+                           LineBreakMode="NoWrap"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                           FontSize="Body"
+                           FontAttributes="Bold"/>
+                    <Label Text="{Binding Sum}" 
+                           TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                           Grid.Column="1"
+                           LineBreakMode="NoWrap" 
+                           VerticalOptions="Center"
+                           HorizontalOptions="End" 
+                           HorizontalTextAlignment="End"
+                           FontSize="Body"
+                           FontAttributes="Bold"/>
+                </Grid>
+            </StackLayout>
+            
             <Button Text="Сохранить"
-                    Grid.Row="1"
+                    Grid.Row="3"
                     WidthRequest="250" 
                     HorizontalOptions="Center" 
                     HeightRequest="50" 

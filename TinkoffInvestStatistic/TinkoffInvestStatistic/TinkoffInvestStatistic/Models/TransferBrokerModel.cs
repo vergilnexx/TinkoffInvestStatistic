@@ -23,6 +23,11 @@ namespace TinkoffInvestStatistic.Models
         public string BrokerName { get; }
 
         /// <summary>
+        /// Сумма.
+        /// </summary>
+        public decimal Sum { get; set; }
+        
+        /// <summary>
         /// Текстовое представление суммы.
         /// </summary>
         public string SumText { get; set; }

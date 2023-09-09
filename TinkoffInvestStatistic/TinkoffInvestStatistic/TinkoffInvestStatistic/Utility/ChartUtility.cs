@@ -29,6 +29,11 @@ namespace TinkoffInvestStatistic.Utility
             return ChartColorsUtility.Instance.GetColor();
         }
 
+        public async Task<ChartEntry[]> GetChartAsync(TransferViewModel vm)
+        {
+            return await GetEntriesAsync(vm);
+        }
+
         public async Task<ChartEntry[]> GetChartAsync(AccountsViewModel vm)
         {
             return await GetEntriesAsync(vm);
@@ -49,6 +54,11 @@ namespace TinkoffInvestStatistic.Utility
             return await GetEntriesAsync(vm);
         }
 
+        private Task<ChartEntry[]> GetEntriesAsync(TransferViewModel vm)
+        {
+            return GetTransferEntriesAsync(vm);
+        }
+
         private Task<ChartEntry[]> GetEntriesAsync(AccountsViewModel vm)
         {
             return GetAccountEntriesAsync(vm);
@@ -67,6 +77,14 @@ namespace TinkoffInvestStatistic.Utility
         private Task<ChartEntry[]> GetEntriesAsync(PortfolioViewModel vm)
         {
             return GetPositionEntriesAsync(vm);
+        }
+
+        private Task<ChartEntry[]> GetTransferEntriesAsync(TransferViewModel vm)
+        {
+            var result = vm.Brokers
+                            .Select(a => EntryUtility.GetEntry((float)a.Sum, GetColor(), a.BrokerName, a.SumText))
+                            .ToArray();
+            return Task.FromResult(result);
         }
 
         private Task<ChartEntry[]> GetAccountEntriesAsync(AccountsViewModel vm)

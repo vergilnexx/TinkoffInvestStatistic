@@ -399,6 +399,30 @@ namespace Services
         }
 
         /// <summary>
+        /// Возвращает данные для экспорта.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список настроек.</returns>
+        public async Task<IReadOnlyCollection<TransferExportData>> GetTransfersExportDataAsync(CancellationToken cancellation)
+        {
+            var exportDataList = new List<TransferExportData>();
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+
+            var transfers = await dataAccessService.GetTransfersAsync(cancellation);
+            foreach (var transfer in transfers)
+            {
+                var exportData = new TransferExportData(transfer.BrokerName);
+                var accountDatas = await dataAccessService.GetTransfersBrokerAccountsAsync(transfer.Id, cancellation);
+
+                exportData.AccountData = accountDatas.Select(ad => new TransferAccountExportData(ad.Name, ad.Sum)).ToArray();
+
+                exportDataList.Add(exportData);
+            }
+
+            return exportDataList.ToArray();
+        }
+
+        /// <summary>
         /// Возвращает список зачислений по брокерам.
         /// </summary>
         /// <returns>Список зачислений по брокерам.</returns>

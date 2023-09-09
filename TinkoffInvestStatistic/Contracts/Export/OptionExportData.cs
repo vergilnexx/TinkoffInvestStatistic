@@ -35,6 +35,5 @@ namespace TinkoffInvestStatistic.Contracts.Export
         /// Значение.
         /// </summary>
         public string? Value { get; set; }
-
     }
 }

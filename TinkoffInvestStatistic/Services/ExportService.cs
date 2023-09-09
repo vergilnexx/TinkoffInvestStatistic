@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Services;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -30,6 +31,7 @@ namespace Services
         {
             await SaveSettingsAsync(categories, folder, cancellation);
             await SaveDataAsync(categories, folder, cancellation);
+            await SaveTransfersAsync(categories, folder, cancellation);
         }
 
         private async Task SaveSettingsAsync(ExportCategories category, string folder, CancellationToken cancellation)
@@ -55,6 +57,18 @@ namespace Services
             var data = await DataStorageService.Instance.GetAccountExportDataAsync(cancellation);
 
             await SaveFileAsync(ExportCategories.Data, data, folder, cancellation);
+        }
+
+        private async Task SaveTransfersAsync(ExportCategories category, string folder, CancellationToken cancellation)
+        {
+            if (!category.HasFlag(ExportCategories.Transfers))
+            {
+                return;
+            }
+
+            var transfers = await DataStorageService.Instance.GetTransfersExportDataAsync(cancellation);
+
+            await SaveFileAsync(ExportCategories.Transfers, transfers, folder, cancellation);
         }
 
         private async Task SaveFileAsync(ExportCategories category, object data, string folder, CancellationToken cancellation)

@@ -8,13 +8,13 @@ namespace TinkoffInvestStatistic.Service
         /// <inheritdoc/>
         public Task ShowAsync(string message)
         {
-            return App.Current.MainPage.DisplayAlert("TinkoffInvestStatistic.App", message, "Ok");
+            return App.Current.MainPage.DisplayAlert("Внимание!", message, "Ok");
         }
 
         /// <inheritdoc/>
-        public Task<string> ShowPromptAsync(string message)
+        public Task<string> ShowPromptAsync(string title, string message)
         {
-            return App.Current.MainPage.DisplayPromptAsync("TinkoffInvestStatistic.App", message, "Ok");
+            return App.Current.MainPage.DisplayPromptAsync(title, message, "Ok");
         }
     }
 }
