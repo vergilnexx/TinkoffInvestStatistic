@@ -25,5 +25,12 @@ namespace TinkoffInvestStatistic.Views
             base.OnAppearing();
             _viewModel.OnAppearing();
         }
+
+        /// <inheritdoc/>
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.OnDisappearing();
+        }
     }
 }

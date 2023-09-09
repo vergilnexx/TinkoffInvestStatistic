@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Services;
+using Microcharts;
+using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -31,7 +33,13 @@ namespace TinkoffInvestStatistic.ViewModels
             LoadCommand = new Command(async () => await LoadAsync());
             SaveCommand = new Command(async() => await SaveAsync());
             AddBrokerAccountCommand = new Command<TransferBrokerModel>(AddBrokerAccountAsync);
+            StatisticChart = GetChart();
         }
+
+        /// <summary>
+        /// Диаграммы статистики.
+        /// </summary>
+        public Chart StatisticChart { get; private set; }
 
         /// <summary>
         /// Данные о зачислениях по брокерам.
@@ -61,7 +69,6 @@ namespace TinkoffInvestStatistic.ViewModels
         public async Task OnAppearing()
         {
             Title = "Зачисления";
-            Brokers.Clear();
 
             var service = DependencyService.Get<IAuthenticateService>();
             var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
@@ -73,6 +80,33 @@ namespace TinkoffInvestStatistic.ViewModels
             }
 
             IsRefreshing = true;
+        }
+
+        public void OnDisappearing()
+        {
+            Brokers.Clear();
+            StatisticChart.Entries = Array.Empty<ChartEntry>();
+        }
+
+        /// <summary>
+        /// Загрузка диаграммы статустики
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadStatisticChartAsync()
+        {
+            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
+            OnPropertyChanged(nameof(StatisticChart));
+        }
+
+        private static PieChart GetChart()
+        {
+            return new PieChart()
+            {
+                HoleRadius = 0.6f,
+                LabelTextSize = 30f,
+                BackgroundColor = SKColor.Parse("#2B373D"),
+                LabelColor = new SKColor(255, 255, 255),
+            };
         }
 
         private async Task SaveAsync()
@@ -108,22 +142,22 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 var service = DependencyService.Get<ITransferService>();
 
-                var sumByBrokers = 0m;
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
                 var brokers = await service.GetListAsync(cancellation);
                 foreach (var broker in brokers)
                 {
                     var data = new TransferBrokerModel(broker.BrokerName);
-                    var sumByAccounts = broker.AccountData.Sum(ad => ad.Sum);
-                    sumByBrokers += sumByAccounts;
-                    data.SumText = NumericUtility.ToCurrencyString(sumByAccounts, Contracts.Enums.Currency.Rub);
+                    data.Sum = broker.AccountData.Sum(ad => ad.Sum);
+                    data.SumText = NumericUtility.ToCurrencyString(data.Sum, Contracts.Enums.Currency.Rub);
                     data.AccountData = broker.AccountData.Select(ad => new TransferBrokerAccountModel(ad.Name, ad.Sum)).ToArray();
                     Brokers.Add(data);
                 }
 
-                Sum = NumericUtility.ToCurrencyString(sumByBrokers, Contracts.Enums.Currency.Rub);
+                Sum = NumericUtility.ToCurrencyString(Brokers.Sum(b => b.Sum), Contracts.Enums.Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
+
+                await LoadStatisticChartAsync();
             }
             catch (Exception ex)
             {
