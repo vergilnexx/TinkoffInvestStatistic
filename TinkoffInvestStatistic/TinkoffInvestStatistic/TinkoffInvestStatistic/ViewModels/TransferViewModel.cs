@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TinkoffInvest.Contracts.Accounts;
 using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Service;
@@ -51,6 +52,11 @@ namespace TinkoffInvestStatistic.ViewModels
         /// Команда на добавление брокерского счета.
         /// </summary>
         public Command<TransferBrokerModel> AddBrokerAccountCommand { get; }
+
+        /// <summary>
+        /// Сумма по всем счетам и брокерам.
+        /// </summary>
+        public string Sum { get; private set; }
 
         public async Task OnAppearing()
         {
@@ -102,17 +108,22 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 var service = DependencyService.Get<ITransferService>();
 
+                var sumByBrokers = 0m;
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
                 var brokers = await service.GetListAsync(cancellation);
                 foreach (var broker in brokers)
                 {
                     var data = new TransferBrokerModel(broker.BrokerName);
-                    var sum = broker.AccountData.Sum(ad => ad.Sum);
-                    data.SumText = NumericUtility.ToCurrencyString(sum, Contracts.Enums.Currency.Rub);
+                    var sumByAccounts = broker.AccountData.Sum(ad => ad.Sum);
+                    sumByBrokers += sumByAccounts;
+                    data.SumText = NumericUtility.ToCurrencyString(sumByAccounts, Contracts.Enums.Currency.Rub);
                     data.AccountData = broker.AccountData.Select(ad => new TransferBrokerAccountModel(ad.Name, ad.Sum)).ToArray();
                     Brokers.Add(data);
                 }
+
+                Sum = NumericUtility.ToCurrencyString(sumByBrokers, Contracts.Enums.Currency.Rub);
+                OnPropertyChanged(nameof(Sum));
             }
             catch (Exception ex)
             {
