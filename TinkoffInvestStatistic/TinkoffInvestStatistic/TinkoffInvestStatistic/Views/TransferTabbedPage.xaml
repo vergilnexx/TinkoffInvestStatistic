@@ -1,0 +1,12 @@
+﻿<tis:BaseTabbedDataPage xmlns="http://xamarin.com/schemas/2014/forms"
+                         xmlns:tis="clr-namespace:TinkoffInvestStatistic.Views.Base;assembly=TinkoffInvestStatistic"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         Title="Зачисления"
+                         x:Class="TinkoffInvestStatistic.Views.TransferTabbedPage"
+                         xmlns:local="clr-namespace:TinkoffInvestStatistic.Views;assembly=TinkoffInvestStatistic"
+                        BarBackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+    <TabbedPage.Children x:DataType="local:TransferTabbedViewModel">
+        <local:TransferPage Title="Зачисление" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+        <local:TransferNotificationPage Title="Уведомления" BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+    </TabbedPage.Children>
+</tis:BaseTabbedDataPage>

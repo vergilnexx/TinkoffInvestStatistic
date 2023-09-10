@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"
+             x:Class="TinkoffInvestStatistic.Views.TransferNotificationPage"
+             xmlns:xc="clr-namespace:XCalendar.Forms.Views;assembly=XCalendar.Forms"
+             xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
+             Title="{Binding Title}">
+    <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
+                    Command="{Binding LoadCommand}" 
+                    IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+        <Grid RowDefinitions="Auto, 1, * " ColumnDefinitions="*"
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+            <xc:CalendarView
+                Padding="15"
+                Days="{Binding Calendar.Days}"
+                DaysOfWeek="{Binding Calendar.DayNamesOrder}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+
+            <BoxView HeightRequest="1" Grid.Row="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
+
+            <Grid Grid.Row="2" RowDefinitions="Auto, *, 1, Auto" ColumnDefinitions="*, Auto">
+                <Label Text="Даты уведомлений:" 
+                        VerticalOptions="Center"
+                        TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
+                <ImageButton Source="icon_plus.png"
+                                Grid.Column="1"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                                WidthRequest="40"
+                                HorizontalOptions="End"
+                                VerticalOptions="CenterAndExpand"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:TransferNotificationViewModel}}, Path=AddDateCommand}"/>
+
+                <ScrollView Grid.Row="1" Grid.ColumnSpan="2">
+                    <CollectionView ItemsSource="{Binding NotificationPeriodData}">
+                        <CollectionView.EmptyView>
+                            <ContentView IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
+                                <StackLayout HorizontalOptions="CenterAndExpand"
+                                     VerticalOptions="CenterAndExpand">
+                                    <Label Text="Нет элементов для отображения"
+                                   Margin="10,25,10,10"
+                                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   HorizontalOptions="Fill"
+                                   HorizontalTextAlignment="Center" />
+                                </StackLayout>
+                            </ContentView>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid RowDefinitions="Auto, Auto, 1" ColumnDefinitions="*, Auto, Auto">
+                                    <DatePicker Grid.Row="0" Grid.Column="0"
+                                                Format="dd-MM-yyyy"
+                                                HeightRequest="40"
+                                                Date="{Binding StartDate}" 
+                                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+                                    <TimePicker Grid.Row="0" Grid.Column="1"
+                                                HeightRequest="40"
+                                                Format="HH:mm"
+                                                Time="{Binding Time}" 
+                                                TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"/>
+
+                                    <Picker Grid.Row="1" Grid.Column="0"
+                                            HeightRequest="40"
+                                            SelectedItem="{Binding PeriodTypeText}"
+                                            TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>Каждую неделю</x:String>
+                                                <x:String>Каждый месяц</x:String>
+                                                <x:String>Каждый квартал</x:String>
+                                                <x:String>Каждый год</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+
+                                    <ImageButton Source="icon_minus.png"
+                                        Grid.Row="0" Grid.Column="2"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                                        WidthRequest="40"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="CenterAndExpand"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:TransferNotificationViewModel}}, Path=DeleteDateCommand}"	
+                                        CommandParameter="{Binding .}"/>
+
+                                    <BoxView HeightRequest="1" Grid.Row="2" Grid.ColumnSpan="3" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+
+                <BoxView Grid.Row="2"  Grid.ColumnSpan="2" HeightRequest="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
+
+                <Button Text="Сохранить"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        WidthRequest="250" 
+                        HorizontalOptions="Center" 
+                        HeightRequest="50" 
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}" 
+                        BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}" 
+                        BorderWidth="1"
+                        CornerRadius="30"
+                        Command="{Binding SaveCommand}"/>
+            </Grid>
+        </Grid>
+    </RefreshView>
+</ContentPage>
