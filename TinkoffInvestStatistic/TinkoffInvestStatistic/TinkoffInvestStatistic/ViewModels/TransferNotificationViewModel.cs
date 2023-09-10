@@ -34,7 +34,13 @@ namespace TinkoffInvestStatistic.ViewModels
             AddDateCommand = new Command(async () => await AddDateAsync());
             DeleteDateCommand = new Command<TransferNotificationModel>(DeleteDateAsync);
             SaveCommand = new Command(async () => await SaveDateAsync());
+            NavigateCalendarCommand = new Command<int>(NavigateCalendar);
         }
+
+        /// <summary>
+        /// Команда навигации по календарю.
+        /// </summary>
+        public ICommand NavigateCalendarCommand { get; set; }
 
         /// <summary>
         /// Команда на загрузку.
@@ -74,6 +80,15 @@ namespace TinkoffInvestStatistic.ViewModels
             IsRefreshing = true;
 
             return Task.CompletedTask;
+        }
+
+        private void NavigateCalendar(int amount)
+        {
+            //Months are variable length, calculate the timespan needed to get to the result.
+            DateTime targetDateTime = Calendar.NavigatedDate.AddMonths(amount);
+
+            Calendar.Navigate(targetDateTime - Calendar.NavigatedDate);
+
         }
 
         private async Task LoadAsync()
