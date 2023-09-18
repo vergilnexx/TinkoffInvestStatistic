@@ -13,12 +13,6 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         None = 0,
 
         /// <summary>
-        /// День.
-        /// </summary>
-        [Description("Каждый день")]
-        Day = 10,
-
-        /// <summary>
         /// Неделя.
         /// </summary>
         [Description("Каждую неделю")]

@@ -13,6 +13,9 @@ using TinkoffInvestStatistic.Contracts;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Infrastructure.Helpers;
+using XCalendar.Core.Extensions;
+using TinkoffInvest.Contracts.Accounts;
+using XCalendar.Core.Collections;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -92,9 +95,33 @@ namespace TinkoffInvestStatistic.ViewModels
 
             foreach (var notificationDate in NotificationPeriodData)
             {
-                var date = notificationDate.StartDate;
-                Calendar.SelectedDates.Add(date);
+                AddNotificationPeriod(Calendar.SelectedDates, Calendar.NavigatedDate, notificationDate);
             }
+        }
+
+        private void AddNotificationPeriod(ObservableRangeCollection<DateTime> selectedDates, 
+            DateTime currentDate, TransferNotificationModel notificationDate)
+        {
+            DateTime? startDate = notificationDate.StartDate;
+            while (startDate?.Year == currentDate.Year)
+            {
+                selectedDates.Add(startDate.Value);
+                startDate = CalculateDate(notificationDate.PeriodType, startDate.Value, amount: 1);
+            }
+        }
+
+        private static DateTime? CalculateDate(TransferNotificationPeriodType periodType, DateTime startDate, int amount)
+        {
+            DateTime? date = periodType switch
+            {
+                TransferNotificationPeriodType.Week => startDate.AddWeeks(amount),
+                TransferNotificationPeriodType.Month => startDate.AddMonths(amount),
+                TransferNotificationPeriodType.Quarter => startDate.AddMonths(3 * amount),
+                TransferNotificationPeriodType.Year => startDate.AddYears(amount),
+                TransferNotificationPeriodType.None => null,
+                _ => null,
+            };
+            return date;
         }
 
         private async Task LoadAsync()
@@ -110,7 +137,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var notifications = await service.GetListAsync(cancellation);
                 foreach (var notification in notifications)
                 {
-                    NotificationPeriodData.Add(new TransferNotificationModel(notification.Id, notification.StartDate, notification.PeriodType.GetDescription()));
+                    NotificationPeriodData.Add(new TransferNotificationModel(notification.Id, notification.StartDate, notification.PeriodType));
                 }
                 NavigateCalendar(default);
             }

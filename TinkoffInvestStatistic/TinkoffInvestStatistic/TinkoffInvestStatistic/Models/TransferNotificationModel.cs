@@ -13,11 +13,11 @@ namespace TinkoffInvestStatistic.Models
         /// </summary>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationModel(DateTime startDate, string periodType)
+        public TransferNotificationModel(DateTime startDate, TransferNotificationPeriodType periodType)
         {
             StartDate = startDate.Date;
             Time = startDate.TimeOfDay;
-            PeriodTypeText = periodType;
+            PeriodType = periodType;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace TinkoffInvestStatistic.Models
         /// <param name="id">Идентификатор.</param>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationModel(int id, DateTime startDate, string periodType) : this(startDate, periodType)
+        public TransferNotificationModel(int id, DateTime startDate, TransferNotificationPeriodType periodType) : this(startDate, periodType)
         {
             Id = id;
         }
@@ -49,6 +49,11 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Периодичность уведомления.
         /// </summary>
-        public string PeriodTypeText { get; set; }
+        public TransferNotificationPeriodType PeriodType { get; set; }
+
+        /// <summary>
+        /// Периодичность уведомления.
+        /// </summary>
+        public string PeriodTypeText => Infrastructure.Helpers.EnumHelper.GetDescription(PeriodType);
     }
 }
