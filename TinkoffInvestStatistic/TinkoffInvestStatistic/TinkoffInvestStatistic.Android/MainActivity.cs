@@ -3,6 +3,8 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 using Plugin.Fingerprint;
+using System.Globalization;
+using System.Threading;
 
 namespace TinkoffInvestStatistic.Droid
 {
@@ -14,6 +16,10 @@ namespace TinkoffInvestStatistic.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            var culture = CultureInfo.GetCultureInfo("ru");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             CrossFingerprint.SetCurrentActivityResolver(() => Xamarin.Essentials.Platform.CurrentActivity);

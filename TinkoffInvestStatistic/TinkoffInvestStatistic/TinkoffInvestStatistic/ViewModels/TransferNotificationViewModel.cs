@@ -88,7 +88,13 @@ namespace TinkoffInvestStatistic.ViewModels
             DateTime targetDateTime = Calendar.NavigatedDate.AddMonths(amount);
 
             Calendar.Navigate(targetDateTime - Calendar.NavigatedDate);
+            Calendar.SelectedDates?.Clear();
 
+            foreach (var notificationDate in NotificationPeriodData)
+            {
+                var date = notificationDate.StartDate;
+                Calendar.SelectedDates.Add(date);
+            }
         }
 
         private async Task LoadAsync()
@@ -106,6 +112,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 {
                     NotificationPeriodData.Add(new TransferNotificationModel(notification.Id, notification.StartDate, notification.PeriodType.GetDescription()));
                 }
+                NavigateCalendar(default);
             }
             catch (Exception ex)
             {
