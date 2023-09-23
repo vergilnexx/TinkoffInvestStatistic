@@ -18,6 +18,7 @@ namespace TinkoffInvestStatistic.Models
             StartDate = startDate.Date;
             Time = startDate.TimeOfDay;
             PeriodType = periodType;
+            PeriodTypeText = Infrastructure.Helpers.EnumHelper.GetDescription(periodType);
         }
 
         /// <summary>
@@ -54,6 +55,6 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Периодичность уведомления.
         /// </summary>
-        public string PeriodTypeText => Infrastructure.Helpers.EnumHelper.GetDescription(PeriodType);
+        public string PeriodTypeText { get; set; }
     }
 }

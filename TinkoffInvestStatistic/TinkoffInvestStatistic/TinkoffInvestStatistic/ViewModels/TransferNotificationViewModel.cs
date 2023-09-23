@@ -116,24 +116,17 @@ namespace TinkoffInvestStatistic.ViewModels
                 return;
             }
 
-            Calendar.SelectedDates?.Clear();
-
             foreach (var notificationDate in NotificationPeriodData)
             {
-                AddNotificationPeriod(Calendar.SelectedDates, notificationDate);
+                DateTime startDate = notificationDate.StartDate;
+                var endDate = startDate.AddYears(MaxYearsToFuture);
+
+                Calendar.SelectedDates.Add(startDate);
+
+                IEnumerable<DateTime> dates = DateTimeUtility.GetPeriodDates(notificationDate.PeriodType, startDate, endDate);
+
+                Calendar.SelectedDates.AddRange(dates);
             }
-        }
-
-        private void AddNotificationPeriod(ObservableRangeCollection<DateTime> selectedDates, TransferNotificationModel notificationDate)
-        {
-            DateTime startDate = notificationDate.StartDate;
-            var endDate = startDate.AddYears(MaxYearsToFuture);
-
-            selectedDates.Add(startDate);
-
-            IEnumerable<DateTime> dates = DateTimeUtility.GetPeriodDates(notificationDate.PeriodType, startDate, endDate);
-
-            selectedDates.AddRange(dates);
         }
 
         private async Task LoadAsync()
@@ -151,6 +144,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 {
                     NotificationPeriodData.Add(new TransferNotificationModel(notification.Id, notification.StartDate, notification.PeriodType));
                 }
+                Calendar.SelectedDates?.Clear();
                 NavigateCalendar(default);
             }
             catch (Exception ex)

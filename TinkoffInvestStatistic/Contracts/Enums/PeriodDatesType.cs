@@ -25,9 +25,9 @@ namespace TinkoffInvestStatistic.Contracts.Enums
         Month = 30,
 
         /// <summary>
-        /// Квартер.
+        /// Квартал.
         /// </summary>
-        [Description("Каждый квартер")]
+        [Description("Каждый квартал")]
         Quarter = 40,
 
         /// <summary>
