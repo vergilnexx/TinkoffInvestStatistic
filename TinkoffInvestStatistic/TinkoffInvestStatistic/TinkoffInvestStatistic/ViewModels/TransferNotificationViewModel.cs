@@ -16,6 +16,8 @@ using Infrastructure.Helpers;
 using XCalendar.Core.Extensions;
 using TinkoffInvest.Contracts.Accounts;
 using XCalendar.Core.Collections;
+using System.Collections.Generic;
+using TinkoffInvestStatistic.Utility;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -25,6 +27,11 @@ namespace TinkoffInvestStatistic.ViewModels
     public class TransferNotificationViewModel : BaseViewModel
     {
         public Calendar<CalendarDay> Calendar { get; set; } = new Calendar<CalendarDay>();
+
+        /// <summary>
+        /// Максимальное количество лет вперед на которое можно смотреть.
+        /// </summary>
+        const int MaxYearsToFuture = 2;
 
         /// <summary>
         /// Конструктор.
@@ -87,41 +94,46 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private void NavigateCalendar(int amount)
         {
-            //Months are variable length, calculate the timespan needed to get to the result.
             DateTime targetDateTime = Calendar.NavigatedDate.AddMonths(amount);
 
+            // Разрешаем двигаться по календарю, только на MaxYearsToFuture лет вперед
+            if (targetDateTime > DateTime.UtcNow.AddYears(MaxYearsToFuture))
+            {
+                return;
+            }
+
+            // Не разрешаем двигаться по календарю назад
+            if (targetDateTime < DateTime.UtcNow.FirstDayOfMonth())
+            {
+                return;
+            }
+
             Calendar.Navigate(targetDateTime - Calendar.NavigatedDate);
+
+            // Если уже заполнены данные, то не перерасчитываем.
+            if (Calendar.SelectedDates?.Count > 0)
+            {
+                return;
+            }
+
             Calendar.SelectedDates?.Clear();
 
             foreach (var notificationDate in NotificationPeriodData)
             {
-                AddNotificationPeriod(Calendar.SelectedDates, Calendar.NavigatedDate, notificationDate);
+                AddNotificationPeriod(Calendar.SelectedDates, notificationDate);
             }
         }
 
-        private void AddNotificationPeriod(ObservableRangeCollection<DateTime> selectedDates, 
-            DateTime currentDate, TransferNotificationModel notificationDate)
+        private void AddNotificationPeriod(ObservableRangeCollection<DateTime> selectedDates, TransferNotificationModel notificationDate)
         {
-            DateTime? startDate = notificationDate.StartDate;
-            while (startDate?.Year == currentDate.Year)
-            {
-                selectedDates.Add(startDate.Value);
-                startDate = CalculateDate(notificationDate.PeriodType, startDate.Value, amount: 1);
-            }
-        }
+            DateTime startDate = notificationDate.StartDate;
+            var endDate = startDate.AddYears(MaxYearsToFuture);
 
-        private static DateTime? CalculateDate(TransferNotificationPeriodType periodType, DateTime startDate, int amount)
-        {
-            DateTime? date = periodType switch
-            {
-                TransferNotificationPeriodType.Week => startDate.AddWeeks(amount),
-                TransferNotificationPeriodType.Month => startDate.AddMonths(amount),
-                TransferNotificationPeriodType.Quarter => startDate.AddMonths(3 * amount),
-                TransferNotificationPeriodType.Year => startDate.AddYears(amount),
-                TransferNotificationPeriodType.None => null,
-                _ => null,
-            };
-            return date;
+            selectedDates.Add(startDate);
+
+            IEnumerable<DateTime> dates = DateTimeUtility.GetPeriodDates(notificationDate.PeriodType, startDate, endDate);
+
+            selectedDates.AddRange(dates);
         }
 
         private async Task LoadAsync()
@@ -159,7 +171,7 @@ namespace TinkoffInvestStatistic.ViewModels
                 var dateTimeProvider = DependencyService.Get<IDateTimeProvider>();
             
                 // По-умолчанию создаём на каждыый месяц в 10:00
-                var data = new TransferNotificationDto(dateTimeProvider.UtcNow.Date.AddHours(10), TransferNotificationPeriodType.Month);
+                var data = new TransferNotificationDto(dateTimeProvider.UtcNow.Date.AddHours(10), PeriodDatesType.Month);
 
                 var service = DependencyService.Get<ITransferNotificationService>();
                 using var cancelTokenSource = new CancellationTokenSource();

@@ -13,7 +13,7 @@ namespace TinkoffInvestStatistic.Models
         /// </summary>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationModel(DateTime startDate, TransferNotificationPeriodType periodType)
+        public TransferNotificationModel(DateTime startDate, PeriodDatesType periodType)
         {
             StartDate = startDate.Date;
             Time = startDate.TimeOfDay;
@@ -26,7 +26,7 @@ namespace TinkoffInvestStatistic.Models
         /// <param name="id">Идентификатор.</param>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationModel(int id, DateTime startDate, TransferNotificationPeriodType periodType) : this(startDate, periodType)
+        public TransferNotificationModel(int id, DateTime startDate, PeriodDatesType periodType) : this(startDate, periodType)
         {
             Id = id;
         }
@@ -49,7 +49,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Периодичность уведомления.
         /// </summary>
-        public TransferNotificationPeriodType PeriodType { get; set; }
+        public PeriodDatesType PeriodType { get; set; }
 
         /// <summary>
         /// Периодичность уведомления.

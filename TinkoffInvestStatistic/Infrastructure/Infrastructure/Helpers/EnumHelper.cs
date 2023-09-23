@@ -74,9 +74,9 @@ namespace Infrastructure.Helpers
         /// </summary>
         /// <param name="value">Значение.</param>
         /// <returns>Валюта.</returns>
-        public static TransferNotificationPeriodType GetTransferNotificationPeriodType(string value)
+        public static PeriodDatesType GetTransferNotificationPeriodType(string value)
         {
-            var periods = Enum.GetValues(typeof(TransferNotificationPeriodType)).Cast<TransferNotificationPeriodType>().ToArray();
+            var periods = Enum.GetValues(typeof(PeriodDatesType)).Cast<PeriodDatesType>().ToArray();
             return Array.Find(periods, p => p.GetDescription() == value);
         }
     }

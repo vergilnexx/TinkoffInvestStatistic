@@ -13,7 +13,7 @@ namespace TinkoffInvestStatistic.Contracts
         /// </summary>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationDto(DateTime startDate, TransferNotificationPeriodType periodType)
+        public TransferNotificationDto(DateTime startDate, PeriodDatesType periodType)
         {
             StartDate = startDate;
             PeriodType = periodType;
@@ -25,7 +25,7 @@ namespace TinkoffInvestStatistic.Contracts
         /// <param name="id">Идентификатор.</param>
         /// <param name="startDate">Дата начала.</param>
         /// <param name="periodType">Периодичность уведомления.</param>
-        public TransferNotificationDto(int id, DateTime startDate, TransferNotificationPeriodType periodType) : this(startDate, periodType)
+        public TransferNotificationDto(int id, DateTime startDate, PeriodDatesType periodType) : this(startDate, periodType)
         {
             Id = id;
         }
@@ -43,6 +43,6 @@ namespace TinkoffInvestStatistic.Contracts
         /// <summary>
         /// Периодичность уведомления.
         /// </summary>
-        public TransferNotificationPeriodType PeriodType { get; set; }
+        public PeriodDatesType PeriodType { get; set; }
     }
 }

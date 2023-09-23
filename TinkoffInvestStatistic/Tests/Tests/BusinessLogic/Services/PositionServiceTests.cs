@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using TinkoffInvestStatistic.Contracts;
 
-namespace Tests
+namespace Tests.BusinessLogic.Services
 {
     [TestClass]
     public class PositionServiceTests
@@ -21,10 +21,10 @@ namespace Tests
         {
             var positions = new[]
             {
-                new Position("Тинькофф Золото", PositionType.Etf) 
-                { 
-                    PositionCount = 20, 
-                    AveragePositionPrice = new CurrencyMoney(Currency.Usd, 1m), 
+                new Position("Тинькофф Золото", PositionType.Etf)
+                {
+                    PositionCount = 20,
+                    AveragePositionPrice = new CurrencyMoney(Currency.Usd, 1m),
                     ExpectedYield = new CurrencyMoney(Currency.Usd, -10m)
                 },
             };

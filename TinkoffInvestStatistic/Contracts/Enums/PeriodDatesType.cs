@@ -3,9 +3,9 @@
 namespace TinkoffInvestStatistic.Contracts.Enums
 {
     /// <summary>
-    /// Периодичность уведомлений о зачислении.
+    /// Периодичность дат.
     /// </summary>
-    public enum TransferNotificationPeriodType
+    public enum PeriodDatesType
     {
         /// <summary>
         /// Неопределенно.

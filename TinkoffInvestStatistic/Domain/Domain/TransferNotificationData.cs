@@ -25,6 +25,6 @@ namespace Domain
         /// <summary>
         /// Периодичность уведомления.
         /// </summary>
-        public TransferNotificationPeriodType PeriodType { get; set; }
+        public PeriodDatesType PeriodType { get; set; }
     }
 }
