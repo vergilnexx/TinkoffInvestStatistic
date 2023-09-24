@@ -70,14 +70,14 @@ namespace TinkoffInvestStatistic.ViewModels
         {
             Title = "Зачисления";
 
-            //var service = DependencyService.Get<IAuthenticateService>();
-            //var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
-            //if (!isAuthenticated)
-            //{
-            //    IsRefreshing = false;
-            //    await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
-            //    return;
-            //}
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Увидеть зачисления");
+            if (!isAuthenticated)
+            {
+                IsRefreshing = false;
+                await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
+                return;
+            }
 
             IsRefreshing = true;
         }

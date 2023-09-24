@@ -15,7 +15,8 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="data">Данные о времени и периоде зачисления.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        Task AddAsync(TransferNotificationDto data, CancellationToken cancellation);
+        /// <returns>Идентификатор уведомления.</returns>
+        Task<int> AddAsync(TransferNotificationDto data, CancellationToken cancellation);
 
         /// <summary>
         /// Удаляет уведомление о необходимости зачисления средств.

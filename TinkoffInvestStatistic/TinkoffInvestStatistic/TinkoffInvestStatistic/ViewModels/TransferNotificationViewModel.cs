@@ -18,6 +18,7 @@ using TinkoffInvest.Contracts.Accounts;
 using XCalendar.Core.Collections;
 using System.Collections.Generic;
 using TinkoffInvestStatistic.Utility;
+using TinkoffInvestStatistic.Service;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -170,7 +171,10 @@ namespace TinkoffInvestStatistic.ViewModels
                 var service = DependencyService.Get<ITransferNotificationService>();
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
-                await service.AddAsync(data, cancellation);
+                var notificationId = await service.AddAsync(data, cancellation);
+                
+                var notificationService = DependencyService.Get<INotificationService>();
+                await notificationService.AddRequestAsync(notificationId, data, cancellation);
 
                 // Перезагружаем данные.
                 IsRefreshing = true;
@@ -190,6 +194,9 @@ namespace TinkoffInvestStatistic.ViewModels
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
                 await service.DeleteAsync(data.Id, cancellation);
+
+                var notificationService = DependencyService.Get<INotificationService>();
+                notificationService.Delete(data.Id);
 
                 // Перезагружаем данные.
                 IsRefreshing = true;
@@ -213,6 +220,12 @@ namespace TinkoffInvestStatistic.ViewModels
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
                 await service.SaveAsync(notifications, cancellation);
+
+                foreach (var notification in notifications)
+                {
+                    var notificationService = DependencyService.Get<INotificationService>();
+                    await notificationService.ChangeAsync(notification.Id, notification, cancellation);
+                }
 
                 // Перезагружаем данные.
                 IsRefreshing = true;

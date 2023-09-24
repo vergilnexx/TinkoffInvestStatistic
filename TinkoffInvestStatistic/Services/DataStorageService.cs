@@ -484,7 +484,8 @@ namespace Services
         /// </summary>
         /// <param name="data">Даныные о периодичности уведомления.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        internal Task AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
+        /// <returns>Идентификатор уведомления.</returns>
+        internal Task<int> AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
         {
             var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
             return dataAccessService.AddTransferNotificationAsync(data, cancellation);

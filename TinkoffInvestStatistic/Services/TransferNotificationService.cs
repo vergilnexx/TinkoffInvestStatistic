@@ -11,7 +11,7 @@ namespace Services
     public class TransferNotificationService : ITransferNotificationService
     {
         /// <inheritdoc/>
-        public Task AddAsync(TransferNotificationDto data, CancellationToken cancellation)
+        public Task<int> AddAsync(TransferNotificationDto data, CancellationToken cancellation)
         {
             return DataStorageService.Instance.AddTransferNotificationAsync(data, cancellation);
         }

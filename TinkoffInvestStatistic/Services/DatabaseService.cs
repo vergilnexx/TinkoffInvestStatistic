@@ -548,7 +548,7 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
+        public async Task<int> AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
         {
             try
             {
@@ -556,6 +556,8 @@ namespace Services
                 entity.StartDate = data.StartDate;
                 entity.PeriodType = data.PeriodType;
                 await _database.InsertAsync(entity);
+                
+                return entity.Id;
             }
             catch (Exception ex)
             {

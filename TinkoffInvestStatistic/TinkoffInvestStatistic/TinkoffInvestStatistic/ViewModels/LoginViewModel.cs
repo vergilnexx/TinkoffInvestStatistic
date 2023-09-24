@@ -23,12 +23,12 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task AuthenticateAsync()
         {
             IsRefreshing = true;
-            //var service = DependencyService.Get<IAuthenticateService>();
-            //var isAuthenticated = await service.AuthenticateAsync("Вход");
-            //if (isAuthenticated)
-            //{
+            var service = DependencyService.Get<IAuthenticateService>();
+            var isAuthenticated = await service.AuthenticateAsync("Вход");
+            if (isAuthenticated)
+            {
                 await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
-            //}
+            }
             IsRefreshing = false;
         }
     }

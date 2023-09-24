@@ -17,7 +17,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v13.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
@@ -66,8 +66,13 @@
     <PackageReference Include="Plugin.Fingerprint">
       <Version>2.1.5</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="Plugin.LocalNotification">
+      <Version>10.1.8</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
+    <PackageReference Include="Xamarin.Forms">
+      <Version>5.0.0.2612</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Effects\StrikethroughEntryEffect.cs" />
@@ -75,6 +80,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FileSystemService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -101,6 +107,10 @@
     <AndroidResource Include="Resources\drawable\icon_feed.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\TinkoffInvestStatistic.Contracts.csproj">
+      <Project>{6CA119C3-31D4-4C38-8770-1D04634EA5B2}</Project>
+      <Name>TinkoffInvestStatistic.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TinkoffInvestStatistic\TinkoffInvestStatistic.csproj">
       <Project>{3AA216FD-021E-4598-8045-F5C4F863EDA1}</Project>
       <Name>TinkoffInvestStatistic</Name>
