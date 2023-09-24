@@ -44,7 +44,7 @@
     </FlyoutItem>
     <FlyoutItem Title="Зачисления">
         <ShellContent
-            StyleClass="MenuItemLayoutStyle" Route="TransferPage" ContentTemplate="{DataTemplate local:TransferPage}" />
+            StyleClass="MenuItemLayoutStyle" Route="TransferTabbedPage" ContentTemplate="{DataTemplate local:TransferTabbedPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Настройки">
         <ShellContent

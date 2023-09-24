@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Services
 {
@@ -31,6 +32,7 @@ namespace Services
             _database.CreateTableAsync<OptionData>().Wait();
             _database.CreateTableAsync<TransferBrokerData>().Wait();
             _database.CreateTableAsync<TransferBrokerAccountData>().Wait();
+            _database.CreateTableAsync<TransferNotificationData>().Wait();
 
             InitDefaultDataAsync().Wait();
         }
@@ -537,6 +539,88 @@ namespace Services
 
                 data.Sum = sum;
                 await _database.UpdateAsync(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
+        {
+            try
+            {
+                var entity = new TransferNotificationData();
+                entity.StartDate = data.StartDate;
+                entity.PeriodType = data.PeriodType;
+                await _database.InsertAsync(entity);
+                
+                return entity.Id;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteTransferNotificationAsync(int id, CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                    .Table<TransferNotificationData>()
+                                    .FirstOrDefaultAsync(n => n.Id == id)
+                                    .ConfigureAwait(false)
+                                    ?? throw new ApplicationException("Не удалось найти счет №" + id);
+
+                await _database.DeleteAsync(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyCollection<TransferNotificationData>> GetTransferNotificationsAsync(CancellationToken cancellation)
+        {
+            try
+            {
+                var data = await _database
+                                    .Table<TransferNotificationData>()
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task SaveTransferNotificationsAsync(IReadOnlyCollection<TransferNotificationDto> notifications, CancellationToken cancellation)
+        {
+            try
+            {
+                foreach(var notifacation in notifications)
+                {
+                    var entity = await _database
+                                    .Table<TransferNotificationData>()
+                                    .FirstOrDefaultAsync(tbad => tbad.Id == notifacation.Id)
+                                    .ConfigureAwait(false)
+                                    ?? throw new ApplicationException("Не удалось найти уведомление №" + notifacation.Id);
+
+                    entity.StartDate = notifacation.StartDate;
+                    entity.PeriodType = notifacation.PeriodType;
+                    await _database.UpdateAsync(entity);
+                }
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\Services.csproj" />
+    <ProjectReference Include="..\..\TinkoffInvestStatistic\TinkoffInvestStatistic\TinkoffInvestStatistic.csproj" />
   </ItemGroup>
 
 </Project>

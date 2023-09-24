@@ -479,6 +479,54 @@ namespace Services
             }
         }
 
+        /// <summary>
+        /// Добавляет уведомление о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="data">Даныные о периодичности уведомления.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор уведомления.</returns>
+        internal Task<int> AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.AddTransferNotificationAsync(data, cancellation);
+        }
+
+        /// <summary>
+        /// Удаляет уведомление о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="id">Идентификатор.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        internal Task DeleteTransferNotificationAsync(int id, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.DeleteTransferNotificationAsync(id, cancellation);
+        }
+
+        /// <summary>
+        /// Возвращает список уведомлений о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список уведомлений о необходимости зачисления средств.</returns>
+        internal async Task<IReadOnlyCollection<TransferNotificationDto>> GetTransferNotificationsAsync(CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var notifications = await dataAccessService.GetTransferNotificationsAsync(cancellation);
+            return notifications
+                    .Select(n => new TransferNotificationDto(n.Id, n.StartDate, n.PeriodType))
+                    .ToArray();
+        }
+
+        /// <summary>
+        /// Сохраняет данные уведомлений.
+        /// </summary>
+        /// <param name="notifications">Данные уведомлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        internal Task SaveTransferNotificationsAsync(IReadOnlyCollection<TransferNotificationDto> notifications, CancellationToken cancellation)
+        {
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.SaveTransferNotificationsAsync(notifications, cancellation);
+        }
+
         private static async Task<PositionTypeExportData[]> GetPositionTypesAsync(IDataStorageAccessService dataAccessService,
             string accountNumber, PositionType[] positionTypeEnums)
         {

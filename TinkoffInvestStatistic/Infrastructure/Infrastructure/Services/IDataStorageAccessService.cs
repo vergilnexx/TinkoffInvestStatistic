@@ -177,5 +177,34 @@ namespace Infrastructure.Services
         /// <param name="sum">Сумма зачислений.</param>
         /// <param name="cancellation">Токен отмены.</param>
         Task SaveTransferBrokerAccountAsync(int brokerAccountId, decimal sum, CancellationToken cancellation);
+
+        /// <summary>
+        /// Добавляет уведомление о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="data">Даныные о периодичности уведомления.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор уведомления.</returns>
+        Task<int> AddTransferNotificationAsync(TransferNotificationDto data, CancellationToken cancellation);
+
+        /// <summary>
+        /// Удаляет уведомление о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="id">Идентификатор.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task DeleteTransferNotificationAsync(int id, CancellationToken cancellation);
+
+        /// <summary>
+        /// Возвращает список уведомлений о необходимости зачисления средств.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Список уведомлений о необходимости зачисления средств.</returns>
+        Task<IReadOnlyCollection<TransferNotificationData>> GetTransferNotificationsAsync(CancellationToken cancellation);
+
+        /// <summary>
+        /// Сохраняет данные уведомлений.
+        /// </summary>
+        /// <param name="notifications">Данные уведомлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        Task SaveTransferNotificationsAsync(IReadOnlyCollection<TransferNotificationDto> notifications, CancellationToken cancellation);
     }
 }
