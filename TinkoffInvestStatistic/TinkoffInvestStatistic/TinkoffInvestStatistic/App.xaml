@@ -18,6 +18,8 @@
             <Color x:Key="DarkSecondaryColor">WhiteSmoke</Color>
             <Color x:Key="DarkTextColor">WhiteSmoke</Color>
             <Color x:Key="DarkInnerColor">#FFD450</Color>
+            
+            <Color x:Key="GrayColor">#405050</Color>
 
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>

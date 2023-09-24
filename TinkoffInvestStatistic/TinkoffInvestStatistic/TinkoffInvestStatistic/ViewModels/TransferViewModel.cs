@@ -172,28 +172,36 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async void AddBrokerAccountAsync(TransferBrokerModel data)
         {
-            string brokerName = data.BrokerName;
-
-            var name = await _messageService.ShowPromptAsync("Добавление счета", "Брокер: " + brokerName);
-            if (name == null)
+            try
             {
-                return;
-            }
+                string brokerName = data.BrokerName;
 
-            if (name.Length > 200)
+                var name = await _messageService.ShowPromptAsync("Добавление счета", "Брокер: " + brokerName);
+                if (name == null)
+                {
+                    return;
+                }
+
+                if (name.Length > 200)
+                {
+                    await _messageService.ShowAsync("Название счета не должно быть больше 200 символов.");
+                    return;
+                }
+
+
+                var service = DependencyService.Get<ITransferService>();
+                using var cancelTokenSource = new CancellationTokenSource();
+                var cancellation = cancelTokenSource.Token;
+                await service.AddTransferBrokerAccountAsync(brokerName, name, cancellation);
+
+                // Перезагружаем данные.
+                IsRefreshing = true;
+            }
+            catch (Exception ex)
             {
-                await _messageService.ShowAsync("Название счета не должно быть больше 200 символов.");
-                return;
+                await _messageService.ShowAsync(ex.Message);
+                Debug.WriteLine(ex);
             }
-
-
-            var service = DependencyService.Get<ITransferService>();
-            using var cancelTokenSource = new CancellationTokenSource();
-            var cancellation = cancelTokenSource.Token;
-            await service.AddTransferBrokerAccountAsync(brokerName, name, cancellation);
-
-            // Перезагружаем данные.
-            IsRefreshing = true;
         }
     }
 }

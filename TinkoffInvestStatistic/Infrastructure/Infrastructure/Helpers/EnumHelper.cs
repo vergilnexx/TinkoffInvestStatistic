@@ -20,6 +20,11 @@ namespace Infrastructure.Helpers
         /// <returns>Описание.</returns>
         public static string GetDescription<T>(this T source)
         {
+            if (source == null)
+            {
+                return null;
+            }
+
             FieldInfo fi = source.GetType().GetField(source.ToString());
 
             DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), inherit: false);
@@ -39,7 +44,7 @@ namespace Infrastructure.Helpers
         /// </summary>
         /// <param name="currency">Валюта.</param>
         /// <returns>Фин.уникальный идентификатор валюты.</returns>
-        public static string GetFigi(this Currency currency)
+        public static string? GetFigi(this Currency currency)
         {
             FieldInfo fi = currency.GetType().GetField(currency.ToString());
 
@@ -49,10 +54,8 @@ namespace Infrastructure.Helpers
             {
                 return attributes[0].Value;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -63,7 +66,18 @@ namespace Infrastructure.Helpers
         public static Currency? GetCurrencyByFigi(string currencyFigi)
         {
             var currencies = Enum.GetValues(typeof(Currency)).Cast<Currency>().ToArray();
-            return currencies.FirstOrDefault(c => GetFigi(c) == currencyFigi);
+            return Array.Find(currencies, c => GetFigi(c) == currencyFigi);
+        }
+
+        /// <summary>
+        /// Возвращает валюту по фин.уникальный идентификатор валюты.
+        /// </summary>
+        /// <param name="value">Значение.</param>
+        /// <returns>Валюта.</returns>
+        public static PeriodDatesType GetTransferNotificationPeriodType(string value)
+        {
+            var periods = Enum.GetValues(typeof(PeriodDatesType)).Cast<PeriodDatesType>().ToArray();
+            return Array.Find(periods, p => p.GetDescription() == value);
         }
     }
 }
