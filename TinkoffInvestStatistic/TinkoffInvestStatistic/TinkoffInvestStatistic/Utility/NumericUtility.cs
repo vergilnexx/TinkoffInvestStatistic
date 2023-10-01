@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Helpers;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using TinkoffInvestStatistic.Contracts.Enums;
 
 namespace TinkoffInvestStatistic.Utility
@@ -79,6 +80,18 @@ namespace TinkoffInvestStatistic.Utility
         public static string ToPercentageString(this decimal value)
         {
             return value.ToString("F2", CultureInfo.InvariantCulture) + "%";
+        }
+
+        /// <summary>
+        /// Возвращает распарсенное значение.
+        /// </summary>
+        /// <param name="valueString">Число в строковом представлении.</param>
+        /// <returns>Число.</returns>
+        public static decimal TryParse(string valueString)
+        {
+            NumberFormatInfo format = new NumberFormatInfo();
+            format.NumberDecimalSeparator = ",";
+            return decimal.TryParse(valueString, NumberStyles.Any, format, out var value) ? value : 0;
         }
     }
 }

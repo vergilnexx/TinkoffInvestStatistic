@@ -19,6 +19,7 @@ using XCalendar.Core.Collections;
 using System.Collections.Generic;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.Service;
+using System.Globalization;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -37,7 +38,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Конструктор.
         /// </summary>
-        internal TransferNotificationViewModel()
+        internal TransferNotificationViewModel() : base()
         {
             NotificationPeriodData = new ObservableCollection<TransferNotificationModel>();
 
