@@ -1,4 +1,5 @@
-﻿using Infrastructure.Clients;
+﻿using Domain;
+using Infrastructure.Clients;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using System;
@@ -26,10 +27,11 @@ namespace Services
                 account.Sum = data.TotalAmount?.Sum ?? 0m;
             }
 
-            var accounts = await DataStorageService.Instance.MergeAccountData(brokerAccounts);
+            var accounts = await MergeAccountDataAsync(brokerAccounts);
 
             return accounts.ToArray();
         }
+
         /// <inheritdoc/>
         public async Task<Portfolio> GetPortfolioAsync(string accountId)
         {
@@ -76,8 +78,39 @@ namespace Services
                                 .Select(currencyGroup => new AccountCurrencyData(currencyGroup.Key, currencyGroup.Value))
                                 .ToArray();
 
-            var mergedWithPlanned = await DataStorageService.Instance.MergeCurrenciesData(accountId, dataByClient);
+            var currencyService = DependencyService.Resolve<ICurrencyService>();
+            var mergedWithPlanned = await currencyService.MergeCurrenciesDataAsync(accountId, dataByClient);
             return mergedWithPlanned;
+        }
+
+        /// <summary>
+        /// Объединение данных полученных из внешнего источника с локальными данными.
+        /// </summary>
+        /// <param name="externalAccounts">Внешние данные по счетам.</param>
+        /// <returns>Данные по счетам.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        private async Task<Account[]> MergeAccountDataAsync(IReadOnlyCollection<Account> externalAccounts)
+        {
+            if (externalAccounts == null)
+            {
+                throw new ArgumentNullException(nameof(externalAccounts), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var accounts = await dataAccessService.GetAccountDataAsync();
+            var result = (accounts ?? Array.Empty<AccountData>()).ToList();
+            foreach (var externalAccountId in externalAccounts.Select(a => a.ID))
+            {
+                var account = result.Find(x => x.Number == externalAccountId);
+                if (account == null)
+                {
+                    account = new AccountData(externalAccountId);
+                    result.Add(account);
+                }
+            }
+
+            await dataAccessService.SaveAccountDataAsync(result.ToArray());
+            return externalAccounts.ToArray();
         }
     }
 }

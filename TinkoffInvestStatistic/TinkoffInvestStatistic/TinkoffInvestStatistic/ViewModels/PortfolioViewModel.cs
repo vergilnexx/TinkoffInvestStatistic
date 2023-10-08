@@ -140,7 +140,8 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <returns></returns>
         private async Task LoadStatisticChartAsync()
         {
-            var entries = await ChartUtility.Instance.GetChartAsync(this);
+            var chartUtility = DependencyService.Resolve<ChartUtility>();
+            var entries = await chartUtility.GetChartAsync(this);
             StatisticChart.Entries = entries;
             StatisticChart.LabelMode = entries.Length > 5 ? LabelMode.None : LabelMode.RightOnly;
             OnPropertyChanged(nameof(StatisticChart));

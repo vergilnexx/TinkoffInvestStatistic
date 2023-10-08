@@ -8,21 +8,7 @@ namespace TinkoffInvestStatistic.Utility
     /// </summary>
     public class ChartColorsUtility
     {
-        public static ChartColorsUtility Instance { get; private set; }
-
         int currentIdx = 0;
-
-        public ChartColorsUtility()
-        {
-            if (Instance != null)
-            {
-                throw new Exception("Only one instance of ChartColors is allowed!");
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
 
         static readonly SKColor[] Colors =
         {

@@ -32,8 +32,6 @@ namespace TinkoffInvestStatistic
 
             DependencyService.RegisterSingleton(new ChartUtility());
             DependencyService.RegisterSingleton(new ChartColorsUtility());
-
-            DependencyService.RegisterSingleton(new DataStorageService());
         }
 
         protected override void OnStart()

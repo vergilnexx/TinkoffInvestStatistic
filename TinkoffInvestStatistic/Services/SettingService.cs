@@ -1,10 +1,12 @@
 ﻿using Infrastructure.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Contracts.Enums;
+using Xamarin.Forms;
 
 namespace Services
 {
@@ -22,7 +24,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task<string> GetAsync(OptionType optionType, CancellationToken cancellation)
         {
-            var value = await DataStorageService.Instance.GetOptionAsync(optionType, cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var value = await dataAccessService.GetOptionAsync(optionType, cancellation);
             if (string.IsNullOrEmpty(value))
             {
                 return DefaultValues.FirstOrDefault(dv => dv.Key == optionType).Value;
@@ -33,7 +36,9 @@ namespace Services
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Option>> GetListAsync(CancellationToken cancellation)
         {
-            var list = await DataStorageService.Instance.GetOptionsAsync(cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetOptionsAsync(cancellation);
+            var list = data.Select(d => new Option(d.Type, d.Value)).ToArray();
 
             // Заполнение значениями по-умолчанию, если в базе не было данных по настройке.
             var result = from @default in DefaultValues
@@ -45,9 +50,15 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Task UpdateAsync(OptionType type, string value, CancellationToken cancellation)
+        public async Task UpdateAsync(OptionType type, string value, CancellationToken cancellation)
         {
-            return DataStorageService.Instance.UpdateOptionAsync(type, value, cancellation);
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException(nameof(value), "Значение настройки не может быть пусстым.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.UpdateOptionAsync(type, value, cancellation);
         }
     }
 }
