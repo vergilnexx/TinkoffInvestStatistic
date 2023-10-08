@@ -1,7 +1,10 @@
-﻿using Infrastructure.Services;
+﻿using Domain;
+using Infrastructure.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
+using Xamarin.Forms;
 
 namespace Services
 {
@@ -9,27 +12,33 @@ namespace Services
     public class SectorService : ISectorService
     {
         ///<inheritdoc/>
-        public Task<Sector> GetSectorAsync(int sectorId)
+        public async Task<Sector> GetSectorAsync(int sectorId)
         {
-            return DataStorageService.Instance.GetSectorAsync(sectorId);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetSectorAsync(sectorId);
+            return new Sector(data.Id, data.Name);
         }
 
         ///<inheritdoc/>
-        public Task<IReadOnlyCollection<Sector>> GetSectorsAsync()
+        public async Task<IReadOnlyCollection<Sector>> GetSectorsAsync()
         {
-            return DataStorageService.Instance.GetSectorsAsync();
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var data = await dataAccessService.GetSectorsAsync();
+            return data.Select(s => new Sector(s.Id, s.Name)).ToArray();
         }
 
         ///<inheritdoc/>
-        public Task AddSectorAsync(Sector sector)
+        public async Task AddSectorAsync(Sector sector)
         {
-            return DataStorageService.Instance.AddSectorAsync(sector);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.AddSectorAsync(new SectorData(sector.Id, sector.Name));
         }
 
         ///<inheritdoc/>
-        public Task UpdateSectorAsync(Sector sector)
+        public async Task UpdateSectorAsync(Sector sector)
         {
-            return DataStorageService.Instance.UpdateSectorAsync(sector);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.UpdateSectorAsync(new SectorData(sector.Id, sector.Name));
         }
     }
 }

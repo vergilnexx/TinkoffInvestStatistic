@@ -16,15 +16,16 @@ namespace Services
     public class PositionService : IPositionService
     {
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountId, PositionType positionType)
+        public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountNumber, PositionType positionType)
         {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
-            var portfolio = await bankBrokerClient.GetAccountsFullDataAsync(accountId);
+            var bankBrokerClientFactory = DependencyService.Resolve<ITinkoffInvestClientFactory>();
+            var bankBrokerClient = bankBrokerClientFactory.Get();
+            var portfolio = await bankBrokerClient.GetAccountsFullDataAsync(accountNumber);
 
             // Получаем курсы валют.
             var currencies = portfolio.Positions
                                 .Where(p => p.Type == PositionType.Currency)
-                                .Select(p => new { Currency = EnumHelper.GetCurrencyByFigi(p.Figi), Sum = p.CurrentPrice.Sum })
+                                .Select(p => new { Currency = EnumHelper.GetCurrencyByFigi(p.Figi), Sum = p.CurrentPrice?.Sum ?? 0 })
                                 .Where(p => p.Currency != Currency.Rub)
                                 .Select(p => KeyValuePair.Create(p.Currency!.Value, p.Sum))
                                 .Union(new[] { KeyValuePair.Create(Currency.Rub, 1m) })
@@ -43,12 +44,11 @@ namespace Services
                     position.Name = positionData.Name;
                     position.Ticker = positionData.Ticker;
                 }
-                position.SumInCurrency = position.SumInCurrency;
 
                 // Если цена не в рублях рассчитываем по текущему курсу.
                 if (position.Currency != Currency.Rub)
                 {
-                    var currency = currencies.FirstOrDefault(c => c.Key == position.Currency);
+                    var currency = currencies.Find(c => c.Key == position.Currency);
                     var currencySum = currency.Value;
 
                     position.Sum = position.SumInCurrency * currencySum;
@@ -61,82 +61,98 @@ namespace Services
                 }
             }
 
-            var plannedPositions = await DataStorageService.Instance.GetPlannedPositionsAsync(accountId, positionType);
+            var plannedPositions = await GetPlannedPositionsAsync(accountNumber, positionType);
             var existedPositions = positions.Select(p => p.Figi).ToArray();
-            plannedPositions = plannedPositions.Where(p => !existedPositions.Any(ef => p.Figi == ef)).ToArray(); // отсекаем те, которые уже куплены.
+            plannedPositions = plannedPositions.Where(p => !Array.Exists(existedPositions, ef => p.Figi == ef)).ToArray(); // отсекаем те, которые уже куплены.
             positions = positions.Union(plannedPositions).ToArray();
 
-            positions = await DataStorageService.Instance.MergePositionData(accountId, positionType, positions.ToArray());
+            positions = await MergePositionDataAsync(accountNumber, positionType, positions.ToArray());
 
             return positions.ToArray();
         }
 
         /// <inheritdoc/>
-        public Task SavePlanPercents(string accountId, PositionType positionType, PositionData[] data)
+        public Task SavePlanPercents(string accountNumber, PositionType positionType, PositionData[] data)
         {
-            return DataStorageService.Instance.SavePositionDataAsync(accountId, positionType, data);
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (data == null || data.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var isAnotherType = Array.Exists(data, a => a.Type == positionType);
+            if (!isAnotherType)
+            {
+                throw new ApplicationException("Попытка изменить позиции другого типа.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.SavePositionsDataAsync(accountNumber, data);
         }
 
         /// <inheritdoc/>
-        public Task AddPlannedPositionAsync(string accountId, PositionType type, string figi, string name, string ticker)
+        public async Task AddPlannedPositionAsync(string accountNumber, PositionType type, string figi, string name, string ticker)
         {
-            return DataStorageService.Instance.AddPlannedPositionAsync(accountId, type, figi, name, ticker);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.AddPlannedPositionAsync(accountNumber, type, figi, name, ticker);
         }
 
-        protected decimal? GetSumByPositions(
-            IReadOnlyCollection<Position> positions, 
-            IReadOnlyCollection<CurrencyMoney> fiatPositions, 
-            IReadOnlyCollection<CurrencyMoney> currencies)
+        /// <summary>
+        /// Возвращает планируемые для покупки позиции.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positionType">Тип позиций.</param>
+        /// <returns>Планируемые для покупки позиции.</returns>
+        private async Task<IReadOnlyCollection<Position>> GetPlannedPositionsAsync(string accountNumber, PositionType positionType)
         {
-            var sum = 0m;
-            var positionsByCurrency = positions.GroupBy(p => p.AveragePositionPrice?.Currency);
-            foreach (var group in positionsByCurrency)
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var positions = await dataAccessService.GetPlannedPositionsAsync(accountNumber, positionType);
+            return positions.Select(p => new Position(p.Figi, positionType, p.Name, default, Currency.Rub) { Ticker = p.Ticker }).ToArray();
+        }
+
+        /// <summary>
+        /// Возвращает заполненные данные по позициям счета.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positions">Позиции.</param>
+        /// <returns>Список заполненных позиций.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        private async Task<IEnumerable<Position>> MergePositionDataAsync(string accountNumber, PositionType positionType, IReadOnlyCollection<Position> positions)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
             {
-                var sumInCurrency = group.Sum(p => p.PositionCount * (p.AveragePositionPrice?.Sum ?? 0) + (p.ExpectedYield?.Sum ?? 0));
-                if(group.Key != Currency.Rub)
-                {
-                    decimal? currencySum;
-                    var currency = currencies.FirstOrDefault(c => group.Key == c.Currency);
-                    if (currency == null)
-                    {
-                        throw new ApplicationException("Не найдена валюта типа: " + group.Key);
-                    }
-                    else
-                    {
-                        currencySum = currency.Sum;
-                    }
-
-                    sumInCurrency *= currencySum.Value;
-                }
-
-                sum += sumInCurrency;
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
             }
 
-            foreach (var fiatPosition in fiatPositions)
+            if (positions == null || !positions.Any())
             {
-                if (fiatPosition.Currency != Currency.Rub)
-                {
-                    decimal? currencySum;
-                    var currency = currencies.FirstOrDefault(c => fiatPosition.Currency == c.Currency);
-                    if (currency == null)
-                    {
-                        throw new ApplicationException("Не найдена валюта типа: " + fiatPosition.Currency);
-                    }
-                    else
-                    {
-                        currencySum = currency.Sum;
-                    }
+                return Enumerable.Empty<Position>();
+            }
 
-                    sum += fiatPosition.Sum * currencySum.Value;
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var positionEntities = await dataAccessService.GetPositionsAsync(accountNumber, positionType);
+
+            var result = new List<PositionData>();
+            foreach (var position in positions)
+            {
+                var positionData = positionEntities.FirstOrDefault(i => i.Figi == position.Figi);
+                if (positionData == null)
+                {
+                    positionData = new PositionData(accountNumber, position.Figi, position.Type);
                 }
                 else
                 {
-                    sum += fiatPosition.Sum;
+                    position.PlanPercent = positionData.PlanPercent;
                 }
+                result.Add(positionData);
             }
 
-            return sum;
+            return positions.ToArray();
         }
-
     }
 }

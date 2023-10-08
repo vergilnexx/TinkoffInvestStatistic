@@ -5,28 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.ViewModels;
+using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic.Utility
 {
     public sealed class ChartUtility
     {
-        public static ChartUtility Instance { get; private set; }
-
-        public ChartUtility()
-        {
-            if (Instance != null)
-            {
-                throw new InvalidOperationException("Only one instance of ChartUtility is allowed!");
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
-
         public SKColor GetColor()
         {
-            return ChartColorsUtility.Instance.GetColor();
+            var chartColorsUtility = DependencyService.Resolve<ChartColorsUtility>();
+            return chartColorsUtility.GetColor();
         }
 
         public async Task<ChartEntry[]> GetChartAsync(TransferViewModel vm)

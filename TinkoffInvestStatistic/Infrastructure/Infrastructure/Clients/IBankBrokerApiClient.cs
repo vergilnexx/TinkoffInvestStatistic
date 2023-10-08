@@ -19,9 +19,9 @@ namespace Infrastructure.Clients
         /// <summary>
         /// Возвращает полные данные по счету.
         /// </summary>
-        /// <param name="accountId">Идентификатор счета.</param>
+        /// <param name="accountNumber">Идентификатор счета.</param>
         /// <returns>Полные данные по счету.</returns>
-        public Task<Portfolio> GetAccountsFullDataAsync(string accountId);
+        public Task<Portfolio> GetAccountsFullDataAsync(string accountNumber);
 
         /// <summary>
         /// Возвращает позицию по уникальному фин. идентификатору.

@@ -110,13 +110,15 @@ namespace TinkoffInvestStatistic.ViewModels
 
         public async Task LoadStatisticChartAsync()
         {
-            StatisticChart.Entries = await ChartUtility.Instance.GetChartAsync(this);
+            var chartUtility = DependencyService.Resolve<ChartUtility>();
+            StatisticChart.Entries = await chartUtility.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
 
         public async Task LoadPlannedStatisticChartAsync()
         {
-            PlannedStatisticChart.Entries = await ChartUtility.Instance.GetPlannedCurrenciesEntriesAsync(this);
+            var chartUtility = DependencyService.Resolve<ChartUtility>();
+            PlannedStatisticChart.Entries = await chartUtility.GetPlannedCurrenciesEntriesAsync(this);
             OnPropertyChanged(nameof(PlannedStatisticChart));
         }
 

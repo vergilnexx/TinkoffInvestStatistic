@@ -1,5 +1,6 @@
 ﻿using Domain;
 using System.Threading.Tasks;
+using TinkoffInvestStatistic.Contracts;
 
 namespace Infrastructure.Services
 {
@@ -11,9 +12,17 @@ namespace Infrastructure.Services
         /// <summary>
         /// Сохраняет данные по валютам.
         /// </summary>
-        /// <param name="accountId">Идентификатор счета.</param>
-        /// <param name="currencyDatas">Данные по валютам.</param>
+        /// <param name="accountNumber">Идентификатор счета.</param>
+        /// <param name="currenciesData">Данные по валютам.</param>
         /// <returns></returns>
-        Task SavePlanPercents(string accountId, CurrencyData[] currencyDatas);
+        Task SavePlanPercents(string accountNumber, CurrencyData[] currenciesData);
+
+        /// <summary>
+        /// Возвращает заполненные данные по инструментам.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="currencies">Данные по валюте.</param>
+        /// <returns>Заполненные данные по инструментам</returns>
+        Task<AccountCurrencyData[]> MergeCurrenciesDataAsync(string accountNumber, AccountCurrencyData[] currencies);
     }
 }

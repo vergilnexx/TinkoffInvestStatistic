@@ -21,7 +21,7 @@ namespace Services
                                   .Cast<PositionType>()
                                   .ToArray();
 
-            var filledPositionTypes = await DataStorageService.Instance.MergePositionTypesData(accountNumber, positionTypes);
+            var filledPositionTypes = await MergePositionTypesDataAsync(accountNumber, positionTypes);
 
             var accountService = DependencyService.Resolve<IAccountService>();
             var portfolio = await accountService.GetPortfolioAsync(accountNumber);
@@ -50,7 +50,56 @@ namespace Services
         /// <inheritdoc/>
         public Task SavePlanPercents(string accountNumber, PositionTypeData[] data)
         {
-            return DataStorageService.Instance.SavePositionTypesData(accountNumber, data);
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (data == null || data.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(data), "Полученные данные не могут быть неопределенными.");
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return dataAccessService.SavePositionTypesDataAsync(accountNumber, data);
+        }
+
+        /// <summary>
+        /// Возвращает заполненные данные по инструментам.
+        /// </summary>
+        /// <param name="accountNumber">Номер счета.</param>
+        /// <param name="positionTypes">Типы инструментов.</param>
+        /// <returns>Заполненные данные по инструментам</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ApplicationException"></exception>
+        private async Task<Instrument[]> MergePositionTypesDataAsync(string accountNumber, PositionType[] positionTypes)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                throw new ArgumentNullException(nameof(accountNumber), "Полученные данные не могут быть неопределенными.");
+            }
+
+            if (positionTypes == null || !positionTypes.Any())
+            {
+                return Array.Empty<Instrument>();
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var instrumentEntities = await dataAccessService.GetPositionTypesAsync(accountNumber, positionTypes);
+
+            var result = new List<Instrument>();
+            foreach (var type in positionTypes)
+            {
+                var instrumentEntity = instrumentEntities.FirstOrDefault(i => i.Type == type);
+                if (instrumentEntity == null)
+                {
+                    instrumentEntity = new PositionTypeData(type);
+                }
+
+                result.Add(new Instrument(type, instrumentEntity.PlanPercent));
+            }
+
+            return result.ToArray();
         }
     }
 }

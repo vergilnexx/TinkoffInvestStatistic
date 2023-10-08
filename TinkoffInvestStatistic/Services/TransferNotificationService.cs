@@ -1,9 +1,10 @@
-﻿using Domain;
-using Infrastructure.Services;
+﻿using Infrastructure.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
+using Xamarin.Forms;
 
 namespace Services
 {
@@ -11,27 +12,34 @@ namespace Services
     public class TransferNotificationService : ITransferNotificationService
     {
         /// <inheritdoc/>
-        public Task<int> AddAsync(TransferNotificationDto data, CancellationToken cancellation)
+        public async Task<int> AddAsync(TransferNotificationDto data, CancellationToken cancellation)
         {
-            return DataStorageService.Instance.AddTransferNotificationAsync(data, cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            return await dataAccessService.AddTransferNotificationAsync(data, cancellation);
         }
 
         /// <inheritdoc/>
-        public Task DeleteAsync(int id, CancellationToken cancellation)
+        public async Task DeleteAsync(int id, CancellationToken cancellation)
         {
-            return DataStorageService.Instance.DeleteTransferNotificationAsync(id, cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.DeleteTransferNotificationAsync(id, cancellation);
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyCollection<TransferNotificationDto>> GetListAsync(CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<TransferNotificationDto>> GetListAsync(CancellationToken cancellation)
         {
-            return DataStorageService.Instance.GetTransferNotificationsAsync(cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var notifications = await dataAccessService.GetTransferNotificationsAsync(cancellation);
+            return notifications
+                    .Select(n => new TransferNotificationDto(n.Id, n.StartDate, n.PeriodType))
+                    .ToArray();
         }
 
         /// <inheritdoc/>
-        public Task SaveAsync(IReadOnlyCollection<TransferNotificationDto> notifications, CancellationToken cancellation)
+        public async Task SaveAsync(IReadOnlyCollection<TransferNotificationDto> notifications, CancellationToken cancellation)
         {
-            return DataStorageService.Instance.SaveTransferNotificationsAsync(notifications, cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            await dataAccessService.SaveTransferNotificationsAsync(notifications, cancellation);
         }
     }
 }
