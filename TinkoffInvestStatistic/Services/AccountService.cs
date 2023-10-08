@@ -18,7 +18,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Account>> GetAccountsAsync()
         {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+            var bankBrokerClientFactory = DependencyService.Resolve<ITinkoffInvestClientFactory>();
+            var bankBrokerClient = bankBrokerClientFactory.Get();
             var brokerAccounts = await bankBrokerClient.GetAccountsAsync();
 
             foreach (var account in brokerAccounts)
@@ -35,7 +36,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task<Portfolio> GetPortfolioAsync(string accountId)
         {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+            var bankBrokerClientFactory = DependencyService.Resolve<ITinkoffInvestClientFactory>();
+            var bankBrokerClient = bankBrokerClientFactory.Get();
 
             return await bankBrokerClient.GetAccountsFullDataAsync(accountId);
         }
@@ -43,7 +45,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<AccountCurrencyData>> GetAccountDataByCurrenciesTypes(string accountId)
         {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+            var bankBrokerClientFactory = DependencyService.Resolve<ITinkoffInvestClientFactory>();
+            var bankBrokerClient = bankBrokerClientFactory.Get();
             Portfolio portfolio = await bankBrokerClient.GetAccountsFullDataAsync(accountId);
 
             // Группируем валюты и рассчитываем их стоимость.
