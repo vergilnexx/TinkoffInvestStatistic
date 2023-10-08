@@ -2,6 +2,7 @@
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using Services;
+using TinkoffInvest;
 using TinkoffInvest.Contracts.Instruments;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvest.Mappers;
@@ -40,7 +41,9 @@ namespace Infrastructure.Container
 
         private static void ConfigureClients()
         {
-            DependencyService.Register<IBankBrokerApiClient, TinkoffInvestClient>();
+            DependencyService.Register<ITinkoffInvestClientFactory, TinkoffInvestClientFactory>();
+            DependencyService.Register<CachedTinkoffInvestClient>();
+            DependencyService.Register<TinkoffInvestClient>();
         }
 
         private static void ConfigureMappers()

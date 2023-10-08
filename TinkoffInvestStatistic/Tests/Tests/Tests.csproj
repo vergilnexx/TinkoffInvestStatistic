@@ -19,8 +19,4 @@
     <ProjectReference Include="..\..\TinkoffInvestStatistic\TinkoffInvestStatistic\TinkoffInvestStatistic.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BusinessLogic\" />
-  </ItemGroup>
-
 </Project>

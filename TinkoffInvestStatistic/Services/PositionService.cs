@@ -18,7 +18,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Position>> GetPositionsByTypeAsync(string accountNumber, PositionType positionType)
         {
-            var bankBrokerClient = DependencyService.Resolve<IBankBrokerApiClient>();
+            var bankBrokerClientFactory = DependencyService.Resolve<ITinkoffInvestClientFactory>();
+            var bankBrokerClient = bankBrokerClientFactory.Get();
             var portfolio = await bankBrokerClient.GetAccountsFullDataAsync(accountNumber);
 
             // Получаем курсы валют.
