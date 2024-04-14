@@ -35,6 +35,7 @@ namespace Infrastructure.Container
             DependencyService.Register<IExportService, ExportService>();
             DependencyService.Register<ITransferService, TransferService>();
             DependencyService.Register<ITransferNotificationService, TransferNotificationService>();
+            DependencyService.Register<ICacheService, CacheService>();
 
             DependencyService.Register<IDateTimeProvider, DateTimeProvider>();
         }

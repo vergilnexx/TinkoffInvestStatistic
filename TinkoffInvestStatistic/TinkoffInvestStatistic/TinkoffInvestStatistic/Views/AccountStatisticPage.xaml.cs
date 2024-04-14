@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using TinkoffInvestStatistic.ViewModels;
+﻿using TinkoffInvestStatistic.ViewModels;
 using TinkoffInvestStatistic.Views.Base;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TinkoffInvestStatistic.Views
@@ -17,8 +15,6 @@ namespace TinkoffInvestStatistic.Views
 
             BindingContext = _viewModel;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <inheritdoc/>
         public override void RefreshView()

@@ -8,7 +8,7 @@
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     x:DataType="local:SettingViewModel" Command="{Binding LoadOptionsCommand}" 
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="20, 20, Auto" 
+        <Grid RowDefinitions="20, 40, Auto" 
                 ColumnDefinitions="Auto, *"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
@@ -22,7 +22,13 @@
                     Grid.Column="1"
                     Grid.Row="0"
                     CheckedChanged="OnShowHideMoneyCheckedChanged"
-                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
+                    Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}" />
+            <Button Grid.Row="1" 
+                    Grid.ColumnSpan="2" 
+                    Text="Сбросить кэш"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
+                    TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LighTextColor}}" 
+                    Command="{Binding ResetCacheCommand}" />
         </Grid>
     </RefreshView>
 </ContentPage>
