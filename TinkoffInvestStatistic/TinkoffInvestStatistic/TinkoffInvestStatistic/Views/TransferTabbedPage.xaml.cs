@@ -20,11 +20,6 @@ namespace TinkoffInvestStatistic.Views
             BindingContext = _viewModel;
         }
 
-        /// <summary>
-        /// Событие изменения свойства.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <inheritdoc/>
         public override void RefreshView()
         {

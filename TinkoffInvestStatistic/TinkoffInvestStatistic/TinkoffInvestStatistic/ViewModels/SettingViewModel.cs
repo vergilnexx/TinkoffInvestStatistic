@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts.Enums;
-using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.ViewModels.Base;
 using Xamarin.Forms;
 
@@ -22,12 +21,18 @@ namespace TinkoffInvestStatistic.ViewModels
         public SettingViewModel()
         {
             LoadOptionsCommand = new Command(async () => await ExecuteLoadOptionsCommandAsync());
+            ResetCacheCommand = new Command(async() => await ResetCache());
         }
 
         /// <summary>
         /// Команда на загрузку настроек.
         /// </summary>
         public Command LoadOptionsCommand { get; }
+
+        /// <summary>
+        /// Команда на сброс кэша.
+        /// </summary>
+        public Command ResetCacheCommand { get; }
 
         /// <summary>
         /// Скрывать данные при входе.
@@ -80,6 +85,26 @@ namespace TinkoffInvestStatistic.ViewModels
                 using var cancelTokenSource = new CancellationTokenSource();
                 var cancellation = cancelTokenSource.Token;
                 await service.UpdateAsync(optionType, value, cancellation);
+            }
+            catch (Exception ex)
+            {
+                await _messageService.ShowAsync(ex.Message);
+                Debug.WriteLine(ex);
+            }
+        }
+
+        /// <summary>
+        /// Сбрасывает кэш.
+        /// </summary>
+        public async Task ResetCache()
+        {
+            try
+            {
+                var service = DependencyService.Get<ICacheService>();
+
+                service.ResetCache();
+
+                await _messageService.ShowAsync("Кэш успешно сброшен");
             }
             catch (Exception ex)
             {

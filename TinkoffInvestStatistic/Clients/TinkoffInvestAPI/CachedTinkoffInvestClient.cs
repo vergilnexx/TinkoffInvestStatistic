@@ -1,7 +1,6 @@
 ﻿using Clients.TinkoffInvest;
 using Infrastructure.Clients;
-using Microsoft.Extensions.Caching.Memory;
-using System;
+using Infrastructure.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
@@ -16,48 +15,39 @@ namespace TinkoffInvest
     public class CachedTinkoffInvestClient : IBankBrokerApiClient
     {
         private readonly IBankBrokerApiClient _bankBrokerClient;
-        private readonly MemoryCache _cache;
+        private readonly ICacheService _cacheService;
 
         public CachedTinkoffInvestClient() 
         {
             _bankBrokerClient = DependencyService.Resolve<TinkoffInvestClient>();
-            _cache = new MemoryCache(new MemoryCacheOptions());
+            _cacheService = DependencyService.Resolve<ICacheService>();
         }
 
         /// <inheritdoc/>
         public async Task<Position> FindPositionByFigiAsync(string figi, PositionType positionType)
         {
-            return await _cache.GetOrCreate(
+            return await _cacheService.GetOrCreateAsync(
                             "position_" + figi,
-                            cacheEntry =>
-                            {
-                                cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(5);
-                                return _bankBrokerClient.FindPositionByFigiAsync(figi, positionType);
-                            });
+                            cacheExpirationInMinutes: 5,
+                            () => _bankBrokerClient.FindPositionByFigiAsync(figi, positionType));
         }
 
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Account>> GetAccountsAsync()
         {
-            return await _cache.GetOrCreate(
+            return await _cacheService.GetOrCreateAsync(
                             "accounts",
-                            cacheEntry =>
-                            {
-                                cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(5);
-                                return _bankBrokerClient.GetAccountsAsync();
-                            });
+                            cacheExpirationInMinutes: 5,
+                            () => _bankBrokerClient.GetAccountsAsync());
         }
 
         /// <inheritdoc/>
         public async Task<Portfolio> GetAccountsFullDataAsync(string accountNumber)
         {
-            return await _cache.GetOrCreate(
+            return await _cacheService.GetOrCreateAsync(
                             "account_" + accountNumber,
-                            cacheEntry =>
-                            {
-                                cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(10);
-                                return _bankBrokerClient.GetAccountsFullDataAsync(accountNumber);
-                            });
+                            cacheExpirationInMinutes: 10,
+                            () => _bankBrokerClient.GetAccountsFullDataAsync(accountNumber));
         }
     }
 }
