@@ -1,4 +1,4 @@
-﻿using Clients.TinkoffInvest;
+using Clients.TinkoffInvest;
 using Infrastructure.Clients;
 using Infrastructure.Services;
 using Services;
@@ -7,7 +7,7 @@ using TinkoffInvest.Contracts.Instruments;
 using TinkoffInvest.Contracts.Portfolio;
 using TinkoffInvest.Mappers;
 using TinkoffInvestStatistic.Contracts;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace Infrastructure.Container
 {

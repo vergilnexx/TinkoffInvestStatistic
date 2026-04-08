@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.ViewModels;
 using TinkoffInvestStatistic.Views.Base;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Xaml;
 
 namespace TinkoffInvestStatistic.Views
 {
@@ -30,11 +29,12 @@ namespace TinkoffInvestStatistic.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            var t = Application.Current.MainPage;
-            var page = t.Navigation.NavigationStack.Last();
-            var mainPage = page.BindingContext as AccountStatisticViewModel;
-            _viewModel.AccountId = mainPage.AccountId;
             _viewModel.OnAppearing();
+        }
+
+        public void SetAccountId(string? accountId)
+        {
+            _viewModel.AccountId = accountId ?? string.Empty;
         }
 
         private void PlanPercent_Completed(object sender, System.EventArgs e)

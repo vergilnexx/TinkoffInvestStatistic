@@ -1,11 +1,13 @@
-﻿using Infrastructure.Container;
+using Infrastructure.Container;
 using Infrastructure.Services;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Services;
+using System;
 using System.Threading.Tasks;
 using System.Threading;
 using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
-using Xamarin.Forms;
 
 namespace TinkoffInvestStatistic
 {
@@ -15,7 +17,7 @@ namespace TinkoffInvestStatistic
         {
             InitializeComponent();
 
-            Application.Current.UserAppTheme = OSAppTheme.Dark;
+            Application.Current!.UserAppTheme = AppTheme.Dark;
 
             ConfigureUtility();
 
@@ -46,11 +48,22 @@ namespace TinkoffInvestStatistic
 
         private void InitSettings()
         {
-            var service = DependencyService.Get<ISettingService>();
+            try
+            {
+                var service = DependencyService.Get<ISettingService>();
+                if (service == null)
+                {
+                    return;
+                }
 
-            using var cancelTokenSource = new CancellationTokenSource();
-            var cancellation = cancelTokenSource.Token;
-            InitShowHideMoneySetting(service, cancellation);
+                using var cancelTokenSource = new CancellationTokenSource();
+                var cancellation = cancelTokenSource.Token;
+                InitShowHideMoneySetting(service, cancellation);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitSettings failed: {ex}");
+            }
         }
 
         private static void InitShowHideMoneySetting(ISettingService service, CancellationToken cancellation)

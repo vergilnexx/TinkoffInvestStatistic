@@ -1,9 +1,9 @@
-﻿using Plugin.Fingerprint;
+using Plugin.Fingerprint;
 using System;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Service;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Xaml;
 
 namespace TinkoffInvestStatistic.Views.Base
 {
@@ -29,6 +29,11 @@ namespace TinkoffInvestStatistic.Views.Base
 
         private void Init()
         {
+            if (_hideShowMoneyService == null)
+            {
+                return;
+            }
+
             var toolbarItem = new ToolbarItem() { IconImageSource = _hideShowMoneyService.GetIconFileName(), Priority = 0, Order = ToolbarItemOrder.Primary };
             toolbarItem.Clicked += OnShowHideMoneyClicked;
             this.ToolbarItems.Add(toolbarItem);
@@ -36,6 +41,11 @@ namespace TinkoffInvestStatistic.Views.Base
 
         private async void OnShowHideMoneyClicked(object sender, EventArgs e)
         {
+            if (_hideShowMoneyService == null)
+            {
+                return;
+            }
+
             var isShow = _hideShowMoneyService.IsShow();
             if (!isShow && !(await _hideShowMoneyService.IsAvailableShowAsync()))
             {

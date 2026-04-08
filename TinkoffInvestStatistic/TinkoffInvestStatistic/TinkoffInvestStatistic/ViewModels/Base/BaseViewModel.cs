@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TinkoffInvestStatistic.Service;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels.Base
 {

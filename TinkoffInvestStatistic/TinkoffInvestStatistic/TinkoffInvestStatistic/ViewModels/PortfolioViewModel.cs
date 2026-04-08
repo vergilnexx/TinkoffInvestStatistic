@@ -1,4 +1,4 @@
-﻿using Domain;
+using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,14 +15,14 @@ using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
     [QueryProperty(nameof(AccountId), nameof(AccountId))]
     [QueryProperty(nameof(PositionType), nameof(PositionType))]
-    [QueryProperty(nameof(GroupPlanPercent), nameof(GroupPlanPercent))]
-    [QueryProperty(nameof(AccountSum), nameof(AccountSum))]
+    [QueryProperty(nameof(GroupPlanPercentQuery), nameof(GroupPlanPercent))]
+    [QueryProperty(nameof(AccountSumQuery), nameof(AccountSum))]
     public class PortfolioViewModel : BaseViewModel
     {
         public PortfolioViewModel()
@@ -72,9 +73,47 @@ namespace TinkoffInvestStatistic.ViewModels
         public decimal GroupPlanPercent { get; set; }
 
         /// <summary>
+        /// Принимает значение из query string (всегда с точкой из навигации) без ошибки формата в ru-RU.
+        /// </summary>
+        public string GroupPlanPercentQuery
+        {
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
+
+                if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
+                {
+                    GroupPlanPercent = d;
+                }
+            }
+        }
+
+        /// <summary>
         /// Сумма счета.
         /// </summary>
         public decimal AccountSum { get; set; }
+
+        /// <summary>
+        /// Принимает значение из query string (InvariantCulture), иначе Shell парсит decimal под ru-RU и падает на «1503320.09».
+        /// </summary>
+        public string AccountSumQuery
+        {
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
+
+                if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
+                {
+                    AccountSum = d;
+                }
+            }
+        }
 
         /// <summary>
         /// Тип инструментов.
@@ -150,7 +189,7 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task LoadGroupedPositionsByAccountIdAsync()
         {
             Sum = SumPercent = string.Empty;
-            SumPercentColor = Color.Default;
+            SumPercentColor = Colors.Transparent;
             IsRefreshing = true;
 
             try
@@ -172,7 +211,8 @@ namespace TinkoffInvestStatistic.ViewModels
                     DifferencePercentUtility.GetColorPercentWithoutAllowedDifference(sumPercent, GroupPlanPercent);
                 OnPropertyChanged(nameof(SumPercentColor));
 
-                await LoadStatisticChartAsync();
+                // Temporarily disable chart rendering on this page to avoid
+                // native graphics crashes on some Android emulator/device setups.
             }
             catch (Exception ex)
             {
@@ -204,7 +244,7 @@ namespace TinkoffInvestStatistic.ViewModels
                     SumInCurrency = p.SumInCurrency,
                     DifferenceSum = p.DifferenceSum,
                     DifferenceSumInCurrency = p.ExpectedYield?.Sum ?? 0,
-                    DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Color.Green : Color.Red,
+                    DifferenceSumInCurrencyTextColor = (p.ExpectedYield?.Sum ?? 0) >= 0 ? Colors.Green : Colors.Red,
                     IsBlocked = p.IsBlocked,
                     SumText = GetViewMoney(() =>
                         p.Currency != Currency.Rub

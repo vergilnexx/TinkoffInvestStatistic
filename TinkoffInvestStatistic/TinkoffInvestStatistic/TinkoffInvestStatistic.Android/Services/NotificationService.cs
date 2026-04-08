@@ -2,7 +2,7 @@
 using System.Threading;
 using Plugin.LocalNotification;
 using TinkoffInvestStatistic.Droid.Services;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 using TinkoffInvestStatistic.Contracts;
 using System;
 using TinkoffInvestStatistic.Contracts.Enums;

@@ -1,7 +1,7 @@
 ﻿using Infrastructure.Helpers;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Utility;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.Models
 {

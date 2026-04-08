@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TinkoffInvest;
 using TinkoffInvest.Mappers;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 using Newtonsoft.Json;
 using TinkoffContracts = TinkoffInvest.Contracts;
 using TinkoffInvestStatistic.Contracts;

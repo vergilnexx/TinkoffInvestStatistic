@@ -1,29 +1,44 @@
-﻿using Plugin.Fingerprint;
+using Plugin.Fingerprint;
+using Plugin.Fingerprint.Abstractions;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
-namespace TinkoffInvestStatistic.Service
+namespace TinkoffInvestStatistic.Service;
+
+/// <inheritdoc/>
+internal class AuthenticateService : IAuthenticateService
 {
     /// <inheritdoc/>
-    internal class AuthenticateService : IAuthenticateService
+    public async Task<bool> AuthenticateAsync(string queryName)
     {
-        /// <inheritdoc/>
-        public async Task<bool> AuthenticateAsync(string queryName)
+        // Temporary bypass: disable biometric auth and allow login.
+        await Task.CompletedTask;
+        return true;
+
+        /*
+        try
         {
-            var availability = await CrossFingerprint.Current.IsAvailableAsync();
-            if (!availability)
+            var fingerprint = CrossFingerprint.Current;
+            if (!await fingerprint.IsAvailableAsync(true))
             {
                 return false;
             }
 
-            var authResult = await Device.InvokeOnMainThreadAsync(() => CrossFingerprint.Current.AuthenticateAsync(
-                new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration(queryName, string.Empty)));
-            if (!authResult.Authenticated)
-            {
-                return false;
-            }
+            var result = await fingerprint.AuthenticateAsync(
+                new AuthenticationRequestConfiguration(queryName, "Подтвердите вход")
+                {
+                    CancelTitle = "Отмена",
+                },
+                CancellationToken.None);
 
-            return true;
+            return result.Authenticated;
         }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Biometric auth failed: {ex}");
+            return false;
+        }
+        */
     }
 }

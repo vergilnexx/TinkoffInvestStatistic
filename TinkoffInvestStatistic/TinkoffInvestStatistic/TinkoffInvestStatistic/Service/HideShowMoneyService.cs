@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.Service
 {

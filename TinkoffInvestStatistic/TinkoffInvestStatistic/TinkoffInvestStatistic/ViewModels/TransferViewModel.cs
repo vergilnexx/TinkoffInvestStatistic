@@ -1,4 +1,4 @@
-﻿using Infrastructure.Services;
+using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
 using System;
@@ -15,7 +15,7 @@ using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -39,7 +39,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Диаграммы статистики.
         /// </summary>
-        public Chart StatisticChart { get; private set; }
+        public PieChart StatisticChart { get; private set; }
 
         /// <summary>
         /// Данные о зачислениях по брокерам.
@@ -158,7 +158,8 @@ namespace TinkoffInvestStatistic.ViewModels
                 Sum = NumericUtility.ToCurrencyString(Brokers.Sum(b => b.Sum), Contracts.Enums.Currency.Rub);
                 OnPropertyChanged(nameof(Sum));
 
-                await LoadStatisticChartAsync();
+                // Temporarily disable chart rendering on this page to avoid
+                // native graphics crashes on some Android emulator/device setups.
             }
             catch (Exception ex)
             {

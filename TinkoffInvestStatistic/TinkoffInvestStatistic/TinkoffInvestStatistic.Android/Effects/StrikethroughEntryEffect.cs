@@ -1,6 +1,6 @@
 ﻿using Android.Graphics;
 using TinkoffInvestStatistic.Effects;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 using Xamarin.Forms.Platform.Android;
 using TinkoffInvestStatistic.Droid.Effects;
 

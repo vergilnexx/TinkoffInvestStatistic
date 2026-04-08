@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using TinkoffInvestStatistic.ViewModels;
 using TinkoffInvestStatistic.Views.Base;
-using Xamarin.Forms.Xaml;
+using Microsoft.Maui.Controls.Xaml;
 
 namespace TinkoffInvestStatistic.Views
 {

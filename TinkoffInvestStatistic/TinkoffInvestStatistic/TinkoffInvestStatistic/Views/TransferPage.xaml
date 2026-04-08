@@ -1,47 +1,42 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"  
              x:Class="TinkoffInvestStatistic.Views.TransferPage"
-             xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
              xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
              Title="{Binding Title}">
     <RefreshView BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     Command="{Binding LoadCommand}" 
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="Auto, 1, *, Auto, Auto" ColumnDefinitions="*"
+        <Grid RowDefinitions="1, *, Auto, Auto" ColumnDefinitions="*"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
-            <forms:ChartView Chart="{Binding StatisticChart}" 
-                             HeightRequest="150"
-                             Grid.Row="0"
-                             BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
-                             IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
-            </forms:ChartView>
-            
-            <BoxView HeightRequest="1" Grid.Row="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
+            <BoxView HeightRequest="1" Grid.Row="0" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
 
-            <ScrollView Grid.Row="2">
+            <ScrollView Grid.Row="1">
                 <StackLayout BindableLayout.ItemsSource="{Binding Brokers}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <xct:Expander IsExpanded="True">
-                                <xct:Expander.Header>
-                                    <Grid RowDefinitions="*" ColumnDefinitions="150, *, Auto" 
+                            <toolkit:Expander IsExpanded="True">
+                                <toolkit:Expander.Header>
+                                    <Grid RowDefinitions="35" ColumnDefinitions="*, Auto, Auto" 
                                           BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
                                         <Label Text="{Binding BrokerName}"
                                                 Grid.Column="0"
+                                                Padding="0, 10, 0, 0"
                                                 TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
 
                                         <Label Text="{Binding SumText}"
                                                 Grid.Column="1"
+                                                Padding="0, 10, 0, 0"
                                                 HorizontalOptions="End" 
                                                 HorizontalTextAlignment="End"
                                                 TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
                                         <ImageButton Source="icon_plus.png"
                                                         Grid.Column="2"
+                                                        Padding="0, 5, 0, 0"
                                                         BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
                                                         WidthRequest="40"
                                                         HorizontalOptions="Center"
@@ -50,11 +45,11 @@
                                                         CommandParameter="{Binding .}"
                                         />
                                     </Grid>
-                                </xct:Expander.Header>
+                                </toolkit:Expander.Header>
                                 <StackLayout Margin="20, 0, 0, 0" BindableLayout.ItemsSource="{Binding AccountData}">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid RowDefinitions="*" ColumnDefinitions="*, Auto, 15, 100, 15">
+                                            <Grid RowDefinitions="Auto" ColumnDefinitions="*, Auto, 25, 100, 15">
                                                 <Label Grid.Column="0"
                                                         Padding="0, 12, 0, 0"
                                                         Text="{Binding Name}"
@@ -66,7 +61,7 @@
                                                         HorizontalTextAlignment="End"
                                                         TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
                                                 <Label Grid.Column="2"
-                                                        Padding="0, 12, 0, 0"
+                                                        Padding="10, 12, 0, 0"
                                                         Text="+"
                                                         TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
                                                 <Entry Keyboard="Numeric" 
@@ -75,7 +70,7 @@
                                                         Text="{Binding Amount}" 
                                                         TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"
                                                         Grid.Column="3"
-                                                        WidthRequest="180">
+                                                        WidthRequest="100">
                                                 </Entry>
                                                 <Label Grid.Column="4"
                                                         Padding="0, 12, 0, 0"
@@ -85,14 +80,14 @@
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </StackLayout>
-                            </xct:Expander>
+                            </toolkit:Expander>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </StackLayout>
             </ScrollView>
 
             <StackLayout Padding="10" 
-                         Grid.Row="3"
+                         Grid.Row="2"
                          IsVisible="{Binding IsRefreshing, Converter={Helpers:InverseBoolConverter}}">
                 <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"/>
                 <Grid ColumnDefinitions="80, *">
@@ -115,7 +110,7 @@
             </StackLayout>
             
             <Button Text="Сохранить"
-                    Grid.Row="4"
+                    Grid.Row="3"
                     WidthRequest="250" 
                     HorizontalOptions="Center" 
                     HeightRequest="50" 

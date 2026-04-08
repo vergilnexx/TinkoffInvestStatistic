@@ -1,4 +1,4 @@
-﻿using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.Utility
 {
@@ -23,10 +23,10 @@ namespace TinkoffInvestStatistic.Utility
             if (currentPercentValue > plannedPercentValue + AllowDifferencePercent ||
                 currentPercentValue < plannedPercentValue - AllowDifferencePercent)
             {
-                return Color.Red;
+                return Colors.Red;
             }
 
-            return Color.Green;
+            return Colors.Green;
         }
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace TinkoffInvestStatistic.Utility
         {
             if (currentPercentValue != plannedPercentValue)
             {
-                return Color.Red;
+                return Colors.Red;
             }
 
-            return Color.Green;
+            return Colors.Green;
         }
     }
 }

@@ -1,0 +1,25 @@
+using System;
+using System.IO;
+using TinkoffInvestStatistic.Service;
+using Microsoft.Maui.Controls;
+using TinkoffInvestStatistic.Droid.Services;
+
+[assembly: Dependency(typeof(FileSystemService))]
+namespace TinkoffInvestStatistic.Droid.Services
+{
+    /// <inheritdoc/>
+    public class FileSystemService : IFileSystemService
+    {
+        /// <inheritdoc/>
+        public string GetExternalStorage(string folderName)
+        {
+            string externalStorageDirectory = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+            string documentsDirectory = Path.Combine(externalStorageDirectory, folderName);
+            if (!File.Exists(documentsDirectory))
+            {
+                Directory.CreateDirectory(documentsDirectory);
+            }
+            return documentsDirectory;
+        }
+    }
+}

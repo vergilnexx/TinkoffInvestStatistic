@@ -1,4 +1,4 @@
-﻿using Domain;
+using Domain;
 using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
@@ -13,7 +13,7 @@ using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -40,8 +40,8 @@ namespace TinkoffInvestStatistic.ViewModels
         public Color SumPercentColor { get; private set; }
 
         public ObservableCollection<CurrencyTypeModel> CurrencyTypes { get; }
-        public Chart StatisticChart { get; private set; }
-        public Chart PlannedStatisticChart { get; private set; }
+        public PieChart StatisticChart { get; private set; }
+        public PieChart PlannedStatisticChart { get; private set; }
         public Command LoadCurrenciesCommand { get; }
 
         public CurrencyViewModel()
@@ -67,7 +67,7 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task ExecuteLoadCurrenciesCommandAsync()
         {
             Sum = SumPercent = string.Empty;
-            SumPercentColor = Color.Default;
+            SumPercentColor = Colors.Transparent;
             IsRefreshing = true;
 
             try

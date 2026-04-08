@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using TinkoffInvestStatistic.Droid.Services;
 using TinkoffInvestStatistic.Service;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 [assembly: Dependency(typeof(FileSystemService))]
 namespace TinkoffInvestStatistic.Droid.Services
