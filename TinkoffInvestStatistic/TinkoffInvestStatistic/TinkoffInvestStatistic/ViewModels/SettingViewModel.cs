@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.ViewModels.Base;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {

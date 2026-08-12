@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels" 
              x:Class="TinkoffInvestStatistic.Views.SettingPage"
@@ -8,7 +8,7 @@
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     x:DataType="local:SettingViewModel" Command="{Binding LoadOptionsCommand}" 
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="20, 40, Auto" 
+        <Grid RowDefinitions="20, 50, Auto" 
                 ColumnDefinitions="Auto, *"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
@@ -24,7 +24,8 @@
                     CheckedChanged="OnShowHideMoneyCheckedChanged"
                     Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}" />
             <Button Grid.Row="1" 
-                    Grid.ColumnSpan="2" 
+                    Grid.ColumnSpan="2"
+                    Margin="0, 10, 0, 0"
                     Text="Сбросить кэш"
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LighTextColor}}" 

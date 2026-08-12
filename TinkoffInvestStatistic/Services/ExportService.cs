@@ -1,4 +1,5 @@
-﻿using Infrastructure.Services;
+using Infrastructure.Services;
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Contracts.Export;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace Services
 {
@@ -33,6 +34,20 @@ namespace Services
             await SaveSettingsAsync(categories, folder, cancellation);
             await SaveDataAsync(categories, folder, cancellation);
             await SaveTransfersAsync(categories, folder, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task ImportAsync(
+            ExportCategories categories,
+            string folder,
+            CancellationToken cancellation,
+            string? settingsPath = null,
+            string? dataPath = null,
+            string? transfersPath = null)
+        {
+            await ImportSettingsAsync(categories, folder, cancellation, settingsPath);
+            await ImportDataAsync(categories, folder, cancellation, dataPath);
+            await ImportTransfersAsync(categories, folder, cancellation, transfersPath);
         }
 
         private async Task SaveSettingsAsync(ExportCategories category, string folder, CancellationToken cancellation)
@@ -76,6 +91,161 @@ namespace Services
         {
             var path = Path.Combine(folder, $"exported_{category}_{_dateTimeProvider.UtcNow:dd.MM.yyyy}.txt");
             await _fileservice.SaveFileAsync(data,  path, cancellation);
+        }
+
+        private async Task ImportSettingsAsync(
+            ExportCategories categories,
+            string folder,
+            CancellationToken cancellation,
+            string? filePath)
+        {
+            if (!categories.HasFlag(ExportCategories.Settings))
+            {
+                return;
+            }
+
+            var path = string.IsNullOrWhiteSpace(filePath) ? GetLatestFilePath(ExportCategories.Settings, folder) : filePath;
+            if (path == null)
+            {
+                return;
+            }
+
+            var settings = await _fileservice.LoadFileAsync<OptionExportData[]>(path, cancellation);
+            foreach (var setting in settings ?? Array.Empty<OptionExportData>())
+            {
+                if (setting == null)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(setting.Value))
+                {
+                    continue;
+                }
+
+                await _settingService.UpdateAsync(setting.Type, setting.Value, cancellation);
+            }
+        }
+
+        private async Task ImportDataAsync(
+            ExportCategories categories,
+            string folder,
+            CancellationToken cancellation,
+            string? filePath)
+        {
+            if (!categories.HasFlag(ExportCategories.Data))
+            {
+                return;
+            }
+
+            var path = string.IsNullOrWhiteSpace(filePath) ? GetLatestFilePath(ExportCategories.Data, folder) : filePath;
+            if (path == null)
+            {
+                return;
+            }
+
+            var accounts = await _fileservice.LoadFileAsync<AccountExportData[]>(path, cancellation);
+            if (accounts == null || accounts.Length == 0)
+            {
+                return;
+            }
+
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            var accountData = accounts
+                .Where(a => a != null)
+                .Where(a => !string.IsNullOrEmpty(a.AccountId))
+                .Select(a => new AccountData(a.AccountId!))
+                .ToArray();
+            await dataAccessService.SaveAccountDataAsync(accountData);
+
+            foreach (var account in accounts.Where(a => a != null && !string.IsNullOrEmpty(a.AccountId)))
+            {
+                var accountId = account.AccountId!;
+
+                var positionTypes = (account.PositionTypes ?? Array.Empty<PositionTypeExportData>())
+                    .Select(pt => new PositionTypeData(accountId, pt.Type, pt.PlanPercent))
+                    .ToArray();
+                await dataAccessService.SavePositionTypesDataAsync(accountId, positionTypes);
+
+                var positions = (account.PositionTypes ?? Array.Empty<PositionTypeExportData>())
+                    .SelectMany(pt => pt.Positions ?? Array.Empty<PositionExportData>(),
+                        (pt, p) => new { pt.Type, Position = p })
+                    .Where(x => !string.IsNullOrEmpty(x.Position.Figi))
+                    .Select(x => new PositionData(accountId, x.Position.Figi!, x.Type)
+                    {
+                        PlanPercent = x.Position.PlanPercent
+                    })
+                    .ToArray();
+                await dataAccessService.SavePositionsDataAsync(accountId, positions);
+
+                var currencies = (account.Currencies ?? Array.Empty<CurrencyExportData>())
+                    .Select(c => new CurrencyData(accountId, c.Currency, c.PlanPercent ?? 0m))
+                    .ToArray();
+                await dataAccessService.SaveCurrenciesDataAsync(accountId, currencies);
+            }
+        }
+
+        private async Task ImportTransfersAsync(
+            ExportCategories categories,
+            string folder,
+            CancellationToken cancellation,
+            string? filePath)
+        {
+            if (!categories.HasFlag(ExportCategories.Transfers))
+            {
+                return;
+            }
+
+            var path = string.IsNullOrWhiteSpace(filePath) ? GetLatestFilePath(ExportCategories.Transfers, folder) : filePath;
+            if (path == null)
+            {
+                return;
+            }
+
+            var transfers = await _fileservice.LoadFileAsync<TransferExportData[]>(path, cancellation);
+            var dataAccessService = DependencyService.Resolve<IDataStorageAccessService>();
+            foreach (var transfer in (transfers ?? Array.Empty<TransferExportData>()).Where(t => t != null && !string.IsNullOrEmpty(t.BrokerName)))
+            {
+                await dataAccessService.SaveTransferAsync(transfer.BrokerName, cancellation);
+                var broker = await dataAccessService.GetTransferAsync(transfer.BrokerName, cancellation);
+                var accounts = await dataAccessService.GetTransfersBrokerAccountsAsync(broker.Id, cancellation);
+
+                foreach (var account in transfer.AccountData ?? Array.Empty<TransferAccountExportData>())
+                {
+                    if (account == null)
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(account.Name))
+                    {
+                        continue;
+                    }
+
+                    var existing = accounts.FirstOrDefault(a => a.Name == account.Name);
+                    if (existing == null)
+                    {
+                        await dataAccessService.AddTransferBrokerAccountAsync(transfer.BrokerName, account.Name, cancellation);
+                        accounts = await dataAccessService.GetTransfersBrokerAccountsAsync(broker.Id, cancellation);
+                        existing = accounts.First(a => a.Name == account.Name);
+                    }
+
+                    await dataAccessService.SaveTransferBrokerAccountAsync(existing.Id, account.Sum, cancellation);
+                }
+            }
+        }
+
+        private static string? GetLatestFilePath(ExportCategories category, string folder)
+        {
+            if (!Directory.Exists(folder))
+            {
+                return null;
+            }
+
+            return Directory
+                .GetFiles(folder, $"exported_{category}_*.txt")
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
         }
 
         /// <summary>

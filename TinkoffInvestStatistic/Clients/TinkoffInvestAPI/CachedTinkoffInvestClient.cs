@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
 using TinkoffInvestStatistic.Contracts.Enums;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvest
 {

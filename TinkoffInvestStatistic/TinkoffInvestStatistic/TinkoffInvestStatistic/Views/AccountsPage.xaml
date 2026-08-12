@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<tis:BaseDataPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:tis="clr-namespace:TinkoffInvestStatistic.Views.Base;assembly=TinkoffInvestStatistic"
+<tis:BaseDataPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:tis="clr-namespace:TinkoffInvestStatistic.Views.Base"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TinkoffInvestStatistic.Views.AccountsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels"  
              xmlns:model="clr-namespace:TinkoffInvestStatistic.Models" 
-             xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             xmlns:forms="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Name="BrowseItemsPage"
              xmlns:Helpers="clr-namespace:TinkoffInvestStatistic.Utility"
              >
@@ -51,10 +51,12 @@
                             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, 1">
                                 <Label Text="{Binding Name}" 
                                     LineBreakMode="NoWrap"
+                                    Padding="0, 10, 0, 0"
                                     FontSize="13" 
                                     TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}"/>
                                 <Label Text="{Binding CurrentSumText}" 
                                        Grid.Column="1"
+                                       Padding="0, 10, 0, 0"
                                        HorizontalTextAlignment="End"
                                        LineBreakMode="NoWrap"
                                        FontSize="13" 

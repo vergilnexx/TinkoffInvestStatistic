@@ -1,4 +1,4 @@
-﻿using Domain;
+using Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
@@ -15,7 +16,7 @@ using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -24,6 +25,8 @@ namespace TinkoffInvestStatistic.ViewModels
     /// </summary>
     public class PositionTypeViewModel : BaseViewModel
     {
+        private bool _isNavigatingToPortfolio;
+
         public string AccountId { get; set; }
 
         private PositionTypeModel _selectedItem;
@@ -44,8 +47,8 @@ namespace TinkoffInvestStatistic.ViewModels
         public Color SumPercentColor { get; private set; }
 
         public ObservableCollection<PositionTypeModel> PositionTypes { get; }
-        public Chart StatisticChart { get; private set; }
-        public Chart PlannedStatisticChart { get; private set; }
+        public PieChart StatisticChart { get; private set; }
+        public PieChart PlannedStatisticChart { get; private set; }
         public Command LoadPositionTypesCommand { get; }
         public Command<PositionTypeModel> ItemTapped { get; }
 
@@ -73,7 +76,7 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task ExecuteLoadPositionTypesCommandAsync()
         {
             Sum = SumPercent = string.Empty;
-            SumPercentColor = Color.Default;
+            SumPercentColor = Colors.Transparent;
             IsRefreshing = true;
 
             try
@@ -178,18 +181,41 @@ namespace TinkoffInvestStatistic.ViewModels
 
         private async void OnPositionTypeSelected(PositionTypeModel item)
         {
-            if (item == null)
+            if (item == null || _isNavigatingToPortfolio)
             {
                 return;
             }
 
-            var sum = PositionTypes.Sum(t => t.CurrentSum);
-            var url = $"{nameof(PortfolioPage)}" +
-                $"?{nameof(PortfolioViewModel.AccountId)}={AccountId}" +
-                $"&{nameof(PortfolioViewModel.PositionType)}={(int)item.Type}" +
-                $"&{nameof(PortfolioViewModel.GroupPlanPercent)}={item.PlanPercent}" +
-                $"&{nameof(PortfolioViewModel.AccountSum)}={Math.Round(sum, DecimalHelper.NUMERIC_DECIMALS, MidpointRounding.ToEven)}";
-            await Shell.Current.GoToAsync(url, true);
+            try
+            {
+                _isNavigatingToPortfolio = true;
+
+                var sum = PositionTypes.Sum(t => t.CurrentSum);
+                var accountId = Uri.EscapeDataString(AccountId ?? string.Empty);
+                var groupPlanPercent = Uri.EscapeDataString(item.PlanPercentValue.ToString(CultureInfo.InvariantCulture));
+                var accountSum = Uri.EscapeDataString(
+                    Math.Round(sum, DecimalHelper.NUMERIC_DECIMALS, MidpointRounding.ToEven)
+                        .ToString(CultureInfo.InvariantCulture));
+
+                var url = $"{nameof(PortfolioPage)}" +
+                    $"?{nameof(PortfolioViewModel.AccountId)}={accountId}" +
+                    $"&{nameof(PortfolioViewModel.PositionType)}={(int)item.Type}" +
+                    $"&{nameof(PortfolioViewModel.GroupPlanPercent)}={groupPlanPercent}" +
+                    $"&{nameof(PortfolioViewModel.AccountSum)}={accountSum}";
+                await Shell.Current.GoToAsync(url, true);
+            }
+            catch (Exception ex)
+            {
+                if (_messageService != null)
+                {
+                    await _messageService.ShowAsync(ex.Message);
+                }
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                _isNavigatingToPortfolio = false;
+            }
         }
     }
 }

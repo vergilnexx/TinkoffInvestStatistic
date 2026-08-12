@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using TinkoffInvestStatistic.Views;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic
 {
-    public partial class AppShell : Xamarin.Forms.Shell
+    public partial class AppShell : Shell
     {
         public AppShell()
         {

@@ -5,7 +5,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace Services
 {

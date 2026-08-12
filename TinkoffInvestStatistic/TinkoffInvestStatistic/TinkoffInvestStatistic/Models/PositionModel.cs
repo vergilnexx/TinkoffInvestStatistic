@@ -1,8 +1,8 @@
-﻿using Infrastructure.Helpers;
+using Infrastructure.Helpers;
 using System.Globalization;
 using TinkoffInvestStatistic.Contracts.Enums;
 using TinkoffInvestStatistic.Utility;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.Models
 {
@@ -119,7 +119,7 @@ namespace TinkoffInvestStatistic.Models
         /// <summary>
         /// Цвет процента.
         /// </summary>
-        public Color NameColor => IsBlocked ? Color.Red : Color.WhiteSmoke;
+        public Color NameColor => IsBlocked ? Colors.Red : Colors.WhiteSmoke;
 
         /// <summary>
         /// Конструктор.

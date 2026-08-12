@@ -1,10 +1,8 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinkoffInvestStatistic.Android", "TinkoffInvestStatistic\TinkoffInvestStatistic.Android\TinkoffInvestStatistic.Android.csproj", "{44764455-B1C4-4538-BA40-AE42FD632244}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinkoffInvestStatistic", "TinkoffInvestStatistic\TinkoffInvestStatistic\TinkoffInvestStatistic.csproj", "{EBB0AD34-B284-420D-96E3-B0143EBAD058}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{CD991F1A-32FB-4933-8755-322DAE031AE9}"
@@ -41,12 +39,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44764455-B1C4-4538-BA40-AE42FD632244}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{EBB0AD34-B284-420D-96E3-B0143EBAD058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBB0AD34-B284-420D-96E3-B0143EBAD058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBB0AD34-B284-420D-96E3-B0143EBAD058}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -86,7 +78,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{44764455-B1C4-4538-BA40-AE42FD632244} = {CD991F1A-32FB-4933-8755-322DAE031AE9}
 		{EBB0AD34-B284-420D-96E3-B0143EBAD058} = {CD991F1A-32FB-4933-8755-322DAE031AE9}
 		{268456BC-5DEA-4435-A0BD-32D61FE9DD16} = {F335B0E0-97AA-4F9D-9E6A-F0CD477E33BD}
 		{DCCB9CD4-7C13-46FB-83A9-9937BE0FB081} = {F335B0E0-97AA-4F9D-9E6A-F0CD477E33BD}

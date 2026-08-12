@@ -1,5 +1,5 @@
 ﻿using TinkoffInvestStatistic.ViewModels.Base;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {

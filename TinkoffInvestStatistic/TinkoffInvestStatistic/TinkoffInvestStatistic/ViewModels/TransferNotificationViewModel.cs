@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TinkoffInvestStatistic.ViewModels.Base;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 using XCalendar.Core.Models;
 using Infrastructure.Services;
 using TinkoffInvestStatistic.Models;

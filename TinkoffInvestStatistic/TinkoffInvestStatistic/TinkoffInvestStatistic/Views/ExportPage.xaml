@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TinkoffInvestStatistic.ViewModels" 
              x:Class="TinkoffInvestStatistic.Views.ExportPage"
@@ -8,7 +8,7 @@
                     RefreshColor="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"
                     x:DataType="local:ExportViewModel"
                     IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-        <Grid RowDefinitions="20, 20, 20, *, Auto" 
+        <Grid RowDefinitions="20, 20, 20, Auto, Auto, Auto, Auto, Auto, Auto, *, Auto, Auto" 
                 ColumnDefinitions="Auto, *"
                 Padding="15"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}">
@@ -45,8 +45,62 @@
                     Grid.Row="2"
                     Color="{AppThemeBinding Light={StaticResource LightInnerColor}, Dark={StaticResource DarkInnerColor}}"/>
 
+            <Button Text="Выбрать файл настроек"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="Fill"
+                    HeightRequest="45"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"
+                    BorderWidth="1"
+                    CornerRadius="20"
+                    Margin="0,8,0,0"
+                    Command="{Binding PickSettingsFileCommand}"/>
+            <Label Text="{Binding SettingsImportPath}"
+                   Grid.Row="4"
+                   Grid.ColumnSpan="2"
+                   FontSize="12"
+                   LineBreakMode="TailTruncation"
+                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}" />
+
+            <Button Text="Выбрать файл данных"
+                    Grid.Row="5"
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="Fill"
+                    HeightRequest="45"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"
+                    BorderWidth="1"
+                    CornerRadius="20"
+                    Margin="0,8,0,0"
+                    Command="{Binding PickDataFileCommand}"/>
+            <Label Text="{Binding DataImportPath}"
+                   Grid.Row="6"
+                   Grid.ColumnSpan="2"
+                   FontSize="12"
+                   LineBreakMode="TailTruncation"
+                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}" />
+
+            <Button Text="Выбрать файл зачислений"
+                    Grid.Row="7"
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="Fill"
+                    HeightRequest="45"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"
+                    BorderWidth="1"
+                    CornerRadius="20"
+                    Margin="0,8,0,0"
+                    Command="{Binding PickTransfersFileCommand}"/>
+            <Label Text="{Binding TransfersImportPath}"
+                   Grid.Row="8"
+                   Grid.ColumnSpan="2"
+                   FontSize="12"
+                   LineBreakMode="TailTruncation"
+                   TextColor="{AppThemeBinding Light={StaticResource LighTextColor}, Dark={StaticResource DarkTextColor}}" />
+
             <Button Text="Экспортировать"
-                    Grid.Row="4"
+                    Grid.Row="10"
                     Grid.ColumnSpan="2"
                     WidthRequest="250" 
                     HorizontalOptions="Center" 
@@ -56,6 +110,19 @@
                     BorderWidth="1"
                     CornerRadius="30"
                     Command="{Binding ExportCommand}"/>
+
+            <Button Text="Импортировать"
+                    Grid.Row="11"
+                    Grid.ColumnSpan="2"
+                    WidthRequest="250"
+                    HorizontalOptions="Center"
+                    HeightRequest="60"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"
+                    BorderColor="{AppThemeBinding Light={StaticResource DarkPrimaryColor}, Dark={StaticResource LightPrimaryColor}}"
+                    BorderWidth="1"
+                    CornerRadius="30"
+                    Margin="0,10,0,0"
+                    Command="{Binding ImportCommand}"/>
         </Grid>
     </RefreshView>
 </ContentPage>

@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
+using System;
 using TinkoffInvestStatistic.Service;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
@@ -23,11 +24,23 @@ namespace TinkoffInvestStatistic.ViewModels
         private async Task AuthenticateAsync()
         {
             IsRefreshing = true;
-            var service = DependencyService.Get<IAuthenticateService>();
-            var isAuthenticated = await service.AuthenticateAsync("Вход");
-            if (isAuthenticated)
+            try
             {
-                await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
+                var service = DependencyService.Get<IAuthenticateService>();
+                if (service == null)
+                {
+                    return;
+                }
+
+                var isAuthenticated = await service.AuthenticateAsync("Вход");
+                if (isAuthenticated)
+                {
+                    await Shell.Current.GoToAsync($"//{nameof(AccountsPage)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Login auth failed: {ex}");
             }
             IsRefreshing = false;
         }

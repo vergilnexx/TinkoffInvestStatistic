@@ -1,4 +1,4 @@
-﻿using Infrastructure.Helpers;
+using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microcharts;
 using SkiaSharp;
@@ -13,12 +13,14 @@ using TinkoffInvestStatistic.Models;
 using TinkoffInvestStatistic.Utility;
 using TinkoffInvestStatistic.ViewModels.Base;
 using TinkoffInvestStatistic.Views;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace TinkoffInvestStatistic.ViewModels
 {
     public class AccountsViewModel : BaseViewModel
     {
+        private bool _isNavigatingToAccount;
+
         public AccountsViewModel()
         {
             Title = "Счета";
@@ -43,7 +45,7 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <summary>
         /// Диаграммы статистики.
         /// </summary>
-        public Chart StatisticChart { get; private set; }
+        public PieChart StatisticChart { get; private set; }
 
         /// <summary>
         /// Команда на загрузку данных о счетах.
@@ -84,6 +86,10 @@ namespace TinkoffInvestStatistic.ViewModels
         public async Task LoadStatisticChartAsync()
         {
             var chartUtility = DependencyService.Resolve<ChartUtility>();
+            if (chartUtility == null)
+            {
+                return;
+            }
             StatisticChart.Entries = await chartUtility.GetChartAsync(this);
             OnPropertyChanged(nameof(StatisticChart));
         }
@@ -111,6 +117,10 @@ namespace TinkoffInvestStatistic.ViewModels
             {
                 Accounts.Clear();
                 var service = DependencyService.Get<IAccountService>();
+                if (service == null)
+                {
+                    return;
+                }
                 var accounts = await service.GetAccountsAsync();
                 var sum = accounts.Sum(a => a.Sum);
                 foreach (var item in accounts)
@@ -129,7 +139,10 @@ namespace TinkoffInvestStatistic.ViewModels
             }
             catch (Exception ex)
             {
-                await _messageService.ShowAsync(ex.Message);
+                if (_messageService != null)
+                {
+                    await _messageService.ShowAsync(ex.Message);
+                }
 
                 Debug.WriteLine(ex);
             }
@@ -145,14 +158,36 @@ namespace TinkoffInvestStatistic.ViewModels
         /// <param name="item">Данные выбранного счета</param>
         private async void OnAccountSelected(AccountModel item)
         {
-            if (item == null)
+            if (item == null || _isNavigatingToAccount)
             {
                 return;
             }
-            var url = $"{nameof(AccountStatisticPage)}" +
-                        $"?{nameof(AccountStatisticViewModel.AccountId)}={item.AccountId}" +
-                        $"&{nameof(AccountStatisticViewModel.AccountName)}={item.Name}";
-            await Shell.Current.GoToAsync(url, animate: true);
+
+            try
+            {
+                _isNavigatingToAccount = true;
+
+                var accountId = Uri.EscapeDataString(item.AccountId ?? string.Empty);
+                var accountName = Uri.EscapeDataString(item.Name ?? string.Empty);
+                var url = $"{nameof(PositionTypesPage)}" +
+                            $"?{nameof(AccountStatisticViewModel.AccountId)}={accountId}" +
+                            $"&{nameof(AccountStatisticViewModel.AccountName)}={accountName}";
+
+                await Shell.Current.GoToAsync(url, animate: true);
+            }
+            catch (Exception ex)
+            {
+                if (_messageService != null)
+                {
+                    await _messageService.ShowAsync(ex.Message);
+                }
+
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                _isNavigatingToAccount = false;
+            }
         }
     }
 }

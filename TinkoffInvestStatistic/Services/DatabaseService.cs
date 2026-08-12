@@ -1,4 +1,4 @@
-﻿using TinkoffInvestStatistic.Contracts.Enums;
+using TinkoffInvestStatistic.Contracts.Enums;
 using Domain;
 using Infrastructure.Services;
 using SQLite;
@@ -77,10 +77,10 @@ namespace Services
             try
             {
                 var data = await _database.Table<PositionData>()
-                                    .Where(p => p.AccountNumber == accountNumber && p.Type == positionType)
+                                    .Where(p => p.AccountNumber == accountNumber)
                                     .ToArrayAsync()
                                     .ConfigureAwait(false);
-                return data;
+                return data.Where(p => p.Type == positionType).ToArray();
             }
             catch (Exception ex)
             {
@@ -95,10 +95,13 @@ namespace Services
             try
             {
                 var data = await _database.Table<PositionTypeData>()
-                                    .Where(i => i.AccountNumber == accountNumber && positionTypes.Contains(i.Type))
+                                    .Where(i => i.AccountNumber == accountNumber)
                                     .ToArrayAsync()
                                     .ConfigureAwait(false);
-                return data;
+
+                // sqlite-net LINQ may generate unsupported SQL for enum Contains()
+                // (e.g. no such function: op_implicit), so filter enum in memory.
+                return data.Where(i => positionTypes.Contains(i.Type)).ToArray();
             }
             catch (Exception ex)
             {
@@ -148,10 +151,11 @@ namespace Services
             try
             {
                 var data = await _database.Table<PlannedPositionData>()
-                                    .Where(p => p.AccountNumber == accountId && p.Type == type)
+                                    .Where(p => p.AccountNumber == accountId)
                                     .ToArrayAsync()
                                     .ConfigureAwait(false);
-                return data;
+
+                return data.Where(p => p.Type == type).ToArray();
             }
             catch (Exception ex)
             {

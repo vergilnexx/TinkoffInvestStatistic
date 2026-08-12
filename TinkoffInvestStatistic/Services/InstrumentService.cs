@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TinkoffInvestStatistic.Contracts;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace Services
 {
